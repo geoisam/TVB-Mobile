@@ -36,12 +36,15 @@ import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.data.CMDatabaseData
 import com.pjs.tvbox.model.NationalSales
 import com.pjs.tvbox.model.Ticket
+import com.pjs.tvbox.util.LunarUtil
 import com.pjs.tvbox.util.LunarUtil.toDateString
 import kotlinx.coroutines.delay
 
 @Composable
 fun CMDatabaseView(
     modifier: Modifier = Modifier,
+    selectedDate: String,
+    isToday: Boolean,
     key: Int? = null,
 ) {
     val context = LocalContext.current
@@ -50,26 +53,33 @@ fun CMDatabaseView(
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(key) {
+    LaunchedEffect(key, selectedDate) {
+        isLoading = true
+        error = null
+
         try {
-            val (list, nat) = CMDatabaseData.getCMDatabase()
+            val (list, nat) = CMDatabaseData.getCMDatabase(selectedDate)
             tickets = list
             national = nat
         } catch (e: Exception) {
-            error = e.message ?: "未知错误"
+            error = e.message ?: "加载失败"
         } finally {
             isLoading = false
         }
 
-        while (true) {
-            delay(10_666)
-            try {
-                val (list, nat) = CMDatabaseData.getCMDatabase()
-                tickets = list
-                national = nat
-            } catch (e: Exception) { }
+        if (isToday) {
+            while (true) {
+                delay(10_666)
+                try {
+                    val (list, nat) = CMDatabaseData.getCMDatabase(selectedDate)
+                    tickets = list
+                    national = nat
+                } catch (e: Exception) {
+                }
+            }
         }
     }
+
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -132,7 +142,10 @@ fun CMDatabaseView(
                                     )
                                 }
                                 Text(
-                                    text = "截止至 ${national?.updateTimestamp?.toDateString()} (北京时间)",
+                                    text = if (isToday)
+                                        "截止 ${national?.updateTimestamp?.toDateString()} (北京时间)"
+                                    else
+                                        "历史数据 $selectedDate (北京时间)",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(vertical = 12.dp),
@@ -169,6 +182,7 @@ fun CMDatabaseView(
                                         TableHeader("综合票房")
                                         TableHeader("票房占比")
                                         TableHeader("排片占比")
+                                        TableHeader("网售占比")
                                         TableHeader("上座率")
                                     }
                                 }
@@ -214,6 +228,7 @@ fun CMDatabaseView(
                                     TableCell("${ticket.salesInWanDesc}万")
                                     TableCell(ticket.salesRateDesc)
                                     TableCell(ticket.sessionRateDesc)
+                                    TableCell(ticket.onlineSalesRateDesc)
                                     TableCell(ticket.seatRateDesc)
                                 }
                             }

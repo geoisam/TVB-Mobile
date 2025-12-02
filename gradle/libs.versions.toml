@@ -22,7 +22,7 @@ com-squareup-okhttp3 = "5.3.2"
 com-squareup-okio = "3.16.4"
 io-coil-kt-coil3 = "3.3.0"
 org-commonmark = "0.27.0"
-io-github-carguo-gsyvideoplayer = "11.1.0"
+io-github-carguo-gsyvideoplayer = "11.2.0"
 
 desugar-jdk-libs = "2.1.5"
 protolite-well-known-types = "18.0.1"
@@ -51,6 +51,7 @@ androidx-compose-ui-tooling-preview = {  module = "androidx.compose.ui:ui-toolin
 androidx-compose-ui-test-manifest = {  module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-ui-test-junit4 = {  module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-material3 = {  module = "androidx.compose.material3:material3" }
+androidx-compose-material3-navigition = {  module = "androidx.compose.material3:material3" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-animation = { module = "androidx.compose.animation:animation" }
 

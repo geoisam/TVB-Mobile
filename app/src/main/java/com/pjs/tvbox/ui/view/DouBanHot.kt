@@ -62,8 +62,11 @@ fun DouBanHotView(
     }
 
     Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surfaceContainer,
+            ),
+        contentAlignment = Alignment.Center,
     ) {
         when {
             isLoading -> {
@@ -74,7 +77,8 @@ fun DouBanHotView(
                 Text(
                     text = "加载失败\n\n$error",
                     color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
@@ -82,16 +86,17 @@ fun DouBanHotView(
                 Text(
                     text = "暂无数据",
                     color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                 )
             }
 
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(top = 8.dp, bottom = 18.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 18.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(movies, key = { it.id }) { movie ->
                         MovieCard(movie = movie)

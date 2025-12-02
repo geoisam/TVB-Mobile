@@ -15,18 +15,16 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlin.String
 
 object CMDatabaseData {
-    val dateState = LunarUtil.getYearMonthDay()
-
     private val json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
         isLenient = true
     }
 
-    suspend fun getCMDatabase(): Pair<List<Ticket>, NationalSales> = runCatching {
+    suspend fun getCMDatabase(date: String = LunarUtil.getYearMonthDay()): Pair<List<Ticket>, NationalSales> = runCatching {
         val response = PJS.request(
             PJSRequest(
-                url = "https://zgdypf.zgdypw.cn/getDayData?date=$dateState",
+                url = "https://zgdypf.zgdypw.cn/getDayData?date=$date",
                 headers = mapOf("Referer" to "https://zgdypf.zgdypw.cn/")
             )
         )

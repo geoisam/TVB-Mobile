@@ -124,7 +124,6 @@ dependencies {
 
     implementation(libs.io.github.carguo.gsyvideoplayer.java)
     implementation(libs.io.github.carguo.gsyvideoplayer.exo2)
-    implementation(libs.io.github.carguo.gsyvideoplayer.ijk)
 
     // coreLibraryDesugaring(libs.desugar.jdk.libs)
 

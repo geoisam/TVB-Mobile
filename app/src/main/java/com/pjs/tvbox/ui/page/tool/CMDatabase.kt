@@ -23,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
+import com.pjs.tvbox.ui.dialog.DatePickerDialog
 import com.pjs.tvbox.ui.view.CMDatabaseView
+import com.pjs.tvbox.util.LunarUtil
+import java.time.LocalDate
 
 sealed class CMDatabaseScreen {
     object Main : CMDatabaseScreen()
@@ -59,6 +61,9 @@ fun CMDatabase(
 private fun CMDatabaseMain(
     onBack: () -> Unit,
 ) {
+    var selectedDate by remember { mutableStateOf(LunarUtil.getYearMonthDay()) }
+    var showDatePicker by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -81,7 +86,7 @@ private fun CMDatabaseMain(
                 },
                 actions = {
                     IconButton(
-                        onClick = { }
+                        onClick = { showDatePicker = true }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_calendar),
@@ -101,18 +106,30 @@ private fun CMDatabaseMain(
         ) {
             CMDatabaseView(
                 modifier = Modifier.weight(1f),
+                selectedDate = selectedDate,
+                isToday = (selectedDate == LunarUtil.getYearMonthDay()),
             )
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
-                    text = "数据每 10 秒自动更新一次",
+                    text = "左右滑动屏幕可浏览更多数据",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 6.dp),
                 )
             }
+        }
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismiss = { showDatePicker = false },
+                onDateSelected = { year, month, day ->
+                    selectedDate = "%04d-%02d-%02d".format(year, month + 1, day)
+                    showDatePicker = false
+                },
+                minDate = LocalDate.of(2017, 1, 1),
+            )
         }
     }
 }
