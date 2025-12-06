@@ -24,8 +24,6 @@ object BiliAnimeHotData {
         else -> this
     }
 
-    private val cache = mutableMapOf<Pair<Int, Int>, List<AnimeHot>>()
-
     suspend fun getAnimeHot(): List<AnimeHot> {
         return runCatching {
             val response = PJS.request(
@@ -43,8 +41,7 @@ object BiliAnimeHotData {
                 else -> return@runCatching emptyList()
             }
 
-            val items = rootJson["result"]?.jsonObject?.get("list")?.jsonArray
-                ?: return@runCatching emptyList()
+            val items = rootJson["result"]?.jsonObject?.get("list")?.jsonArray ?: return@runCatching emptyList()
 
             items.mapNotNull { it.jsonObject.toAnimeHot() }
 

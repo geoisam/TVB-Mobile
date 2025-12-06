@@ -1,6 +1,8 @@
 package com.pjs.tvbox
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.format.Formatter
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,13 +16,18 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import com.pjs.tvbox.model.Update
+import com.pjs.tvbox.ui.dialog.TipsDialog
 import com.pjs.tvbox.ui.page.AboutPage
 import com.pjs.tvbox.ui.page.BottomNav
 import com.pjs.tvbox.ui.page.HomePage
@@ -37,6 +44,7 @@ import com.pjs.tvbox.ui.page.tool.TodayNews
 import com.pjs.tvbox.ui.page.tool.Transcode
 import com.pjs.tvbox.ui.page.tool.TvLivePage
 import com.pjs.tvbox.ui.screen.MainScreen
+import com.pjs.tvbox.util.UpdateUtil
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -55,10 +63,17 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen() {
+    val context = LocalContext.current
     var overlayPage by remember { mutableStateOf<OverlayPage?>(null) }
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
     val tabs = listOf(MainScreen.Home, MainScreen.Discover, MainScreen.Mine)
+
+    var updateInfo by remember { mutableStateOf<Update?>(null) }
+
+    LaunchedEffect(Unit) {
+        UpdateUtil.consumeUpdate()?.let { updateInfo = it }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -106,6 +121,31 @@ fun MainScreen() {
 
                 is OverlayPage.About -> AboutPage(onClose)
             }
+        }
+        updateInfo?.let { update ->
+            TipsDialog(
+                isOpen = true,
+                onClose = { updateInfo = null },
+                title = "发现新版本 v${update.versionName}",
+                message = """
+                    版本：v${update.versionName}.${update.versionCode}
+                    大小：${Formatter.formatFileSize(LocalContext.current, update.appSize)}
+                    更新日志：
+                    ${update.changeLog.ifBlank { "修复了一些已知问题。" }}
+                """.trimIndent(),
+                confirmButtonText = "更新",
+                onConfirm = {
+                    val url = when {
+                        update.downloadUrl.startsWith("http") -> update.downloadUrl
+                        else -> "https://github.com/geoisam/TVB-Mobile/releases"
+                    }
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    context.startActivity(intent)
+                },
+                dismissButtonText = "取消",
+                onDismiss = { updateInfo = null },
+                closeIcon = false
+            )
         }
     }
 }

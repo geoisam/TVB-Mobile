@@ -105,6 +105,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.cn.lunar)
+    implementation(libs.org.apache.commons.text)
     implementation(libs.io.github.carguo.gsyvideoplayer)
 
     implementation(libs.com.squareup.okhttp3)

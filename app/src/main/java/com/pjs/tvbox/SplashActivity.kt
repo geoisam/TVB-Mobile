@@ -24,8 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
+import com.pjs.tvbox.data.UpdateData
+import com.pjs.tvbox.model.Update
 import com.pjs.tvbox.ui.theme.LogoFont
+import com.pjs.tvbox.util.AppUtil
+import com.pjs.tvbox.util.UpdateUtil
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
@@ -34,18 +40,29 @@ class SplashActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 SplashScreen {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    lifecycleScope.launch {
+                        val update = UpdateData.getUpdate()
+                        if (update != null && shouldShowUpdate(update)) {
+                            UpdateUtil.setUpdate(update)
+                        }
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                        finish()
+                    }
                 }
             }
         }
+    }
+    private fun shouldShowUpdate(update: Update): Boolean {
+        val remoteVersionCode = update.versionCode.toLongOrNull() ?: return false
+        val localVersionCode = AppUtil.getVersionCode(this) ?: return false
+        return remoteVersionCode > localVersionCode
     }
 }
 
 @Composable
 fun SplashScreen(onTimeout: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(500)
+        delay(666)
         onTimeout()
     }
 
