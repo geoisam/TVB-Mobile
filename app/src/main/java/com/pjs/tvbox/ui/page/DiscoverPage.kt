@@ -33,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,80 +52,80 @@ fun DiscoverPage(
     val toolsList = listOf(
         ToolItem(
             icon = R.drawable.ic_tv,
-            title = stringResource(R.string.tool_live),
-            subtitle = stringResource(R.string.tool_live_desc),
+            title = "电视直播",
+            subtitle = "全球电视台网络直播线路",
             onClick = {
                 onOpenPage(OverlayPage.TvLive)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_change_circle,
-            title = stringResource(R.string.tool_transcode),
-            subtitle = stringResource(R.string.tool_transcode_desc),
+            title = "视频转码",
+            subtitle = "m3u8视频流转换成mp4",
             onClick = {
                 onOpenPage(OverlayPage.Transcode)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_movie,
-            title = stringResource(R.string.tool_rating),
-            subtitle = stringResource(R.string.tool_rating_desc),
+            title = "电影评分",
+            subtitle = "豆瓣电影 Top 250",
             onClick = {
                 onOpenPage(OverlayPage.DouBanTop)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_hive,
-            title = stringResource(R.string.tool_hot),
-            subtitle = stringResource(R.string.tool_hot_desc),
+            title = "剧集热榜",
+            subtitle = "猫眼网播热度综合榜单",
             onClick = {
                 onOpenPage(OverlayPage.MaoYanHot)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_event_note,
-            title = stringResource(R.string.tool_timeline),
-            subtitle = stringResource(R.string.tool_timeline_desc),
+            title = "每周新番",
+            subtitle = "bilibili新番时间表",
             onClick = {
                 onOpenPage(OverlayPage.BiliTimeline)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_whatshot,
-            title = stringResource(R.string.tool_anime),
-            subtitle = stringResource(R.string.tool_anime_desc),
+            title = "番剧热榜",
+            subtitle = "bilibili番剧热播分类榜单",
             onClick = {
                 onOpenPage(OverlayPage.BiliAnimeHot)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_local_atm,
-            title = stringResource(R.string.tool_ticket),
-            subtitle = stringResource(R.string.tool_ticket_desc),
+            title = "电影票房",
+            subtitle = "CMDB实时票房榜单",
             onClick = {
                 onOpenPage(OverlayPage.CMDatabase)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_kanban,
-            title = stringResource(R.string.tool_top),
-            subtitle = stringResource(R.string.tool_top_desc),
+            title = "电视收视",
+            subtitle = "欢网大数据直播频道榜单",
             onClick = {
                 onOpenPage(OverlayPage.HuanTvTop)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_news,
-            title = stringResource(R.string.tool_news),
-            subtitle = stringResource(R.string.tool_news_desc),
+            title = "头条热榜",
+            subtitle = "热门平台实时热搜榜单",
             onClick = {
                 onOpenPage(OverlayPage.TodayNews)
             }
         ),
         ToolItem(
             icon = R.drawable.ic_psychiatry,
-            title = stringResource(R.string.tool_watermark),
-            subtitle = stringResource(R.string.tool_watermark_desc),
+            title = "素材解析",
+            subtitle = "视频图文无水印解析下载",
             onClick = {
                 onOpenPage(OverlayPage.FuckWatermark)
             }
@@ -159,7 +158,7 @@ fun DiscoverPage(
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = stringResource(R.string.nav_search),
+                                text = "搜索",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,

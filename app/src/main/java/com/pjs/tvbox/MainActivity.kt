@@ -126,13 +126,10 @@ fun MainScreen() {
             TipsDialog(
                 isOpen = true,
                 onClose = { updateInfo = null },
-                title = "发现新版本 v${update.versionName}",
-                message = """
-                    版本：v${update.versionName}.${update.versionCode}
-                    大小：${Formatter.formatFileSize(LocalContext.current, update.appSize)}
-                    更新日志：
-                    ${update.changeLog.ifBlank { "修复了一些已知问题。" }}
-                """.trimIndent(),
+                title = "发现新版本 ${update.versionName}",
+                message = "版本：${update.versionCode}\n" +
+                        "大小：${Formatter.formatFileSize(LocalContext.current, update.appSize)}\n" +
+                        "\n更新日志：\n${update.changeLog.ifBlank { "修复了一些已知问题" }}".trimIndent(),
                 confirmButtonText = "更新",
                 onConfirm = {
                     val url = when {

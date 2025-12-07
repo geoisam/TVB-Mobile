@@ -2,7 +2,6 @@ package com.pjs.tvbox.ui.page.tool
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
@@ -66,7 +64,7 @@ private fun BiliAnimeHotMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.tool_anime),
+                        text = "番剧热榜",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )

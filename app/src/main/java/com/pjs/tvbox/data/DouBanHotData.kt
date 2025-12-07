@@ -35,10 +35,10 @@ object DouBanHotData {
 
         val items = root.jsonObject["items"]?.jsonArray ?: return@runCatching emptyList()
 
-        items.mapNotNull { element ->
-            element.jsonObject.toMovie()
+        items.mapNotNull {
+            it.jsonObject.toMovie()
         }
-    }.getOrDefault(emptyList())
+    }.getOrElse { emptyList() }
 
     private fun JsonObject.toMovie(): Movie? = runCatching {
         Movie(

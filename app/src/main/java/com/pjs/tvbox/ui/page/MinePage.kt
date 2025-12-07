@@ -231,7 +231,7 @@ fun MinePage(
                 ) {
                     MineCard(
                         iconRes = R.drawable.ic_star,
-                        text = stringResource(R.string.mine_star),
+                        text = "收藏夹",
                         onClick = {
                             Toast.makeText(context, "收藏夹", Toast.LENGTH_SHORT).show()
                         },
@@ -239,7 +239,7 @@ fun MinePage(
                     )
                     MineCard(
                         iconRes = R.drawable.ic_history,
-                        text = stringResource(R.string.mine_history),
+                        text = "观看历史",
                         onClick = {
                             Toast.makeText(context, "观看历史", Toast.LENGTH_SHORT).show()
                         },
@@ -247,7 +247,7 @@ fun MinePage(
                     )
                     MineCard(
                         iconRes = R.drawable.ic_cloud_download,
-                        text = stringResource(R.string.mine_download),
+                        text = "下载缓存",
                         onClick = {
                             Toast.makeText(context, "下载缓存", Toast.LENGTH_SHORT).show()
                         },
@@ -270,7 +270,7 @@ fun MinePage(
                     ) {
                         MineItem(
                             iconRes = R.drawable.ic_database,
-                            text = stringResource(R.string.mine_subscribe),
+                            text = "订阅管理",
                             onClick = {
                                 Toast.makeText(context, "订阅管理", Toast.LENGTH_SHORT).show()
                             },
@@ -278,7 +278,7 @@ fun MinePage(
                         )
                         MineItem(
                             iconRes = R.drawable.ic_media_link,
-                            text = stringResource(R.string.mine_media_link),
+                            text = "播放链接",
                             onClick = {
                                 Toast.makeText(context, "播放链接", Toast.LENGTH_SHORT).show()
                             },
@@ -286,7 +286,7 @@ fun MinePage(
                         )
                         MineItem(
                             iconRes = R.drawable.ic_videos,
-                            text = stringResource(R.string.mine_video),
+                            text = "本地视频",
                             onClick = {
                                 Toast.makeText(context, "本地视频", Toast.LENGTH_SHORT).show()
                             },
@@ -294,7 +294,7 @@ fun MinePage(
                         )
                         MineItem(
                             iconRes = R.drawable.ic_storage,
-                            text = stringResource(R.string.mine_backup),
+                            text = "备份与恢复",
                             onClick = {
                                 Toast.makeText(context, "备份恢复", Toast.LENGTH_SHORT).show()
                             },
@@ -321,7 +321,7 @@ fun MinePage(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.mine_update),
+                                    text = "版本升级",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -353,7 +353,7 @@ fun MinePage(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.mine_about),
+                                    text = "关于",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )

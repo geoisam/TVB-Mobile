@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,6 +28,7 @@ fun HomePage() {
     val context = LocalContext.current
     var selectedTab by remember { mutableIntStateOf(1) }
     val tabs = listOf("置顶", "首页", "订阅")
+    val dataName = "暂无订阅"
 
     Scaffold(
         topBar = {
@@ -56,7 +56,7 @@ fun HomePage() {
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = stringResource(R.string.nav_search),
+                                text = "搜索",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
@@ -77,7 +77,7 @@ fun HomePage() {
                             .padding(horizontal = 8.dp)
                             .clip(MaterialTheme.shapes.extraLarge)
                             .clickable {
-                                Toast.makeText(context, "暂无订阅", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, dataName, Toast.LENGTH_SHORT).show()
                             },
                         shape = MaterialTheme.shapes.extraLarge,
                         colors = CardDefaults.cardColors(
@@ -92,7 +92,7 @@ fun HomePage() {
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = stringResource(R.string.nav_default).let {
+                                text = dataName.let {
                                     if (it.length > 4) "${it.take(4)}…" else it
                                 },
                                 style = MaterialTheme.typography.bodyMedium,

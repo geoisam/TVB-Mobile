@@ -21,36 +21,37 @@ object CMDatabaseData {
         isLenient = true
     }
 
-    suspend fun getCMDatabase(date: String = LunarUtil.getYearMonthDay()): Pair<List<Ticket>, NationalSales> = runCatching {
-        val response = PJS.request(
-            PJSRequest(
-                url = "https://zgdypf.zgdypw.cn/getDayData?date=$date",
-                headers = mapOf("Referer" to "https://zgdypf.zgdypw.cn/")
-            )
-        )
-
-        if (response.status != 200) return@runCatching emptyList<Ticket>() to NationalSales()
-
-        val root = when (val body = response.response) {
-            is JsonElement -> body
-            is String -> json.parseToJsonElement(body)
-            else -> return@runCatching emptyList<Ticket>() to NationalSales()
-        }
-
-        val tickets = root.jsonObject["list"]?.jsonArray.orEmpty()
-            .mapNotNull { it.jsonObject.toMovie() }
-
-        val natSale = root.jsonObject["nationalSales"]?.jsonObject
-        val nationalSales = NationalSales(
-            salesDesc = natSale?.get("salesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
-            salesUnit = natSale?.get("salesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
-            splitSalesDesc = natSale?.get("splitSalesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
-            splitSalesUnit = natSale?.get("splitSalesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
-            updateTimestamp = natSale?.get("updateTimestamp")?.jsonPrimitive?.content.orEmpty(),
+    suspend fun getCMDatabase(date: String = LunarUtil.getYearMonthDay()): Pair<List<Ticket>, NationalSales> =
+        runCatching {
+            val response = PJS.request(
+                PJSRequest(
+                    url = "https://zgdypf.zgdypw.cn/getDayData?date=$date",
+                    headers = mapOf("Referer" to "https://zgdypf.zgdypw.cn/")
+                )
             )
 
-        tickets to nationalSales
-    }.getOrElse { emptyList<Ticket>() to NationalSales() }
+            if (response.status != 200) return@runCatching emptyList<Ticket>() to NationalSales()
+
+            val root = when (val body = response.response) {
+                is JsonElement -> body
+                is String -> json.parseToJsonElement(body)
+                else -> return@runCatching emptyList<Ticket>() to NationalSales()
+            }
+
+            val tickets = root.jsonObject["list"]?.jsonArray.orEmpty()
+                .mapNotNull { it.jsonObject.toMovie() }
+
+            val natSale = root.jsonObject["nationalSales"]?.jsonObject
+            val nationalSales = NationalSales(
+                salesDesc = natSale?.get("salesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
+                salesUnit = natSale?.get("salesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
+                splitSalesDesc = natSale?.get("splitSalesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
+                splitSalesUnit = natSale?.get("splitSalesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
+                updateTimestamp = natSale?.get("updateTimestamp")?.jsonPrimitive?.content.orEmpty(),
+            )
+
+            tickets to nationalSales
+        }.getOrElse { emptyList<Ticket>() to NationalSales() }
 
     private fun JsonObject.toMovie(): Ticket? = runCatching {
         Ticket(

@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
@@ -69,7 +68,7 @@ private fun CMDatabaseMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.tool_ticket),
+                        text = "电影票房",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -112,7 +111,7 @@ private fun CMDatabaseMain(
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Text(
                     text = "左右滑动屏幕可浏览更多数据",
                     style = MaterialTheme.typography.bodySmall,

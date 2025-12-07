@@ -107,14 +107,19 @@ fun BiliTimelineView(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                Text("当前日期暂无更新")
+                    Text("当前日期暂无更新")
                 }
             }
 
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 18.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 18.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -134,127 +139,128 @@ private fun AnimeCard(anime: TimelineAnime) {
     val thumbnailUrl = remember(anime.epCover) {
         if (anime.epCover.contains("@")) {
             anime.epCover
-        }
-        else {
+        } else {
             "${anime.epCover}@300w_200h.webp"
         }
     }
 
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(3f / 2f)
-            .clip(MaterialTheme.shapes.small)
             .clickable {
-            val url = anime.epCover
-            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-            context.startActivity(intent)
-    },
-        shape = MaterialTheme.shapes.small,
+                val url = anime.epCover
+                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                context.startActivity(intent)
+            },
     ) {
-        Box {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(thumbnailUrl)
-                    .crossfade(true)
-                    .httpHeaders(
-                        NetworkHeaders.Builder()
-                            .set("Referer", "https://www.bilibili.com/")
-                            .set(
-                                "User-Agent",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(3f / 2f)
+                .clip(MaterialTheme.shapes.small),
+            shape = MaterialTheme.shapes.small,
+        ) {
+            Box {
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(thumbnailUrl)
+                        .crossfade(true)
+                        .httpHeaders(
+                            NetworkHeaders.Builder()
+                                .set("Referer", "https://www.bilibili.com/")
+                                .set(
+                                    "User-Agent",
+                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                )
+                                .build()
+                        )
+                        .build(),
+                    contentDescription = anime.title,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small),
+                    contentScale = ContentScale.Crop,
+                    loading = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    },
+                    error = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "图片加载失败",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.labelMedium,
                             )
-                            .build()
-                    )
-                    .build(),
-                contentDescription = anime.title,
-                modifier = Modifier.fillMaxSize()
-                    .clip(MaterialTheme.shapes.small),
-                contentScale = ContentScale.Crop,
-                loading = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                        }
                     }
-                },
-                error = {
+                )
+                if (anime.pubTime.isNotBlank()) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
+                            .align(Alignment.TopStart)
+                            .background(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                RoundedCornerShape(topStart = 8.dp, bottomEnd = 8.dp)
+                            )
+                            .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "图片加载失败",
-                            color = Color.Gray,
-                            style = MaterialTheme.typography.labelMedium,
+                            text = anime.pubTime + " 更新",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.78f))
+                if (anime.pubIndex.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.78f)
+                                    )
+                                )
+                            )
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = anime.pubIndex,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
-                    )
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = anime.title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            if (anime.pubTime.isNotBlank()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                            RoundedCornerShape(topStart = 8.dp, bottomEnd = 8.dp)
-                        )
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = anime.pubTime + " 更新",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            }
-            if (anime.pubIndex.isNotBlank()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                            RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
-                        )
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = anime.pubIndex,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    }
                 }
             }
         }
+        Text(
+            text = anime.title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 4.dp)
+                .align(Alignment.CenterHorizontally),
+        )
     }
 }
 

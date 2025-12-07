@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -62,7 +62,8 @@ fun DouBanHotView(
     }
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .background(
                 MaterialTheme.colorScheme.surfaceContainer,
             ),
@@ -94,7 +95,12 @@ fun DouBanHotView(
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 18.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 18.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -111,102 +117,123 @@ fun DouBanHotView(
 fun MovieCard(movie: Movie) {
     val context = LocalContext.current
 
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2f / 3f)
-            .clip(MaterialTheme.shapes.small)
             .clickable {
                 val url = movie.coverLarge
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 context.startActivity(intent)
             },
-        shape = MaterialTheme.shapes.small,
     ) {
-        Box {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(movie.cover)
-                    .crossfade(true)
-                    .httpHeaders(
-                        NetworkHeaders.Builder()
-                            .set("Referer", "https://movie.douban.com/")
-                            .set(
-                                "User-Agent",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f / 3f)
+                .clip(MaterialTheme.shapes.small),
+            shape = MaterialTheme.shapes.small,
+        ) {
+            Box {
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(movie.cover)
+                        .crossfade(true)
+                        .httpHeaders(
+                            NetworkHeaders.Builder()
+                                .set("Referer", "https://movie.douban.com/")
+                                .set(
+                                    "User-Agent",
+                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                )
+                                .build()
+                        )
+                        .build(),
+                    loading = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(strokeWidth = 4.dp)
+                        }
+                    },
+                    error = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "图片加载失败",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.labelMedium,
                             )
-                            .build()
-                    )
-                    .build(),
-                loading = {
+                        }
+                    },
+                    contentDescription = movie.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small),
+                )
+
+                if (movie.rating.isNotBlank()) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(strokeWidth = 4.dp)
-                    }
-                },
-                error = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
+                            .align(Alignment.TopEnd)
+                            .background(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                            )
+                            .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "图片加载失败",
-                            color = Color.Gray,
-                            style = MaterialTheme.typography.labelMedium,
+                            text = movie.rating + "分",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                },
-                contentDescription = movie.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(MaterialTheme.shapes.small),
-            )
-
-            movie.rating?.let { rating ->
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                            RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                }
+                if (movie.subtitle.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.78f)
+                                    )
+                                )
+                            )
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = movie.subtitle,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = rating,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f),
-                        RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
-                    )
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
         }
+        Text(
+            text = movie.title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 4.dp)
+                .align(Alignment.CenterHorizontally),
+        )
     }
 }

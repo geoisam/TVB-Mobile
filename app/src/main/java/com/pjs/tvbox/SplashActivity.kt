@@ -52,10 +52,12 @@ class SplashActivity : ComponentActivity() {
             }
         }
     }
+
     private fun shouldShowUpdate(update: Update): Boolean {
-        val remoteVersionCode = update.versionCode.toLongOrNull() ?: return false
-        val localVersionCode = AppUtil.getVersionCode(this) ?: return false
-        return remoteVersionCode > localVersionCode
+        val remoteVersionName = update.versionName.replace(".", "").toLongOrNull() ?: return false
+        val localVersionName =
+            AppUtil.getVersionName(this).replace(".", "").toLongOrNull() ?: return false
+        return remoteVersionName > localVersionName
     }
 }
 

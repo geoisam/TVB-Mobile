@@ -48,7 +48,8 @@ import com.pjs.tvbox.model.AnimeHot
 
 private val tabOrders = listOf(-1, 0, 3, 4, 2, 5)
 private val tabSorts = listOf(-1, 0, 0, 0, 0, 1)
-private val tabTitles = listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
+private val tabTitles =
+    listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
 
 @Composable
 fun BiliAnimeHotView(
@@ -76,26 +77,26 @@ fun BiliAnimeHotView(
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-            PrimaryScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
-                modifier = Modifier.fillMaxWidth(),
-                edgePadding = 0.dp,
-                divider = {},
-            ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = {
-                            Text(
-                                text = title,
-                                color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Medium,
-                            )
-                        }
-                    )
-                }
+        PrimaryScrollableTabRow(
+            selectedTabIndex = selectedTabIndex,
+            modifier = Modifier.fillMaxWidth(),
+            edgePadding = 0.dp,
+            divider = {},
+        ) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = {
+                        Text(
+                            text = title,
+                            color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Medium,
+                        )
+                    }
+                )
             }
+        }
 
         when {
             isLoading -> {
@@ -119,7 +120,12 @@ fun BiliAnimeHotView(
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 18.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 18.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -138,126 +144,127 @@ fun AnimeHotCard(anime: AnimeHot) {
     val thumbnailUrl = remember(anime.cover) {
         if (anime.cover.contains("@")) {
             anime.cover
-        }
-        else {
+        } else {
             "${anime.cover}@200w_300h.webp"
         }
     }
 
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2f / 3f)
-            .clip(MaterialTheme.shapes.small)
             .clickable {
                 val url = anime.cover
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 context.startActivity(intent)
             },
-        shape = MaterialTheme.shapes.small,
     ) {
-        Box {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(thumbnailUrl)
-                    .crossfade(true)
-                    .httpHeaders(
-                        NetworkHeaders.Builder()
-                            .set("Referer", "https://www.bilibili.com/")
-                            .set(
-                                "User-Agent",
-                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f / 3f)
+                .clip(MaterialTheme.shapes.small),
+            shape = MaterialTheme.shapes.small,
+        ) {
+            Box {
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(thumbnailUrl)
+                        .crossfade(true)
+                        .httpHeaders(
+                            NetworkHeaders.Builder()
+                                .set("Referer", "https://www.bilibili.com/")
+                                .set(
+                                    "User-Agent",
+                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                )
+                                .build()
+                        )
+                        .build(),
+                    loading = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(strokeWidth = 4.dp)
+                        }
+                    },
+                    error = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(MaterialTheme.shapes.small),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "图片加载失败",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.labelMedium,
                             )
-                            .build()
-                    )
-                    .build(),
-                loading = {
+                        }
+                    },
+                    contentDescription = anime.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small),
+                )
+                if (anime.rating.isNotBlank()) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(strokeWidth = 4.dp)
-                    }
-                },
-                error = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small),
+                            .align(Alignment.TopEnd)
+                            .background(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                            )
+                            .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "图片加载失败",
-                            color = Color.Gray,
-                            style = MaterialTheme.typography.labelMedium,
+                            text = anime.rating + "分",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                },
-                contentDescription = anime.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(MaterialTheme.shapes.small),
-            )
-            if (anime.indexShow.isNotBlank()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                            RoundedCornerShape(topStart = 8.dp, bottomEnd = 8.dp)
-                        )
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = anime.indexShow,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
                 }
-            }
-            if (anime.rating.isNotBlank()) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                            RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                if (anime.indexShow.isNotBlank()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.78f)
+                                    )
+                                )
+                            )
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = anime.indexShow,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = anime.rating,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    }
                 }
-            }
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f),
-                        RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
-                    )
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = anime.title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
         }
+        Text(
+            text = anime.title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 4.dp)
+                .align(Alignment.CenterHorizontally),
+        )
     }
 }

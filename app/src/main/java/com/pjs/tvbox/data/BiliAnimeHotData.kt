@@ -18,12 +18,6 @@ object BiliAnimeHotData {
         isLenient = true
     }
 
-    private fun String?.toHttps(): String = when {
-        this == null -> ""
-        this.startsWith("http://") -> "https://" + this.substring(7)
-        else -> this
-    }
-
     suspend fun getAnimeHot(): List<AnimeHot> {
         return runCatching {
             val response = PJS.request(
@@ -41,18 +35,20 @@ object BiliAnimeHotData {
                 else -> return@runCatching emptyList()
             }
 
-            val items = rootJson["result"]?.jsonObject?.get("list")?.jsonArray ?: return@runCatching emptyList()
+            val items = rootJson["result"]?.jsonObject?.get("list")?.jsonArray
+                ?: return@runCatching emptyList()
 
             items.mapNotNull { it.jsonObject.toAnimeHot() }
 
         }.getOrElse { emptyList() }
     }
+
     private fun JsonObject.toAnimeHot(): AnimeHot? = runCatching {
         AnimeHot(
-            cover = this["cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
-            indexShow = this["new_ep"]?.jsonObject?.get("index_show")?.jsonPrimitive?.content?.toHttps().orEmpty(),
-            rating = this["rating"]?.jsonPrimitive?.content.orEmpty(),
-            epCover = this["ss_horizontal_cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
+            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
+            indexShow = this["new_ep"]?.jsonObject?.get("index_show")?.jsonPrimitive?.content.orEmpty(),
+            rating = this["rating"]?.jsonPrimitive?.content?.replace("分", "").orEmpty(),
+            epCover = this["ss_horizontal_cover"]?.jsonPrimitive?.content.orEmpty(),
             title = this["title"]?.jsonPrimitive?.content.orEmpty(),
             link = this["url"]?.jsonPrimitive?.content.orEmpty(),
         )

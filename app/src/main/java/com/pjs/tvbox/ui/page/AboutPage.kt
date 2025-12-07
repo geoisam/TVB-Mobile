@@ -77,23 +77,16 @@ private fun AboutMain(
     val appVersionCode = AppUtil.getVersionCode(context)
 
     val appName = stringResource(R.string.app_name)
-    val githubName = stringResource(R.string.about_github_name)
-    val githubRepo = stringResource(R.string.about_github_repo)
+    val githubName = "geoisam"
+    val githubRepo = "TVB-Mobile"
     val githubUrl = "https://github.com/${githubName}/${githubRepo}"
-    val changeTitle = stringResource(R.string.about_change)
-    val sponsorTitle = stringResource(R.string.about_sponsor)
-    val thanksTitle = stringResource(R.string.about_thanks)
-    val disclaimerTitle = stringResource(R.string.about_disclaimer)
-    val agreementTitle = stringResource(R.string.about_agreement)
-    val privacyTitle = stringResource(R.string.about_privacy)
-    val permissionTitle = stringResource(R.string.about_permission)
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.mine_about),
+                        text = "关于",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -189,7 +182,7 @@ private fun AboutMain(
                         Image(
                             painter = painterResource(R.drawable.ic_github),
                             null,
-                            modifier = Modifier.size(56.dp)
+                            modifier = Modifier.size(52.dp)
                         )
                         Column(
                             modifier = Modifier
@@ -203,7 +196,7 @@ private fun AboutMain(
                                 fontWeight = FontWeight.Bold,
                             )
                             Text(
-                                text = stringResource(R.string.about_github_desc),
+                                text = "USE AT YOUR OWN RISK",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
@@ -220,7 +213,7 @@ private fun AboutMain(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = stringResource(R.string.LICENSE),
+                                text = "AGPL v3",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 fontWeight = FontWeight.Bold,
@@ -245,7 +238,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = changeTitle,
+                                    text = "更新日志",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -259,7 +252,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/UpdateLogs.md", changeTitle)
+                                onOpenMarkdown("md/UpdateLogs.md", "更新日志")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -268,7 +261,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = sponsorTitle,
+                                    text = "赞赏支持",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -282,7 +275,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Sponsor.md", sponsorTitle)
+                                onOpenMarkdown("md/Sponsor.md", "赞赏支持")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -291,7 +284,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = thanksTitle,
+                                    text = "特别鸣谢",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -305,7 +298,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/ThanksList.md", thanksTitle)
+                                onOpenMarkdown("md/ThanksList.md", "特别鸣谢")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -314,7 +307,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = disclaimerTitle,
+                                    text = "免责声明",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -328,7 +321,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Disclaimer.md", disclaimerTitle)
+                                onOpenMarkdown("md/Disclaimer.md", "免责声明")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -337,7 +330,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = agreementTitle,
+                                    text = "用户协议",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -351,7 +344,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Agreement.md", agreementTitle)
+                                onOpenMarkdown("md/Agreement.md", "用户协议")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -360,7 +353,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = privacyTitle,
+                                    text = "隐私政策",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -374,7 +367,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Privacy.md", privacyTitle)
+                                onOpenMarkdown("md/Privacy.md", "隐私政策")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -383,7 +376,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = permissionTitle,
+                                    text = "权限清单",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -397,7 +390,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Permission.md", permissionTitle)
+                                onOpenMarkdown("md/Permission.md", "权限清单")
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -414,12 +407,12 @@ private fun AboutMain(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = stringResource(R.string.about_desc),
+                        text = "愿你一生欢喜，不为世俗所及",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = stringResource(R.string.about_author),
+                        text = "GeoiSam",
                         fontFamily = LogoFont,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

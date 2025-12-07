@@ -18,12 +18,6 @@ object BiliAnimeFilterData {
         isLenient = true
     }
 
-    private fun String?.toHttps(): String = when {
-        this == null -> ""
-        this.startsWith("http://") -> "https://" + this.substring(7)
-        else -> this
-    }
-
     private val cache = mutableMapOf<Pair<Int, Int>, List<AnimeHot>>()
 
     suspend fun getAnimeHot(order: Int = 0, page: Int = 1, sort: Int = 0): List<AnimeHot> {
@@ -53,10 +47,11 @@ object BiliAnimeFilterData {
 
         }.getOrElse { emptyList() }
     }
+
     private fun JsonObject.toAnimeHot(): AnimeHot? = runCatching {
         AnimeHot(
-            cover = this["cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
-            epCover = this["first_ep"]?.jsonObject?.get("cover")?.jsonPrimitive?.content?.toHttps().orEmpty(),
+            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
+            epCover = this["first_ep"]?.jsonObject?.get("cover")?.jsonPrimitive?.content.orEmpty(),
             indexShow = this["index_show"]?.jsonPrimitive?.content.orEmpty(),
             link = this["link"]?.jsonPrimitive?.content.orEmpty(),
             rating = this["score"]?.jsonPrimitive?.content.orEmpty(),

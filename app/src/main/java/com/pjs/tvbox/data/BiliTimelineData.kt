@@ -21,12 +21,6 @@ object BiliTimelineData {
         isLenient = true
     }
 
-    private fun String?.toHttps(): String = when {
-        this == null -> ""
-        this.startsWith("http://") -> "https://" + this.substring(7)
-        else -> this
-    }
-
     suspend fun getBiliTimeline(): List<TimelineDate> = runCatching {
         val response = PJS.request(
             PJSRequest(
@@ -65,9 +59,9 @@ object BiliTimelineData {
         TimelineAnime(
             seasonId = this["season_id"]?.jsonPrimitive?.longOrNull ?: 0L,
             episodeId = this["episode_id"]?.jsonPrimitive?.longOrNull ?: 0L,
-            cover = this["cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
-            epCover = this["ep_cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
-            squareCover = this["square_cover"]?.jsonPrimitive?.content?.toHttps().orEmpty(),
+            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
+            epCover = this["ep_cover"]?.jsonPrimitive?.content.orEmpty(),
+            squareCover = this["square_cover"]?.jsonPrimitive?.content.orEmpty(),
             pubIndex = this["pub_index"]?.jsonPrimitive?.content.orEmpty(),
             pubTime = this["pub_time"]?.jsonPrimitive?.content.orEmpty(),
             published = this["published"]?.jsonPrimitive?.intOrNull ?: 0,
