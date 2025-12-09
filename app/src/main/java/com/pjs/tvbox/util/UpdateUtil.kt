@@ -13,14 +13,6 @@ object UpdateUtil {
         hasReadUpdate = false
     }
 
-    fun markDialogShown() {
-        hasReadUpdate = true
-    }
-
-    fun shouldShowDialog(): Boolean {
-        return updateInfo != null && !hasReadUpdate
-    }
-
     fun clearUpdate() {
         updateInfo = null
         hasReadUpdate = false

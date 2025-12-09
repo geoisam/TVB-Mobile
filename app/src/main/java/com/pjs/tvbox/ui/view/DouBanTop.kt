@@ -1,5 +1,6 @@
 package com.pjs.tvbox.ui.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,7 +46,11 @@ fun DouBanTopView(
     }
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.surfaceContainer,
+            ),
         contentAlignment = Alignment.Center
     ) {
         when {

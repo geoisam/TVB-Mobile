@@ -104,11 +104,11 @@ private fun AboutMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "错误日志", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_mail),
+                            painter = painterResource(R.drawable.ic_bug),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -233,7 +233,7 @@ private fun AboutMain(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         ListItem(
                             headlineContent = {

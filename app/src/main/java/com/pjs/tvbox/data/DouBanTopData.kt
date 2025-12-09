@@ -20,7 +20,7 @@ object DouBanTopData {
     suspend fun getTopMovies(): List<Movie> = runCatching {
         val response = PJS.request(
             PJSRequest(
-                url = "https://m.douban.com/rexxar/api/v2/subject_collection/movie_top250/items?start=0&count=30&items_only=1&type_tag=&for_mobile=1",
+                url = "https://m.douban.com/rexxar/api/v2/subject_collection/movie_top250/items?start=0&count=50&items_only=1&type_tag=&for_mobile=1",
                 headers = mapOf("Referer" to "https://movie.douban.com/")
             )
         )

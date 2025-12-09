@@ -5,8 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,16 +31,15 @@ import coil3.request.crossfade
 import com.pjs.tvbox.data.BiliTimelineData
 import com.pjs.tvbox.model.TimelineAnime
 import com.pjs.tvbox.model.TimelineDate
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiliTimelineView(modifier: Modifier = Modifier) {
     var timelineData by remember { mutableStateOf<List<TimelineDate>>(emptyList()) }
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
     var isLoading by remember { mutableStateOf(true) }
 
-    val tabs = timelineData.map { it.date }
-    val currentEpisodes = timelineData.getOrNull(selectedTabIndex)?.episodes.orEmpty()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         isLoading = true
@@ -45,93 +47,151 @@ fun BiliTimelineView(modifier: Modifier = Modifier) {
         isLoading = false
     }
 
-    LaunchedEffect(timelineData) {
-        if (timelineData.isEmpty()) {
-            selectedTabIndex = 0
-            return@LaunchedEffect
-        }
+    val tabs = timelineData
 
-        val todayIndex = timelineData.indexOfFirst { it.isToday == 1 }
-        selectedTabIndex =
-            if (todayIndex != -1) todayIndex
-            else selectedTabIndex.coerceIn(0, timelineData.lastIndex)
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { tabs.size }
+    )
+
+    LaunchedEffect(timelineData) {
+        if (timelineData.isNotEmpty()) {
+            val todayIndex = timelineData.indexOfFirst { it.isToday == 1 }
+            if (todayIndex != -1) {
+                pagerState.scrollToPage(todayIndex)
+            }
+        }
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
         if (tabs.isNotEmpty()) {
+
             PrimaryScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
+                selectedTabIndex = pagerState.currentPage,
                 modifier = Modifier.fillMaxWidth(),
                 edgePadding = 0.dp,
                 divider = {},
             ) {
-                tabs.forEachIndexed { index, date ->
+                tabs.forEachIndexed { index, timeline ->
                     Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch { pagerState.animateScrollToPage(index) }
+                        },
                         text = {
-                            Text(
-                                text = date,
-                                color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Medium,
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Text(
+                                    text = timeline.date,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                                if (pagerState.currentPage == index) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                                CircleShape
+                                            )
+                                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            text = timeline.dayOfWeekText,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.SemiBold,
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = timeline.dayOfWeekText,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
                         }
                     )
                 }
             }
         }
 
-        when {
-            isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            beyondViewportPageCount = 2,
+        ) { page ->
 
-            timelineData.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("暂无数据")
-                }
-            }
+            val safeTimeline = timelineData
+            val safePageData = safeTimeline.getOrNull(page)
+            val currentEpisodes = safePageData?.episodes.orEmpty()
 
-            currentEpisodes.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("当前日期暂无更新")
-                }
-            }
-
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        top = 12.dp,
-                        end = 16.dp,
-                        bottom = 18.dp
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainer,
                     ),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(currentEpisodes.size, key = { it }) { index ->
-                        AnimeCard(currentEpisodes[index])
+            ) {
+                when {
+                    isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    safeTimeline.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { Text("暂无数据") }
+                    }
+
+                    safePageData == null -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { Text("加载中…") }
+                    }
+
+                    currentEpisodes.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { Text("当前日期暂无更新") }
+                    }
+
+                    else -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                top = 12.dp,
+                                end = 16.dp,
+                                bottom = 18.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(
+                                count = currentEpisodes.size,
+                                key = { it }
+                            ) { index ->
+                                AnimeCard(currentEpisodes[index])
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 private fun AnimeCard(anime: TimelineAnime) {

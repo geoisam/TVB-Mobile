@@ -3,12 +3,10 @@ package com.pjs.tvbox.ui.page
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,14 +19,21 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.DouBanHotView
 import com.pjs.tvbox.ui.view.HomeSubView
 import com.pjs.tvbox.ui.view.HomeTopView
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage() {
     val context = LocalContext.current
-    var selectedTab by remember { mutableIntStateOf(1) }
     val tabs = listOf("置顶", "推荐", "订阅")
     val dataName = "暂无订阅"
+
+    val pagerState = rememberPagerState(
+        initialPage = 1,
+        pageCount = { tabs.size }
+    )
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -129,33 +134,44 @@ fun HomePage() {
                 .fillMaxSize()
                 .padding(padding),
         ) {
+            // TabRow
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 PrimaryTabRow(
                     divider = {},
-                    selectedTabIndex = selectedTab,
+                    selectedTabIndex = pagerState.currentPage,
                     modifier = Modifier.wrapContentWidth(),
                 ) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                scope.launch { pagerState.animateScrollToPage(index) }
+                            },
                             text = {
                                 Text(
                                     text = title,
-                                    color = if (selectedTab == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Medium,
+                                    color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = if (pagerState.currentPage == index) FontWeight.Bold else FontWeight.Medium,
                                 )
                             }
                         )
                     }
                 }
             }
-            when (selectedTab) {
-                0 -> HomeTopView(modifier = Modifier.weight(1f))
-                1 -> DouBanHotView(modifier = Modifier.weight(1f))
-                2 -> HomeSubView(modifier = Modifier.weight(1f))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+                beyondViewportPageCount = 2,
+            ) { page ->
+                when (page) {
+                    0 -> HomeTopView(modifier = Modifier.fillMaxSize())
+                    1 -> DouBanHotView(modifier = Modifier.fillMaxSize())
+                    2 -> HomeSubView(modifier = Modifier.fillMaxSize())
+                }
             }
         }
     }

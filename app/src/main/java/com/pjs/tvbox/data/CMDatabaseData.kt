@@ -21,6 +21,7 @@ object CMDatabaseData {
         isLenient = true
     }
 
+
     suspend fun getCMDatabase(date: String = LunarUtil.getYearMonthDay()): Pair<List<Ticket>, NationalSales> =
         runCatching {
             val response = PJS.request(

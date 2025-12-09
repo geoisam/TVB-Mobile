@@ -85,13 +85,6 @@ object LunarUtil {
         return lunar.jieQi
     }
 
-    fun getFestivals(): String {
-        val timeNow = ZonedDateTime.now(ZoneId.systemDefault())
-        val solar = Solar.fromDate(Date.from(timeNow.toInstant()))
-        val festival = solar.getFestivals().firstOrNull() ?: ""
-        return festival
-    }
-
     fun getDayYi(): String {
         val timeNow = ZonedDateTime.now(ZoneId.systemDefault())
         val lunar = Lunar.fromDate(Date.from(timeNow.toInstant()))
@@ -149,26 +142,68 @@ object LunarUtil {
         return "${lunar.timeZhi}时"
     }
 
-    fun getNextFestival(maxDays: Int = 99): FestivalModel? {
+    fun getNextFestival(maxDays: Int = 99): List<FestivalModel> {
         val today = LocalDate.now()
         val zone = ZoneId.systemDefault()
+
+        var nearestJieQi: FestivalModel? = null
+        var nearestFestivalDay: Long? = null
+        var nearestFestivals = mutableListOf<String>()
 
         for (i in 0 until maxDays) {
             val date = today.plusDays(i.toLong())
             val javaDate = Date.from(date.atStartOfDay(zone).toInstant())
             val solar = Solar.fromDate(javaDate)
+            val lunar = Lunar.fromDate(javaDate)
 
-            val festivals = solar.festivals
-            if (festivals.isNotEmpty()) {
-                return FestivalModel(
-                    name = festivals[0],
-                    date = date,
-                    weekday = solar.weekInChinese,
-                    daysLeft = i.toLong(),
+            if (nearestJieQi == null) {
+                val jieQi = lunar.jieQi
+                if (!jieQi.isNullOrBlank()) {
+                    nearestJieQi = FestivalModel(
+                        name = jieQi,
+                        date = date,
+                        weekday = solar.weekInChinese,
+                        daysLeft = i.toLong()
+                    )
+                }
+            }
+
+            val solarFestivals = solar.festivals
+            if (solarFestivals.isNotEmpty()) {
+                if (nearestFestivalDay == null) {
+                    nearestFestivalDay = i.toLong()
+                    nearestFestivals = solarFestivals.toMutableList()
+                } else if (nearestFestivalDay == i.toLong()) {
+                    nearestFestivals.addAll(solarFestivals)
+                }
+            }
+
+            if (nearestJieQi != null && nearestFestivalDay != null) break
+        }
+
+        val result = mutableListOf<FestivalModel>()
+
+        nearestJieQi?.let { result.add(it) }
+
+        nearestFestivalDay?.let { days ->
+            val date = today.plusDays(days)
+            val javaDate = Date.from(date.atStartOfDay(zone).toInstant())
+            val solar = Solar.fromDate(javaDate)
+
+            nearestFestivals.forEach { name ->
+                result.add(
+                    FestivalModel(
+                        name = name,
+                        date = date,
+                        weekday = solar.weekInChinese,
+                        daysLeft = days
+                    )
                 )
             }
         }
 
-        return null
+        return result.sortedBy { it.daysLeft }
     }
+
+
 }

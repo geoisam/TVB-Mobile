@@ -108,17 +108,6 @@ private fun CMDatabaseMain(
                 selectedDate = selectedDate,
                 isToday = (selectedDate == LunarUtil.getYearMonthDay()),
             )
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "左右滑动屏幕可浏览更多数据",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 6.dp),
-                )
-            }
         }
         if (showDatePicker) {
             DatePickerDialog(

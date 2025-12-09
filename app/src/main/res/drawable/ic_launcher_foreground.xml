@@ -4,16 +4,17 @@
     android:height="192dp"
     android:viewportWidth="1024"
     android:viewportHeight="1024">
-  <group android:scaleX="0.67"
-      android:scaleY="0.67"
-      android:translateX="168.96"
-      android:translateY="168.96">
+    <group
+        android:scaleX="0.67"
+        android:scaleY="0.67"
+        android:translateX="168.96"
+        android:translateY="168.96">
 
-      <path
-          android:fillColor="#F5F5F5"
-          android:fillType="evenOdd"
-          android:strokeColor="#00000000"
-          android:pathData="
+        <path
+            android:fillColor="#F5F5F5"
+            android:fillType="evenOdd"
+            android:strokeColor="#00000000"
+            android:pathData="
   M405,264
   C400.3,246.9 389.8,229.9 380.3,215
   C370.5,199.7 360,184.3 347,171.4
@@ -144,6 +145,6 @@
   C572,599.1 572.9,595.2 573,591
   C573.8,557.2 528.4,553 503,556.4
   "
-          tools:ignore="VectorPath" />
-  </group>
+            tools:ignore="VectorPath" />
+    </group>
 </vector>

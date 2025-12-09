@@ -99,8 +99,7 @@ private fun HuanTvTopMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp),
+                .padding(padding),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             HuanTvTopView(modifier = Modifier.weight(1f))

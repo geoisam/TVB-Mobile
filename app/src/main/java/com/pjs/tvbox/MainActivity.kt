@@ -1,12 +1,6 @@
 package com.pjs.tvbox
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.text.format.Formatter
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -20,7 +14,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,9 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import com.pjs.tvbox.model.Update
-import com.pjs.tvbox.ui.dialog.TipsDialog
 import com.pjs.tvbox.ui.page.AboutPage
 import com.pjs.tvbox.ui.page.BottomNav
 import com.pjs.tvbox.ui.page.HomePage
@@ -48,7 +38,6 @@ import com.pjs.tvbox.ui.page.tool.TodayNews
 import com.pjs.tvbox.ui.page.tool.Transcode
 import com.pjs.tvbox.ui.page.tool.TvLivePage
 import com.pjs.tvbox.ui.screen.MainScreen
-import com.pjs.tvbox.util.UpdateUtil
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -68,20 +57,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var overlayPage by remember { mutableStateOf<OverlayPage?>(null) }
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
     val tabs = listOf(MainScreen.Home, MainScreen.Discover, MainScreen.Mine)
-
-    var updateInfo by remember { mutableStateOf<Update?>(null) }
-
-    LaunchedEffect(Unit) {
-        if (UpdateUtil.shouldShowDialog()) {
-            UpdateUtil.currentUpdate()?.let { updateInfo = it }
-            UpdateUtil.markDialogShown()
-        }
-    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -129,38 +108,6 @@ fun MainScreen() {
 
                 is OverlayPage.About -> AboutPage(onClose)
             }
-        }
-        updateInfo?.let { update ->
-            TipsDialog(
-                isOpen = true,
-                onClose = { updateInfo = null },
-                title = "发现新版本",
-                message = "版本：${update.versionName}\n" +
-                        "大小：${Formatter.formatFileSize(LocalContext.current, update.appSize)}\n\n" +
-                        "更新日志：\n${update.changeLog.ifBlank { "修复了一些已知问题" }}".trimIndent(),
-                confirmButtonText = "更新",
-                onConfirm = {
-                    val url = when {
-                        update.downloadUrl.startsWith("http") -> update.downloadUrl
-                        else -> "https://github.com/geoisam/TVB-Mobile/releases"
-                    }
-                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-                    context.startActivity(intent)
-                },
-                dismissButtonText = "复制",
-                onDismiss = {
-                    val text = update.downloadUrl
-                    clipboardManager.setPrimaryClip(ClipData.newPlainText("下载链接", text))
-                    val pasted = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
-                    if (pasted == text) {
-                        Toast.makeText(context, "复制成功", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "复制失败", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                closeIcon = true,
-                onCloseIconClick = { updateInfo = null },
-            )
         }
     }
 }

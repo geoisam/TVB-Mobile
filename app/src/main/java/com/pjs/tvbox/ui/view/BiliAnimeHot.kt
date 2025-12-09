@@ -12,22 +12,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,92 +47,138 @@ import coil3.request.crossfade
 import com.pjs.tvbox.data.BiliAnimeFilterData
 import com.pjs.tvbox.data.BiliAnimeHotData
 import com.pjs.tvbox.model.AnimeHot
+import kotlinx.coroutines.launch
 
 private val tabOrders = listOf(-1, 0, 3, 4, 2, 5)
 private val tabSorts = listOf(-1, 0, 0, 0, 0, 1)
 private val tabTitles =
     listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiliAnimeHotView(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-    var currentList by remember { mutableStateOf<List<AnimeHot>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { tabTitles.size }
+    )
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(selectedTabIndex) {
-        isLoading = true
-        currentList = when (selectedTabIndex) {
-            0 -> BiliAnimeHotData.getAnimeHot()
-            else -> {
-                val order = tabOrders[selectedTabIndex]
-                val sort = tabSorts[selectedTabIndex]
+    val pageData = remember { mutableStateOf<Map<Int, List<AnimeHot>>>(emptyMap()) }
+    val pageLoading = remember { mutableStateOf<Set<Int>>(emptySet()) }
+
+    fun loadPage(page: Int) {
+        if (pageData.value.containsKey(page)) return
+        if (pageLoading.value.contains(page)) return
+
+        pageLoading.value += page
+
+        scope.launch {
+            val result = if (page == 0) {
+                BiliAnimeHotData.getAnimeHot()
+            } else {
+                val order = tabOrders[page]
+                val sort = tabSorts[page]
                 BiliAnimeFilterData.getAnimeHot(order = order, page = 1, sort = sort)
             }
+
+            pageData.value += (page to result)
+            pageLoading.value -= page
         }
-        isLoading = false
+    }
+
+    LaunchedEffect(Unit) {
+        loadPage(0)
     }
 
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
         PrimaryScrollableTabRow(
-            selectedTabIndex = selectedTabIndex,
+            selectedTabIndex = pagerState.currentPage,
             modifier = Modifier.fillMaxWidth(),
             edgePadding = 0.dp,
             divider = {},
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch { pagerState.animateScrollToPage(index) }
+                        loadPage(index)
+                    },
                     text = {
                         Text(
                             text = title,
-                            color = if (selectedTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Medium,
+                            color = if (pagerState.currentPage == index)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = if (pagerState.currentPage == index)
+                                FontWeight.Bold else FontWeight.Medium,
                         )
                     }
                 )
             }
         }
 
-        when {
-            isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            beyondViewportPageCount = 2,
+        ) { page ->
+            LaunchedEffect(page) {
+                loadPage(page)
             }
 
-            currentList.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("暂无数据")
-                }
-            }
+            val isLoading = pageLoading.value.contains(page)
+            val data = pageData.value[page].orEmpty()
 
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        top = 12.dp,
-                        end = 16.dp,
-                        bottom = 18.dp
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainer,
                     ),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(currentList.size, key = { it }) { index ->
-                        AnimeHotCard(currentList[index])
+            ) {
+                when {
+                    isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    data.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("暂无数据")
+                        }
+                    }
+
+                    else -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                top = 12.dp,
+                                end = 16.dp,
+                                bottom = 18.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            items(data.size, key = { it }) { index ->
+                                AnimeHotCard(data[index])
+                            }
+                        }
                     }
                 }
             }
@@ -188,7 +235,7 @@ fun AnimeHotCard(anime: AnimeHot) {
                                 .clip(MaterialTheme.shapes.small),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(strokeWidth = 4.dp)
+                            CircularProgressIndicator()
                         }
                     },
                     error = {

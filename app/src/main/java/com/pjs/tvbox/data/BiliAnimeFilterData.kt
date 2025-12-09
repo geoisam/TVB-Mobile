@@ -27,7 +27,7 @@ object BiliAnimeFilterData {
         return runCatching {
             val response = PJS.request(
                 PJSRequest(
-                    url = "https://api.bilibili.com/pgc/season/index/result?st=1&order=${order}&season_version=-1&spoken_language_type=-1&area=-1&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&year=-1&style_id=-1&sort=${sort}&page=${page}&season_type=1&pagesize=30&type=1",
+                    url = "https://api.bilibili.com/pgc/season/index/result?st=1&order=${order}&season_version=-1&spoken_language_type=-1&area=-1&is_finish=-1&copyright=-1&season_status=-1&season_month=-1&year=-1&style_id=-1&sort=${sort}&page=${page}&season_type=1&pagesize=50&type=1",
                     headers = mapOf("Referer" to "https://www.bilibili.com/")
                 )
             )

@@ -20,7 +20,7 @@ object DouBanHotData {
     suspend fun getHotMovies(): List<Movie> = runCatching {
         val response = PJS.request(
             PJSRequest(
-                url = "https://m.douban.com/rexxar/api/v2/subject/recent_hot/movie?start=0&limit=30",
+                url = "https://m.douban.com/rexxar/api/v2/subject/recent_hot/movie?start=0&limit=50",
                 headers = mapOf("Referer" to "https://movie.douban.com/")
             )
         )

@@ -1,8 +1,8 @@
 package com.pjs.tvbox.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.data.CMDatabaseData
 import com.pjs.tvbox.model.NationalSales
 import com.pjs.tvbox.model.Ticket
-import com.pjs.tvbox.util.LunarUtil
 import com.pjs.tvbox.util.LunarUtil.toDateString
 import kotlinx.coroutines.delay
 
@@ -200,7 +200,8 @@ fun CMDatabaseView(
                                 thickness = 0.5.dp,
                             )
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                Modifier.clickable {},
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Column(
                                     Modifier
@@ -260,7 +261,7 @@ private fun TableHeader(
         color = MaterialTheme.colorScheme.onSurface,
         fontWeight = FontWeight.Bold,
         modifier = Modifier
-            .width(120.dp)
+            .widthIn(min = 120.dp)
             .padding(horizontal = 16.dp),
         textAlign = TextAlign.End,
     )
@@ -275,7 +276,7 @@ private fun TableCell(
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
-            .width(120.dp)
+            .widthIn(min = 120.dp)
             .padding(horizontal = 16.dp),
         textAlign = TextAlign.End,
     )

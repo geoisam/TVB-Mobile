@@ -13,7 +13,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
@@ -59,7 +61,7 @@ fun MinePage(
     val showTipsDialog = remember { mutableStateOf(false) }
     val showUpdateDialog = remember { mutableStateOf(false) }
     val dateState = remember { mutableStateMapOf<String, String>() }
-    val nextFestival = remember { mutableStateOf<FestivalModel?>(null) }
+    val nextFestival = remember { mutableStateOf<List<FestivalModel>>(emptyList()) }
     var updateInfo by remember { mutableStateOf<Update?>(null) }
     val isChecking = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -72,7 +74,6 @@ fun MinePage(
         dateState["MonthDay"] = LunarUtil.getMonthDay()
         dateState["GanZhi"] = LunarUtil.getGanZhi()
         dateState["JieQi"] = LunarUtil.getJieQi()
-        dateState["Festivals"] = LunarUtil.getFestivals()
         dateState["DayYi"] = LunarUtil.getDayYi()
         dateState["DayJi"] = LunarUtil.getDayJi()
         dateState["DayChong"] = LunarUtil.getDayChong()
@@ -214,7 +215,7 @@ fun MinePage(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.88f),
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
                                             MaterialTheme.shapes.medium
                                         )
                                         .padding(horizontal = 8.dp, vertical = 4.dp),
@@ -231,24 +232,6 @@ fun MinePage(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                                                MaterialTheme.shapes.medium
-                                            )
-                                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = dateState["JieQi"] ?: "节气",
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.onPrimary,
-                                            fontWeight = FontWeight.SemiBold,
-                                        )
-                                    }
-                                }
-                                if (dateState["Festivals"]?.isNotBlank() == true) {
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
                                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.69f),
                                                 MaterialTheme.shapes.medium
                                             )
@@ -256,7 +239,7 @@ fun MinePage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = dateState["Festivals"] ?: "节日",
+                                            text = dateState["JieQi"] ?: "节气",
                                             style = MaterialTheme.typography.labelMedium,
                                             color = MaterialTheme.colorScheme.onPrimary,
                                             fontWeight = FontWeight.SemiBold,
@@ -383,14 +366,12 @@ fun MinePage(
                     )
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "版本升级",
+                                    text = "版本更新",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -420,7 +401,7 @@ fun MinePage(
                                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
                                                     MaterialTheme.shapes.large
                                                 )
-                                                .padding(horizontal = 7.dp, vertical = 3.dp),
+                                                .padding(horizontal = 9.dp, vertical = 6.dp),
                                             contentAlignment = Alignment.Center,
                                         ) {
                                             Text(
@@ -528,6 +509,7 @@ fun MinePage(
             }
         }
         if (showSheet) {
+            val scrollState = rememberScrollState()
             ModalBottomSheet(
                 onDismissRequest = { showSheet = false },
                 sheetState = rememberModalBottomSheetState()
@@ -535,65 +517,71 @@ fun MinePage(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    nextFestival.value?.let { jieri ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(MaterialTheme.shapes.small)
-                                .clickable { },
-                            shape = MaterialTheme.shapes.small,
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            )
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.small),
+                        shape = MaterialTheme.shapes.small,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        ),
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Column(
-                                    modifier = Modifier.weight(1f)
+                            nextFestival.value.forEach { jieri ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { }
+                                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = jieri.name,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                        Text(
+                                            text = "${jieri.date} (周${jieri.weekday})",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+
                                     Text(
-                                        text = jieri.name,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = "${jieri.date} (周${jieri.weekday})",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        text = buildAnnotatedString {
+                                            withStyle(
+                                                SpanStyle(
+                                                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    fontWeight = FontWeight.Bold,
+                                                )
+                                            ) {
+                                                append(jieri.daysLeft.toString())
+                                            }
+                                            append(" ")
+                                            withStyle(
+                                                SpanStyle(
+                                                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                )
+                                            ) {
+                                                append("天")
+                                            }
+                                        },
+                                        modifier = Modifier.align(Alignment.CenterVertically)
                                     )
                                 }
-
-                                Text(
-                                    text = buildAnnotatedString {
-                                        withStyle(
-                                            SpanStyle(
-                                                fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                fontWeight = FontWeight.Bold,
-                                            )
-                                        ) {
-                                            append(jieri.daysLeft.toString())
-                                        }
-                                        append(" ")
-                                        withStyle(
-                                            SpanStyle(
-                                                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                            )
-                                        ) {
-                                            append("天")
-                                        }
-                                    },
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
                             }
                         }
                     }
@@ -749,7 +737,8 @@ fun MinePage(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Card(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
                                 .clip(MaterialTheme.shapes.small)
                                 .clickable { },
                             shape = MaterialTheme.shapes.small,
@@ -789,7 +778,8 @@ fun MinePage(
                             }
                         }
                         Card(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
                                 .clip(MaterialTheme.shapes.small)
                                 .clickable { },
                             shape = MaterialTheme.shapes.small,
@@ -829,7 +819,8 @@ fun MinePage(
                             }
                         }
                         Card(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
                                 .clip(MaterialTheme.shapes.small)
                                 .clickable { },
                             shape = MaterialTheme.shapes.small,
@@ -847,7 +838,7 @@ fun MinePage(
                                 Box(
                                     modifier = Modifier
                                         .background(
-                                            Color(0xFF00FFFF),
+                                            Color(0xFF8080FF),
                                             CircleShape
                                         )
                                         .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -869,7 +860,7 @@ fun MinePage(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
                 }
             }
         }
@@ -878,7 +869,7 @@ fun MinePage(
                 isOpen = showUpdateDialog.value,
                 onClose = { showUpdateDialog.value = false },
                 title = "发现新版本",
-                message = "版本：${update.versionCode}\n" +
+                message = "版本：v${update.versionName}\n" +
                         "大小：${
                             Formatter.formatFileSize(
                                 LocalContext.current,
@@ -895,7 +886,7 @@ fun MinePage(
                     val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                     context.startActivity(intent)
                 },
-                dismissButtonText = "复制",
+                dismissButtonText = "复制链接",
                 onDismiss = {
                     val text = update.downloadUrl
                     clipboardManager.setPrimaryClip(ClipData.newPlainText("下载链接", text))

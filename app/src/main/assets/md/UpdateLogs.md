@@ -21,11 +21,13 @@
 
 # Awesome Editor!
 
-It has been _released as opensource in 2018_ and has ~~continually~~ evolved to **receive 10k GitHub ⭐️ Stars**.
+It has been _released as opensource in 2018_ and has ~~continually~~ evolved to **receive 10k GitHub
+⭐️ Stars**.
 
 ## Create Instance
 
-You can create an instance with the following code and use `getHtml()` and `getMarkdown()` of the [Editor](https://github.com/nhn/tui.editor).
+You can create an instance with the following code and use `getHtml()` and `getMarkdown()` of
+the [Editor](https://github.com/nhn/tui.editor).
 
 ```js
 const editor = new Editor(options);
@@ -34,8 +36,8 @@ const editor = new Editor(options);
 > See the table below for default options
 > > More API information can be found in the document
 
-| name | type | description |
-|:---| :---: | ---: |
+| name |     type      |       description |
+|:-----|:-------------:|------------------:|
 | el   | `HTMLElement` | container element |
 
 ## Features
@@ -45,13 +47,15 @@ const editor = new Editor(options);
     * Scroll Sync
     * Auto Indent
     * Syntax Highlight
+
     1. Markdown
     2. Preview
 
 ## Support Wrappers
 
 > * Wrappers
->    1. [x] React
+    >
+1. [x] React
 >    2. [x] Vue
 >    3. [ ] Ember
 

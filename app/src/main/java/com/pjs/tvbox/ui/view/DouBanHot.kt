@@ -156,7 +156,7 @@ fun MovieCard(movie: Movie) {
                                 .clip(MaterialTheme.shapes.small),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(strokeWidth = 4.dp)
+                            CircularProgressIndicator()
                         }
                     },
                     error = {
