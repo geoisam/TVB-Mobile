@@ -1,30 +1,20 @@
-package com.pjs.tvbox.ui.view
+package com.pjs.tvbox.ui.view.card
 
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,89 +30,21 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.pjs.tvbox.data.DouBanHotData
-import com.pjs.tvbox.model.Movie
+import com.pjs.tvbox.data.DOUBAN_HOME
+import com.pjs.tvbox.data.GITHUB_ISSUE
+import com.pjs.tvbox.data.MovieInfo
+import com.pjs.tvbox.data.UA_MOBILE
+import com.pjs.tvbox.util.CalcUtil
 
 @Composable
-fun DouBanHotView(
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    var movies by remember { mutableStateOf<List<Movie>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        try {
-            movies = DouBanHotData.getHotMovies()
-        } catch (e: Exception) {
-            error = e.message ?: "未知错误"
-        } finally {
-            isLoading = false
-        }
-    }
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                MaterialTheme.colorScheme.surfaceContainer,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        when {
-            isLoading -> {
-                CircularProgressIndicator(strokeWidth = 4.dp)
-            }
-
-            error != null -> {
-                Text(
-                    text = "加载失败\n\n$error",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-
-            movies.isEmpty() -> {
-                Text(
-                    text = "暂无数据",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        top = 12.dp,
-                        end = 16.dp,
-                        bottom = 18.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(movies.size, key = { it }) { index ->
-                        MovieCard(movies[index])
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun MovieCard(movie: Movie) {
+fun DouBanHotCard(movie: MovieInfo) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = movie.coverLarge
+                val url = movie.cover ?: GITHUB_ISSUE
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 context.startActivity(intent)
             },
@@ -137,14 +59,13 @@ fun MovieCard(movie: Movie) {
             Box {
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(movie.cover)
+                        .data(movie.thumbnail)
                         .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", "https://movie.douban.com/")
+                                .set("Referer", DOUBAN_HOME)
                                 .set(
-                                    "User-Agent",
-                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                    "User-Agent", UA_MOBILE
                                 )
                                 .build()
                         )
@@ -180,7 +101,7 @@ fun MovieCard(movie: Movie) {
                         .clip(MaterialTheme.shapes.small),
                 )
 
-                if (movie.rating.isNotBlank()) {
+                movie.rating?.let {
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -192,13 +113,17 @@ fun MovieCard(movie: Movie) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = movie.rating + "分",
+                            text = if (it == "0") {
+                                "暂无评分"
+                            } else {
+                                "${it}分"
+                            },
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
                         )
                     }
                 }
-                if (movie.subtitle.isNotBlank()) {
+                movie.view?.let {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -214,8 +139,9 @@ fun MovieCard(movie: Movie) {
                             .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.CenterEnd
                     ) {
+                        val numInWan = CalcUtil.formatWan(it)
                         Text(
-                            text = movie.subtitle,
+                            text = "超${numInWan}讨论",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                             maxLines = 1,
@@ -225,17 +151,25 @@ fun MovieCard(movie: Movie) {
                 }
             }
         }
-        Text(
-            text = movie.title,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp)
-                .wrapContentWidth(Alignment.CenterHorizontally),
-        )
+        movie.title?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Medium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
+        movie.subtitle?.let {
+            Text(
+                text = it.replace(Regex("\\s+"), "/").replace("//", "/"),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }

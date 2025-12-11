@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -46,7 +45,9 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.pjs.tvbox.data.BiliAnimeFilterData
 import com.pjs.tvbox.data.BiliAnimeHotData
-import com.pjs.tvbox.model.AnimeHot
+import com.pjs.tvbox.data.AnimeInfo
+import com.pjs.tvbox.data.BILIBILI_HOME
+import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.launch
 
 private val tabOrders = listOf(-1, 0, 3, 4, 2, 5)
@@ -67,7 +68,7 @@ fun BiliAnimeHotView(
     )
     val scope = rememberCoroutineScope()
 
-    val pageData = remember { mutableStateOf<Map<Int, List<AnimeHot>>>(emptyMap()) }
+    val pageData = remember { mutableStateOf<Map<Int, List<AnimeInfo>>>(emptyMap()) }
     val pageLoading = remember { mutableStateOf<Set<Int>>(emptySet()) }
 
     fun loadPage(page: Int) {
@@ -187,22 +188,15 @@ fun BiliAnimeHotView(
 }
 
 @Composable
-fun AnimeHotCard(anime: AnimeHot) {
+fun AnimeHotCard(anime: AnimeInfo) {
     val context = LocalContext.current
-    val thumbnailUrl = remember(anime.cover) {
-        if (anime.cover.contains("@")) {
-            anime.cover
-        } else {
-            "${anime.cover}@200w_300h.webp"
-        }
-    }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 val url = anime.cover
-                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                 context.startActivity(intent)
             },
     ) {
@@ -216,14 +210,13 @@ fun AnimeHotCard(anime: AnimeHot) {
             Box {
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(thumbnailUrl)
+                        .data(anime.thumbnail)
                         .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", "https://www.bilibili.com/")
+                                .set("Referer", BILIBILI_HOME)
                                 .set(
-                                    "User-Agent",
-                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                    "User-Agent", UA_DESKTOP
                                 )
                                 .build()
                         )
@@ -258,7 +251,7 @@ fun AnimeHotCard(anime: AnimeHot) {
                         .fillMaxSize()
                         .clip(MaterialTheme.shapes.small),
                 )
-                if (anime.rating.isNotBlank()) {
+                anime.rating?.let {
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -270,13 +263,17 @@ fun AnimeHotCard(anime: AnimeHot) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = anime.rating + "分",
+                            text = if (it.isNotBlank()) {
+                                "${it}分"
+                            } else {
+                                "暂无评分"
+                            },
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
                         )
                     }
                 }
-                if (anime.indexShow.isNotBlank()) {
+                anime.view?.let {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -293,7 +290,7 @@ fun AnimeHotCard(anime: AnimeHot) {
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Text(
-                            text = anime.indexShow,
+                            text = it,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                             maxLines = 1,
@@ -303,17 +300,25 @@ fun AnimeHotCard(anime: AnimeHot) {
                 }
             }
         }
-        Text(
-            text = anime.title,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp)
-                .wrapContentWidth(Alignment.CenterHorizontally),
-        )
+        anime.title?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
+        anime.subtitle?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }

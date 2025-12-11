@@ -37,9 +37,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.pjs.tvbox.data.CMDatabaseData
-import com.pjs.tvbox.model.NationalSales
-import com.pjs.tvbox.model.Ticket
+import com.pjs.tvbox.data.CMDbTicketData
+import com.pjs.tvbox.data.TicketInfo
+import com.pjs.tvbox.data.TicketSales
 import com.pjs.tvbox.util.LunarUtil.toDateString
 import kotlinx.coroutines.delay
 
@@ -51,8 +51,8 @@ fun CMDatabaseView(
     key: Int? = null,
 ) {
     val context = LocalContext.current
-    var tickets by remember { mutableStateOf<List<Ticket>>(emptyList()) }
-    var national by remember { mutableStateOf<NationalSales?>(null) }
+    var tickets by remember { mutableStateOf<List<TicketInfo>>(emptyList()) }
+    var national by remember { mutableStateOf<TicketSales?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -61,7 +61,7 @@ fun CMDatabaseView(
         error = null
 
         try {
-            val (list, nat) = CMDatabaseData.getCMDatabase(selectedDate)
+            val (list, nat) = CMDbTicketData.getCMDbTicket(selectedDate)
             tickets = list
             national = nat
         } catch (e: Exception) {
@@ -74,7 +74,7 @@ fun CMDatabaseView(
             while (true) {
                 delay(10_666)
                 try {
-                    val (list, nat) = CMDatabaseData.getCMDatabase(selectedDate)
+                    val (list, nat) = CMDbTicketData.getCMDbTicket(selectedDate)
                     tickets = list
                     national = nat
                 } catch (e: Exception) {
@@ -90,7 +90,7 @@ fun CMDatabaseView(
     ) {
         when {
             isLoading -> {
-                CircularProgressIndicator(strokeWidth = 4.dp)
+                CircularProgressIndicator()
             }
 
             error != null -> {
@@ -208,19 +208,24 @@ fun CMDatabaseView(
                                         .width(160.dp)
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
-                                    Text(
-                                        text = ticket.name,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        textAlign = TextAlign.Start,
-                                    )
+                                    ticket.name?.let {
+                                        Text(
+                                            text = it,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            textAlign = TextAlign.Start,
+                                        )
+                                    }
                                     Text(
                                         text = when {
-                                            !ticket.releaseDesc.isNullOrBlank() && "点映" !in ticket.releaseDesc -> "${ticket.releaseDesc}上映"
-                                            ticket.releaseDays < 0 -> "${-ticket.releaseDays} 天后上映"
+                                            ticket.releaseDesc.isNullOrBlank() && ticket.releaseDesc?.contains(
+                                                "点映"
+                                            ) != true -> "${ticket.releaseDesc}上映"
+
+                                            ticket.releaseDays!! < 0 -> "${-ticket.releaseDays} 天后上映"
                                             ticket.releaseDays == 0 -> "今天上映"
                                             else -> "已上映 ${ticket.releaseDays} 天"
                                         },
@@ -269,10 +274,10 @@ private fun TableHeader(
 
 @Composable
 private fun TableCell(
-    text: String,
+    text: String?,
 ) {
     Text(
-        text = text,
+        text = text ?: "",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier

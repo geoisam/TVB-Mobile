@@ -1,7 +1,5 @@
 package com.pjs.tvbox.data
 
-import com.pjs.tvbox.model.TimelineAnime
-import com.pjs.tvbox.model.TimelineDate
 import com.pjs.tvbox.network.PJS
 import com.pjs.tvbox.network.PJSRequest
 import kotlinx.serialization.json.Json
@@ -11,7 +9,6 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.longOrNull
 import kotlin.String
 
 object BiliTimelineData {
@@ -24,8 +21,8 @@ object BiliTimelineData {
     suspend fun getBiliTimeline(): List<TimelineDate> = runCatching {
         val response = PJS.request(
             PJSRequest(
-                url = "https://api.bilibili.com/pgc/web/timeline?types=1",
-                headers = mapOf("Referer" to "https://www.bilibili.com/")
+                url = "$BILIBILI_API/pgc/web/timeline?types=1&before=&after=",
+                headers = mapOf("Referer" to BILIBILI_HOME)
             )
         )
 
@@ -46,7 +43,7 @@ object BiliTimelineData {
     private fun JsonObject.toTimelineDate(): TimelineDate? = runCatching {
         TimelineDate(
             date = this["date"]?.jsonPrimitive?.content.orEmpty(),
-            dayOfWeek = this["day_of_week"]?.jsonPrimitive?.intOrNull ?: 0,
+            weekday = this["day_of_week"]?.jsonPrimitive?.intOrNull ?: 0,
             isToday = this["is_today"]?.jsonPrimitive?.intOrNull ?: 0,
             episodes = this["episodes"]?.jsonArray
                 ?.mapNotNull { it.jsonObject.toTimelineAnime() }
@@ -55,17 +52,23 @@ object BiliTimelineData {
     }.getOrNull()
 
 
-    private fun JsonObject.toTimelineAnime(): TimelineAnime? = runCatching {
-        TimelineAnime(
-            seasonId = this["season_id"]?.jsonPrimitive?.longOrNull ?: 0L,
-            episodeId = this["episode_id"]?.jsonPrimitive?.longOrNull ?: 0L,
-            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
-            epCover = this["ep_cover"]?.jsonPrimitive?.content.orEmpty(),
-            squareCover = this["square_cover"]?.jsonPrimitive?.content.orEmpty(),
-            pubIndex = this["pub_index"]?.jsonPrimitive?.content.orEmpty(),
-            pubTime = this["pub_time"]?.jsonPrimitive?.content.orEmpty(),
-            published = this["published"]?.jsonPrimitive?.intOrNull ?: 0,
+    private fun JsonObject.toTimelineAnime(): TimelineInfo? = runCatching {
+        val thumbnailCover = this["ep_cover"]?.jsonPrimitive?.content.orEmpty()
+        val thumbnailUrl = if (thumbnailCover.contains("@")) {
+            thumbnailCover
+        } else {
+            "${thumbnailCover}@300w_200h.webp"
+        }
+
+        TimelineInfo(
+            id = this["season_id"]?.jsonPrimitive?.content.orEmpty(),
             title = this["title"]?.jsonPrimitive?.content.orEmpty(),
-        )
+            thumbnail = thumbnailUrl,
+            coverV = this["cover"]?.jsonPrimitive?.content.orEmpty(),
+            coverH = this["ep_cover"]?.jsonPrimitive?.content.orEmpty(),
+            time = this["pub_time"]?.jsonPrimitive?.content.orEmpty(),
+            view = this["pub_index"]?.jsonPrimitive?.content.orEmpty(),
+
+            )
     }.getOrNull()
 }

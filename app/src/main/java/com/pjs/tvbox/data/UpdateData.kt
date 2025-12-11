@@ -1,8 +1,6 @@
 package com.pjs.tvbox.data
 
 import android.content.Context
-import android.os.Environment
-import com.pjs.tvbox.model.Update
 import com.pjs.tvbox.network.PJS
 import com.pjs.tvbox.network.PJSRequest
 import com.pjs.tvbox.util.CryptoUtil
@@ -34,7 +32,7 @@ object UpdateData {
         "https://share.note.youdao.com/yws/api/note/d56e2e56e3434f73519e10dc3b831662?sev=j1&cstk=LnuyBs-w"
     private const val GITHUB = "https://api.github.com/repos/geoisam/TVB-Mobile/releases"
 
-    suspend fun getUpdate(context: Context): Update? = runCatching {
+    suspend fun getUpdate(context: Context): UpdateInfo? = runCatching {
         val response = PJS.request(
             PJSRequest(
                 url = NOTE,
@@ -72,15 +70,13 @@ object UpdateData {
 
     }.getOrNull()
 
-    private fun JsonObject.toUpdate(): Update? = runCatching {
+    private fun JsonObject.toUpdate(): UpdateInfo? = runCatching {
         val assetsArray = this["assets"]?.jsonArray
         val firstAsset = assetsArray?.firstOrNull()?.jsonObject
 
-        Update(
+        UpdateInfo(
             versionName = this["tag_name"]?.jsonPrimitive?.content?.removePrefix("v").orEmpty(),
-            versionCode = this["name"]?.jsonPrimitive?.content.orEmpty(),
-            appName = firstAsset?.get("name")?.jsonPrimitive?.content.orEmpty(),
-            appSize = firstAsset?.get("size")?.jsonPrimitive?.longOrNull ?: 0L,
+            appSize = firstAsset?.get("size")?.jsonPrimitive?.longOrNull,
             downloadUrl = firstAsset?.get("browser_download_url")?.jsonPrimitive?.content.orEmpty(),
             changeLog = this["body"]?.jsonPrimitive?.content.orEmpty(),
         )

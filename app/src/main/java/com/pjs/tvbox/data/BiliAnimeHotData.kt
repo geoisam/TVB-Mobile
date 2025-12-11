@@ -1,6 +1,5 @@
 package com.pjs.tvbox.data
 
-import com.pjs.tvbox.model.AnimeHot
 import com.pjs.tvbox.network.PJS
 import com.pjs.tvbox.network.PJSRequest
 import kotlinx.serialization.json.Json
@@ -18,12 +17,12 @@ object BiliAnimeHotData {
         isLenient = true
     }
 
-    suspend fun getAnimeHot(): List<AnimeHot> {
+    suspend fun getAnimeHot(): List<AnimeInfo> {
         return runCatching {
             val response = PJS.request(
                 PJSRequest(
-                    url = "https://api.bilibili.com/pgc/web/rank/list?day=3&season_type=1",
-                    headers = mapOf("Referer" to "https://www.bilibili.com/")
+                    url = "$BILIBILI_API/pgc/web/rank/list?day=3&season_type=1",
+                    headers = mapOf("Referer" to BILIBILI_HOME)
                 )
             )
 
@@ -43,14 +42,22 @@ object BiliAnimeHotData {
         }.getOrElse { emptyList() }
     }
 
-    private fun JsonObject.toAnimeHot(): AnimeHot? = runCatching {
-        AnimeHot(
-            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
-            indexShow = this["new_ep"]?.jsonObject?.get("index_show")?.jsonPrimitive?.content.orEmpty(),
-            rating = this["rating"]?.jsonPrimitive?.content?.replace("分", "").orEmpty(),
-            epCover = this["ss_horizontal_cover"]?.jsonPrimitive?.content.orEmpty(),
+    private fun JsonObject.toAnimeHot(): AnimeInfo? = runCatching {
+        val thumbnailCover = this["cover"]?.jsonPrimitive?.content.orEmpty()
+        val thumbnailUrl = if (thumbnailCover.contains("@")) {
+            thumbnailCover
+        } else {
+            "${thumbnailCover}@200w_300h.webp"
+        }
+
+        AnimeInfo(
+            id = this["season_id"]?.jsonPrimitive?.content.orEmpty(),
             title = this["title"]?.jsonPrimitive?.content.orEmpty(),
-            link = this["url"]?.jsonPrimitive?.content.orEmpty(),
+            subtitle = this["icon_font"]?.jsonObject?.get("text")?.jsonPrimitive?.content.orEmpty(),
+            thumbnail = thumbnailUrl,
+            cover = this["cover"]?.jsonPrimitive?.content.orEmpty(),
+            rating = this["rating"]?.jsonPrimitive?.content?.replace("分", "").orEmpty(),
+            view = this["new_ep"]?.jsonObject?.get("index_show")?.jsonPrimitive?.content.orEmpty(),
         )
     }.getOrNull()
 }

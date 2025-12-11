@@ -43,8 +43,9 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.pjs.tvbox.data.HuanTv
+import com.pjs.tvbox.data.HuanTvInfo
 import com.pjs.tvbox.data.HuanTvTopData
+import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.delay
 
 @Composable
@@ -52,7 +53,7 @@ fun HuanTvTopView(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    var tvRate by remember { mutableStateOf<List<HuanTv>>(emptyList()) }
+    var tvRate by remember { mutableStateOf<List<HuanTvInfo>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
@@ -83,7 +84,7 @@ fun HuanTvTopView(
     ) {
         when {
             isLoading -> {
-                CircularProgressIndicator(strokeWidth = 4.dp)
+                CircularProgressIndicator()
             }
 
             error != null -> {
@@ -136,7 +137,8 @@ fun HuanTvTopView(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .weight(1f)
                                             .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
@@ -145,7 +147,8 @@ fun HuanTvTopView(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .weight(1f)
                                             .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
@@ -187,8 +190,7 @@ fun HuanTvTopView(
                                                                 "https://bigdata.huan.tv/"
                                                             )
                                                             .set(
-                                                                "User-Agent",
-                                                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                                                "User-Agent", UA_DESKTOP
                                                             )
                                                             .build()
                                                     )
@@ -225,14 +227,16 @@ fun HuanTvTopView(
                                             )
                                         }
                                         Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            text = huan.channelName,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
+                                        huan.channelName?.let {
+                                            Text(
+                                                text = it,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
                                     }
                                     Text(
                                         text = buildAnnotatedString {
@@ -258,24 +262,28 @@ fun HuanTvTopView(
                                         overflow = TextOverflow.Ellipsis,
                                     )
                                 }
-                                Text(
-                                    text = huan.onlineRate,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(horizontal = 16.dp),
-                                    textAlign = TextAlign.End,
-                                )
-                                Text(
-                                    text = huan.marketShare,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(horizontal = 16.dp),
-                                    textAlign = TextAlign.End,
-                                )
+                                huan.onlineRate?.let {
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
+                                        textAlign = TextAlign.End,
+                                    )
+                                }
+                                huan.marketShare?.let {
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
+                                        textAlign = TextAlign.End,
+                                    )
+                                }
                             }
                         }
                         item {

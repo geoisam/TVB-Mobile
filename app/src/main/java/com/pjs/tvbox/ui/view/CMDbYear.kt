@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun MaoYanHotView(
+fun CMDbYearView(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current

@@ -152,7 +152,7 @@ private fun renderImage(node: Image) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(strokeWidth = 4.dp)
+                    CircularProgressIndicator()
                 }
             },
             error = {

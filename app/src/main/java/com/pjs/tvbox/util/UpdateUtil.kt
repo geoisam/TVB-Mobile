@@ -1,14 +1,14 @@
 package com.pjs.tvbox.util
 
-import com.pjs.tvbox.model.Update
+import com.pjs.tvbox.data.UpdateInfo
 
 object UpdateUtil {
-    private var updateInfo: Update? = null
+    private var updateInfo: UpdateInfo? = null
     private var hasReadUpdate = false
 
-    fun currentUpdate(): Update? = updateInfo
+    fun currentUpdate(): UpdateInfo? = updateInfo
 
-    fun setUpdate(update: Update?) {
+    fun setUpdate(update: UpdateInfo?) {
         updateInfo = update
         hasReadUpdate = false
     }

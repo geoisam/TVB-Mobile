@@ -37,7 +37,7 @@ import androidx.core.net.toUri
 import com.pjs.tvbox.R
 import com.pjs.tvbox.OverlayPage
 import com.pjs.tvbox.data.UpdateData
-import com.pjs.tvbox.model.Update
+import com.pjs.tvbox.data.UpdateInfo
 import com.pjs.tvbox.ui.dialog.TipsDialog
 import com.pjs.tvbox.ui.theme.LogoFont
 import com.pjs.tvbox.util.LunarUtil
@@ -62,7 +62,7 @@ fun MinePage(
     val showUpdateDialog = remember { mutableStateOf(false) }
     val dateState = remember { mutableStateMapOf<String, String>() }
     val nextFestival = remember { mutableStateOf<List<FestivalModel>>(emptyList()) }
-    var updateInfo by remember { mutableStateOf<Update?>(null) }
+    var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
     val isChecking = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -873,17 +873,14 @@ fun MinePage(
                         "大小：${
                             Formatter.formatFileSize(
                                 LocalContext.current,
-                                update.appSize
+                                update.appSize ?: 0L
                             )
                         }\n\n" +
-                        "更新日志：\n${update.changeLog.ifBlank { "修复了一些已知问题" }}".trimIndent(),
+                        "更新日志：\n${update.changeLog?.ifBlank { "修复了一些已知问题" }}".trimIndent(),
                 confirmButtonText = "更新",
                 onConfirm = {
-                    val url = when {
-                        update.downloadUrl.startsWith("http") -> update.downloadUrl
-                        else -> "https://github.com/geoisam/TVB-Mobile/releases"
-                    }
-                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                    val url = update.downloadUrl
+                    val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                     context.startActivity(intent)
                 },
                 dismissButtonText = "复制链接",

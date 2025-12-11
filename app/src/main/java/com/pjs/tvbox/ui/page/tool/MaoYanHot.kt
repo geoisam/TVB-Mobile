@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
-import com.pjs.tvbox.ui.view.MaoYanHotView
+import com.pjs.tvbox.ui.view.CMDbYearView
 
 sealed class MaoYanHotScreen {
     object Main : MaoYanHotScreen()
@@ -103,7 +103,7 @@ private fun MaoYanHotMain(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            MaoYanHotView(modifier = Modifier.weight(1f))
+            CMDbYearView(modifier = Modifier.weight(1f))
         }
     }
 }

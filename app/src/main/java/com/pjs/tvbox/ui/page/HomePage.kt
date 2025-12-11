@@ -17,20 +17,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.DouBanHotView
-import com.pjs.tvbox.ui.view.HomeSubView
-import com.pjs.tvbox.ui.view.HomeTopView
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import com.pjs.tvbox.ui.view.DouBanRecView
+import com.pjs.tvbox.ui.view.DouBanTvView
+import com.pjs.tvbox.ui.view.QiYiAnimeView
+import com.pjs.tvbox.ui.view.QiYiStoryView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage() {
     val context = LocalContext.current
-    val tabs = listOf("置顶", "推荐", "订阅")
+    val tabs = listOf("推荐", "电影", "剧集", "动漫", "纪实")
     val dataName = "暂无订阅"
 
     val pagerState = rememberPagerState(
-        initialPage = 1,
+        initialPage = 0,
         pageCount = { tabs.size }
     )
     val scope = rememberCoroutineScope()
@@ -138,10 +140,11 @@ fun HomePage() {
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                PrimaryTabRow(
-                    divider = {},
+                PrimaryScrollableTabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    modifier = Modifier.wrapContentWidth(),
+                    modifier = Modifier.fillMaxWidth(),
+                    edgePadding = 0.dp,
+                    divider = {},
                 ) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
@@ -165,12 +168,13 @@ fun HomePage() {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
-                beyondViewportPageCount = 2,
             ) { page ->
                 when (page) {
-                    0 -> HomeTopView(modifier = Modifier.fillMaxSize())
+                    0 -> DouBanRecView(modifier = Modifier.fillMaxSize())
                     1 -> DouBanHotView(modifier = Modifier.fillMaxSize())
-                    2 -> HomeSubView(modifier = Modifier.fillMaxSize())
+                    2 -> DouBanTvView(modifier = Modifier.fillMaxSize())
+                    3 -> QiYiAnimeView(modifier = Modifier.fillMaxSize())
+                    4 -> QiYiStoryView(modifier = Modifier.fillMaxSize())
                 }
             }
         }

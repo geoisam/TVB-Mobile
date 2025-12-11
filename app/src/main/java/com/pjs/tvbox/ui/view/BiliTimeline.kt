@@ -28,9 +28,11 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.pjs.tvbox.data.BILIBILI_HOME
 import com.pjs.tvbox.data.BiliTimelineData
-import com.pjs.tvbox.model.TimelineAnime
-import com.pjs.tvbox.model.TimelineDate
+import com.pjs.tvbox.data.TimelineDate
+import com.pjs.tvbox.data.TimelineInfo
+import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,11 +87,13 @@ fun BiliTimelineView(modifier: Modifier = Modifier) {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
-                                Text(
-                                    text = timeline.date,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = FontWeight.Medium,
-                                )
+                                timeline.date?.let {
+                                    Text(
+                                        text = it,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontWeight = FontWeight.Medium,
+                                    )
+                                }
                                 if (pagerState.currentPage == index) {
                                     Box(
                                         modifier = Modifier
@@ -101,14 +105,14 @@ fun BiliTimelineView(modifier: Modifier = Modifier) {
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
-                                            text = timeline.dayOfWeekText,
+                                            text = timeline.weekdayText,
                                             color = Color.White,
                                             fontWeight = FontWeight.SemiBold,
                                         )
                                     }
                                 } else {
                                     Text(
-                                        text = timeline.dayOfWeekText,
+                                        text = timeline.weekdayText,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
@@ -194,22 +198,15 @@ fun BiliTimelineView(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun AnimeCard(anime: TimelineAnime) {
+private fun AnimeCard(anime: TimelineInfo) {
     val context = LocalContext.current
-    val thumbnailUrl = remember(anime.epCover) {
-        if (anime.epCover.contains("@")) {
-            anime.epCover
-        } else {
-            "${anime.epCover}@300w_200h.webp"
-        }
-    }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = anime.epCover
-                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                val url = anime.coverV
+                val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                 context.startActivity(intent)
             },
     ) {
@@ -223,14 +220,13 @@ private fun AnimeCard(anime: TimelineAnime) {
             Box {
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(thumbnailUrl)
+                        .data(anime.thumbnail)
                         .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", "https://www.bilibili.com/")
+                                .set("Referer", BILIBILI_HOME)
                                 .set(
-                                    "User-Agent",
-                                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+                                    "User-Agent", UA_DESKTOP
                                 )
                                 .build()
                         )
@@ -265,7 +261,7 @@ private fun AnimeCard(anime: TimelineAnime) {
                         }
                     }
                 )
-                if (anime.pubTime.isNotBlank()) {
+                anime.time?.let {
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -277,13 +273,13 @@ private fun AnimeCard(anime: TimelineAnime) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = anime.pubTime + " 更新",
+                            text = "$it 更新",
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
                         )
                     }
                 }
-                if (anime.pubIndex.isNotBlank()) {
+                anime.view?.let {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -300,7 +296,7 @@ private fun AnimeCard(anime: TimelineAnime) {
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Text(
-                            text = anime.pubIndex,
+                            text = it,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                             maxLines = 1,
@@ -310,23 +306,22 @@ private fun AnimeCard(anime: TimelineAnime) {
                 }
             }
         }
-        Text(
-            text = anime.title,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp)
-                .wrapContentWidth(Alignment.CenterHorizontally),
-        )
+        anime.title?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
 }
 
-private val TimelineDate.dayOfWeekText: String
-    get() = when (dayOfWeek) {
+private val TimelineDate.weekdayText: String
+    get() = when (weekday) {
         1 -> "周一"
         2 -> "周二"
         3 -> "周三"

@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.pjs.tvbox.data.UpdateData
-import com.pjs.tvbox.model.Update
 import com.pjs.tvbox.ui.theme.LogoFont
 import com.pjs.tvbox.util.AppUtil
 import com.pjs.tvbox.util.UpdateUtil
@@ -45,7 +44,7 @@ class SplashActivity : ComponentActivity() {
                         val update = UpdateData.getUpdate(this@SplashActivity)
                         if (update != null) {
                             val remoteVersionName =
-                                update.versionName.replace(".", "").toLongOrNull() ?: 0L
+                                update.versionName?.replace(".", "")?.toLongOrNull() ?: 0L
                             val localVersionName =
                                 AppUtil.getVersionName(this@SplashActivity).replace(".", "")
                                     .toLongOrNull() ?: 0L

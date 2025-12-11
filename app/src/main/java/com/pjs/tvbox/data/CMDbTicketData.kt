@@ -1,7 +1,5 @@
 package com.pjs.tvbox.data
 
-import com.pjs.tvbox.model.NationalSales
-import com.pjs.tvbox.model.Ticket
 import com.pjs.tvbox.network.PJS
 import com.pjs.tvbox.network.PJSRequest
 import com.pjs.tvbox.util.LunarUtil
@@ -14,7 +12,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.String
 
-object CMDatabaseData {
+object CMDbTicketData {
     private val json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
@@ -22,42 +20,47 @@ object CMDatabaseData {
     }
 
 
-    suspend fun getCMDatabase(date: String = LunarUtil.getYearMonthDay()): Pair<List<Ticket>, NationalSales> =
+    suspend fun getCMDbTicket(date: String = LunarUtil.getYearMonthDay()): Pair<List<TicketInfo>, TicketSales> =
         runCatching {
             val response = PJS.request(
                 PJSRequest(
-                    url = "https://zgdypf.zgdypw.cn/getDayData?date=$date",
-                    headers = mapOf("Referer" to "https://zgdypf.zgdypw.cn/")
+                    url = "$CMDB_API/getDayData?date=$date",
+                    headers = mapOf("Referer" to CMDB_HOME)
                 )
             )
 
-            if (response.status != 200) return@runCatching emptyList<Ticket>() to NationalSales()
+            if (response.status != 200) return@runCatching emptyList<TicketInfo>() to TicketSales()
 
             val root = when (val body = response.response) {
                 is JsonElement -> body
                 is String -> json.parseToJsonElement(body)
-                else -> return@runCatching emptyList<Ticket>() to NationalSales()
+                else -> return@runCatching emptyList<TicketInfo>() to TicketSales()
             }
 
-            val tickets = root.jsonObject["list"]?.jsonArray.orEmpty()
+            val items = root.jsonObject["list"]?.jsonArray.orEmpty()
                 .mapNotNull { it.jsonObject.toMovie() }
 
-            val natSale = root.jsonObject["nationalSales"]?.jsonObject
-            val nationalSales = NationalSales(
-                salesDesc = natSale?.get("salesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
-                salesUnit = natSale?.get("salesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
-                splitSalesDesc = natSale?.get("splitSalesDesc")?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
-                splitSalesUnit = natSale?.get("splitSalesDesc")?.jsonObject?.get("unit")?.jsonPrimitive?.content.orEmpty(),
-                updateTimestamp = natSale?.get("updateTimestamp")?.jsonPrimitive?.content.orEmpty(),
+            val sales = root.jsonObject["nationalSales"]?.jsonObject.orEmpty()
+            val info = TicketSales(
+                salesDesc = sales["salesDesc"]?.jsonObject?.get("value")?.jsonPrimitive?.content
+                    ?: "null",
+                salesUnit = sales["salesDesc"]?.jsonObject?.get("unit")?.jsonPrimitive?.content
+                    ?: "万",
+                splitSalesDesc = sales["splitSalesDesc"]?.jsonObject?.get("value")?.jsonPrimitive?.content
+                    ?: "null",
+                splitSalesUnit = sales["splitSalesDesc"]?.jsonObject?.get("unit")?.jsonPrimitive?.content
+                    ?: "万",
+                updateTimestamp = sales["updateTimestamp"]?.jsonPrimitive?.content
+                    ?: "1012281292000",
             )
 
-            tickets to nationalSales
-        }.getOrElse { emptyList<Ticket>() to NationalSales() }
+            items to info
+        }.getOrElse { emptyList<TicketInfo>() to TicketSales() }
 
-    private fun JsonObject.toMovie(): Ticket? = runCatching {
-        Ticket(
-            code = this["code"]!!.jsonPrimitive.content,
-            name = this["name"]!!.jsonPrimitive.content,
+    private fun JsonObject.toMovie(): TicketInfo? = runCatching {
+        TicketInfo(
+            code = this["code"]?.jsonPrimitive?.content.orEmpty(),
+            name = this["name"]?.jsonPrimitive?.content.orEmpty(),
             onlineSalesRateDesc = this["onlineSalesRateDesc"]?.jsonPrimitive?.content.orEmpty(),
             releaseDays = this["releaseDays"]?.jsonPrimitive?.intOrNull ?: 0,
             releaseDesc = this["releaseDesc"]?.jsonPrimitive?.content.orEmpty(),

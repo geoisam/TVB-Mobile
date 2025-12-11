@@ -1,5 +1,6 @@
 package com.pjs.tvbox.network
 
+import com.pjs.tvbox.data.UA_MOBILE
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.Callback
@@ -32,15 +33,12 @@ object PJS {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private const val DEFAULT_UA =
-        "Mozilla/5.0 (Linux; Android 16; MCE16 Build/BP3A.250905.014; ) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.0.0 Mobile Safari/537.36 EdgA/123.0.2420.102"
-
     suspend fun request(details: PJSRequest): PJSResponse = suspendCancellableCoroutine { cont ->
         val requestBody = details.data.toRequestBody(details.headers)
 
         val headers = buildMap {
             putAll(details.headers.orEmpty())
-            put("User-Agent", details.userAgent ?: DEFAULT_UA)
+            put("User-Agent", details.userAgent ?: UA_MOBILE)
             details.cookie?.let { put("Cookie", it) }
         }
 

@@ -38,8 +38,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 import com.pjs.tvbox.OverlayPage
-import com.pjs.tvbox.model.ToolItem
 import com.pjs.tvbox.ui.dialog.TipsDialog
+
+data class ToolItem(
+    val icon: Int,
+    val title: String,
+    val subtitle: String,
+    val onClick: () -> Unit,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,8 +82,8 @@ fun DiscoverPage(
         ),
         ToolItem(
             icon = R.drawable.ic_hive,
-            title = "剧集热榜",
-            subtitle = "猫眼网播热度综合榜单",
+            title = "票房年榜",
+            subtitle = "CMDB电影票房年度榜单",
             onClick = {
                 onOpenPage(OverlayPage.MaoYanHot)
             }
@@ -100,8 +106,8 @@ fun DiscoverPage(
         ),
         ToolItem(
             icon = R.drawable.ic_local_atm,
-            title = "电影票房",
-            subtitle = "CMDB实时票房榜单",
+            title = "实时票房",
+            subtitle = "CMDB实时电影票房榜单",
             onClick = {
                 onOpenPage(OverlayPage.CMDatabase)
             }

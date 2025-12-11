@@ -9,16 +9,6 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-data class HuanTv(
-    val channelName: String,
-    val onlineRate: String,
-    val channelLogo: String,
-    val programName: String,
-    val marketShare: String,
-    val channelCode: String,
-    val key: String,
-)
-
 object HuanTvTopData {
     private val json = Json {
         ignoreUnknownKeys = true
@@ -26,12 +16,12 @@ object HuanTvTopData {
         isLenient = true
     }
 
-    suspend fun getHuanTvHot(): List<HuanTv> =
+    suspend fun getHuanTvHot(): List<HuanTvInfo> =
         runCatching {
             val response = PJS.request(
                 PJSRequest(
-                    url = "https://tv-zone-api.huan.tv/tv-zone-user-system-prod/common/pc/real-time-performance-trend/all/json?sample_name=defult&duration=1&channel_type=all&city_group=all",
-                    headers = mapOf("Referer" to "https://bigdata.huan.tv/")
+                    url = "$HUANTV_API/tv-zone-user-system-prod/common/pc/real-time-performance-trend/all/json?sample_name=defult&duration=1&channel_type=all&city_group=all",
+                    headers = mapOf("Referer" to HUANTV_HOME)
                 )
             )
 
@@ -50,15 +40,15 @@ object HuanTvTopData {
             }
         }.getOrElse { emptyList() }
 
-    private fun JsonObject.toHuanTv(): HuanTv? = runCatching {
-        HuanTv(
+    private fun JsonObject.toHuanTv(): HuanTvInfo? = runCatching {
+        HuanTvInfo(
+            key = this["entity"]?.jsonObject?.get("key")?.jsonPrimitive?.content.orEmpty(),
             channelName = this["entity"]?.jsonObject?.get("channel_name")?.jsonPrimitive?.content.orEmpty(),
             onlineRate = this["entity"]?.jsonObject?.get("online_rate")?.jsonPrimitive?.content.orEmpty(),
             channelLogo = this["entity"]?.jsonObject?.get("channel_logo_url")?.jsonPrimitive?.content.orEmpty(),
             programName = this["entity"]?.jsonObject?.get("program_name")?.jsonPrimitive?.content.orEmpty(),
             marketShare = this["entity"]?.jsonObject?.get("market_share")?.jsonPrimitive?.content.orEmpty(),
             channelCode = this["entity"]?.jsonObject?.get("channel_code")?.jsonPrimitive?.content.orEmpty(),
-            key = this["entity"]?.jsonObject?.get("key")?.jsonPrimitive?.content.orEmpty(),
         )
     }.getOrNull()
 }
