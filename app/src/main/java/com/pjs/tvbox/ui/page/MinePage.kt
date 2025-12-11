@@ -35,7 +35,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.pjs.tvbox.R
-import com.pjs.tvbox.OverlayPage
+import com.pjs.tvbox.activity.OverlayPage
 import com.pjs.tvbox.data.UpdateData
 import com.pjs.tvbox.data.UpdateInfo
 import com.pjs.tvbox.ui.dialog.TipsDialog
@@ -497,7 +497,7 @@ fun MinePage(
                             },
                             modifier = Modifier
                                 .clickable {
-                                    onOpenPage(OverlayPage.About)
+                                    onOpenPage(OverlayPage.About(R.string.mine_about))
                                 },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -935,11 +935,11 @@ fun MineCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Image(
+            Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
                 modifier = Modifier.size(28.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                tint = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = text,
@@ -968,11 +968,11 @@ fun MineItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Image(
+            Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
                 modifier = Modifier.size(28.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                tint = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = text,

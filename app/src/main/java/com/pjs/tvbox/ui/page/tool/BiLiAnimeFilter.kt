@@ -21,41 +21,45 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
-import com.pjs.tvbox.ui.view.BiliAnimeHotView
+import com.pjs.tvbox.ui.view.BiLiAnimeFilterView
 
-sealed class BiliAnimeHotScreen {
-    object Main : BiliAnimeHotScreen()
+sealed class BiLiAnimeFilterScreen {
+    object Main : BiLiAnimeFilterScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BiliAnimeHot(
-    onBack: () -> Unit
+fun BiLiAnimeFilter(
+    onBack: () -> Unit,
+    title: Int,
 ) {
-    var current by remember { mutableStateOf<BiliAnimeHotScreen>(BiliAnimeHotScreen.Main) }
+    var current by remember { mutableStateOf<BiLiAnimeFilterScreen>(BiLiAnimeFilterScreen.Main) }
 
     BackHandler(enabled = true) {
-        if (current == BiliAnimeHotScreen.Main) {
+        if (current == BiLiAnimeFilterScreen.Main) {
             onBack()
         } else {
-            current = BiliAnimeHotScreen.Main
+            current = BiLiAnimeFilterScreen.Main
         }
     }
 
     when (current) {
-        BiliAnimeHotScreen.Main -> BiliAnimeHotMain(
+        BiLiAnimeFilterScreen.Main -> BiLiAnimeFilterMain(
             onBack = onBack,
+            title = title,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BiliAnimeHotMain(
+private fun BiLiAnimeFilterMain(
     onBack: () -> Unit,
+    title: Int,
 ) {
     val context = LocalContext.current
 
@@ -64,7 +68,7 @@ private fun BiliAnimeHotMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "番剧热榜",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -72,7 +76,7 @@ private fun BiliAnimeHotMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -101,7 +105,7 @@ private fun BiliAnimeHotMain(
                 .fillMaxSize()
                 .padding(padding),
         ) {
-            BiliAnimeHotView(modifier = Modifier.weight(1f))
+            BiLiAnimeFilterView(modifier = Modifier.weight(1f))
         }
     }
 }

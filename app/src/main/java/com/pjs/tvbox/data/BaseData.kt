@@ -1,5 +1,7 @@
 package com.pjs.tvbox.data
 
+import com.pjs.tvbox.R
+
 // 开发者
 const val APP_AUTHOR = "GeoiSam"
 const val APP_AUTHOR_NAME = "潘钜森"
@@ -38,6 +40,20 @@ const val UA_DESKTOP =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.2420.81"
 const val UA_MOBILE =
     "Mozilla/5.0 (Linux; Android 16; MCE16 Build/BP3A.250905.014; ) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.0.0 Mobile Safari/537.36 EdgA/123.0.2420.102"
+
+// 主页底部导航
+sealed class MainScreen(
+    val route: String,
+    val title: Int,
+    val chIconId: Int,
+    val unIconId: Int
+) {
+    data object Home : MainScreen("home", R.string.nav_home, R.drawable.ic_home_fill, R.drawable.ic_home)
+    data object Discover :
+        MainScreen("discover", R.string.nav_discover, R.drawable.ic_explore_fill, R.drawable.ic_explore)
+
+    data object Mine : MainScreen("mine", R.string.nav_mine, R.drawable.ic_person_fill, R.drawable.ic_person)
+}
 
 // 更新
 data class UpdateInfo(
@@ -96,7 +112,7 @@ data class TicketSales(
 )
 
 data class TicketInfo(
-    val code: String? = null,
+    val id: String? = null,
     val name: String? = null,
     val onlineSalesRateDesc: String? = null,
     val releaseDays: Int? = null,
@@ -110,6 +126,16 @@ data class TicketInfo(
     val splitSalesRateDesc: String? = null,
     val sumSalesDesc: String? = null,
     val sumSplitSalesDesc: String? = null,
+)
+
+// 票房年榜
+data class TicketYear(
+    val id: String? = null,
+    val name: String? = null,
+    val premiereDate: String? = null,
+    val salesInWan: String? = null,
+    val avgPrice: String? = null,
+    val avgSalesCount: String? = null,
 )
 
 // 电视收视

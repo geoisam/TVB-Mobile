@@ -5,9 +5,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
-import com.pjs.tvbox.ui.screen.MainScreen
+import com.pjs.tvbox.data.MainScreen
 
 @Composable
 fun BottomNav(
@@ -29,13 +30,13 @@ fun BottomNav(
                         } else {
                             painterResource(id = screen.unIconId)
                         },
-                        contentDescription = screen.title,
-                        modifier = Modifier.size(32.dp)
+                        contentDescription = stringResource(screen.title),
+                        modifier = Modifier.size(28.dp)
                     )
                 },
                 label = {
                     Text(
-                        text = screen.title,
+                        text = stringResource(screen.title),
                         style = MaterialTheme.typography.labelMedium,
                         color = if (currentRoute == screen.route) {
                             MaterialTheme.colorScheme.onSurface

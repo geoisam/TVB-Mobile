@@ -11,7 +11,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.String
 
-object BiliTimelineData {
+object BiLiTimelineData {
     private val json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true

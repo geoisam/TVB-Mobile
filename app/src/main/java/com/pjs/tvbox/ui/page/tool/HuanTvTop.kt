@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
@@ -33,7 +34,8 @@ sealed class HuanTvTopScreen {
 
 @Composable
 fun HuanTvTop(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    title: Int,
 ) {
     var current by remember { mutableStateOf<HuanTvTopScreen>(HuanTvTopScreen.Main) }
 
@@ -48,6 +50,7 @@ fun HuanTvTop(
     when (current) {
         HuanTvTopScreen.Main -> HuanTvTopMain(
             onBack = onBack,
+            title = title,
         )
     }
 }
@@ -56,6 +59,7 @@ fun HuanTvTop(
 @Composable
 private fun HuanTvTopMain(
     onBack: () -> Unit,
+    title: Int,
 ) {
     val context = LocalContext.current
 
@@ -64,7 +68,7 @@ private fun HuanTvTopMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "电视收视",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -72,7 +76,7 @@ private fun HuanTvTopMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,

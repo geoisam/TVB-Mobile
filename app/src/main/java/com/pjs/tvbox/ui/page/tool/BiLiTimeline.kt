@@ -21,41 +21,45 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
-import com.pjs.tvbox.ui.view.BiliTimelineView
+import com.pjs.tvbox.ui.view.BiLiTimelineView
 
-sealed class BiliTimelineScreen {
-    object Main : BiliTimelineScreen()
+sealed class BiLiTimelineScreen {
+    object Main : BiLiTimelineScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BiliTimeline(
-    onBack: () -> Unit
+fun BiLiTimeline(
+    onBack: () -> Unit,
+    title: Int,
 ) {
-    var current by remember { mutableStateOf<BiliTimelineScreen>(BiliTimelineScreen.Main) }
+    var current by remember { mutableStateOf<BiLiTimelineScreen>(BiLiTimelineScreen.Main) }
 
     BackHandler(enabled = true) {
-        if (current == BiliTimelineScreen.Main) {
+        if (current == BiLiTimelineScreen.Main) {
             onBack()
         } else {
-            current = BiliTimelineScreen.Main
+            current = BiLiTimelineScreen.Main
         }
     }
 
     when (current) {
-        BiliTimelineScreen.Main -> BiliTimelineMain(
+        BiLiTimelineScreen.Main -> BiLiTimelineMain(
             onBack = onBack,
+            title = title,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BiliTimelineMain(
+private fun BiLiTimelineMain(
     onBack: () -> Unit,
+    title: Int,
 ) {
     val context = LocalContext.current
 
@@ -64,7 +68,7 @@ private fun BiliTimelineMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "每周番剧",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -72,7 +76,7 @@ private fun BiliTimelineMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -101,7 +105,7 @@ private fun BiliTimelineMain(
                 .fillMaxSize()
                 .padding(padding),
         ) {
-            BiliTimelineView(modifier = Modifier.weight(1f))
+            BiLiTimelineView(modifier = Modifier.weight(1f))
         }
     }
 }

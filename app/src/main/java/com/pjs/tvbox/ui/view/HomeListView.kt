@@ -18,11 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.pjs.tvbox.data.BiLiAnimeHotData
+import com.pjs.tvbox.data.BiLiAnimeMoreData
+import com.pjs.tvbox.data.BiLiAnimeMostData
+import com.pjs.tvbox.data.BiLiAnimeNewData
+import com.pjs.tvbox.data.BiLiAnimeOldData
+import com.pjs.tvbox.data.BiLiAnimeTopData
 import com.pjs.tvbox.data.DouBanHotData
 import com.pjs.tvbox.data.DouBanRecData
+import com.pjs.tvbox.data.DouBanTopData
 import com.pjs.tvbox.data.DouBanTvData
 import com.pjs.tvbox.data.QiYiAnimeData
 import com.pjs.tvbox.data.QiYiStoryData
+import com.pjs.tvbox.ui.view.card.BiLiAnimeCard
 import com.pjs.tvbox.ui.view.card.DouBanHotCard
 import com.pjs.tvbox.ui.view.card.DouBanTvCard
 import com.pjs.tvbox.ui.view.card.QiYiHotCard
@@ -92,90 +100,180 @@ fun <T> HomeListView(
 
 @Composable
 fun DouBanTopView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "DouBanTopView",
-        loader = { DouBanTvData.getDouBanTv() },
+        loader = { DouBanTopData.getDouBanTop() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            DouBanTvCard(movie,2)
+        itemContent = { data ->
+            DouBanTvCard(data, 2)
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun DouBanRecView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "DouBanRecView",
         loader = { DouBanRecData.getDouBanRec() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            DouBanHotCard(movie)
+        itemContent = { data ->
+            DouBanHotCard(data)
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun DouBanHotView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "DouBanHotView",
         loader = { DouBanHotData.getDouBanHot() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            DouBanHotCard(movie)
+        itemContent = { data ->
+            DouBanHotCard(data)
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun DouBanTvView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "DouBanTvView",
         loader = { DouBanTvData.getDouBanTv() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            DouBanTvCard(movie)
+        itemContent = { data ->
+            DouBanTvCard(data)
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun QiYiAnimeView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "QiYiAnimeView",
         loader = { QiYiAnimeData.getQiYiAnime() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            QiYiHotCard(movie)
+        itemContent = { data ->
+            QiYiHotCard(data)
         },
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
 @Composable
 fun QiYiStoryView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     HomeListView(
         viewModelKey = "QiYiStoryView",
         loader = { QiYiStoryData.getQiYiStory() },
         itemKey = { it.id ?: it.hashCode() },
-        itemContent = { movie ->
-            QiYiHotCard(movie)
+        itemContent = { data ->
+            QiYiHotCard(data)
         },
-        modifier = modifier
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeHotView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeHotView",
+        loader = { BiLiAnimeHotData.getBiLiAnimeHot() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data, true)
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeNewView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeNewView",
+        loader = { BiLiAnimeNewData.getBiLiAnimeNew() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data)
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeMostView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeMostView",
+        loader = { BiLiAnimeMostData.getBiLiAnimeMost() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data)
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeTopView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeTopView",
+        loader = { BiLiAnimeTopData.getBiLiAnimeTop() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data)
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeMoreView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeMoreView",
+        loader = { BiLiAnimeMoreData.getBiLiAnimeMore() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data)
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BiLiAnimeOldView(
+    modifier: Modifier = Modifier,
+) {
+    HomeListView(
+        viewModelKey = "BiLiAnimeOldView",
+        loader = { BiLiAnimeOldData.getBiLiAnimeOld() },
+        itemKey = { it.id ?: it.hashCode() },
+        itemContent = { data ->
+            BiLiAnimeCard(data)
+        },
+        modifier = modifier,
     )
 }

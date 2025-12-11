@@ -1,4 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TVB</string>
+
+    <string name="nav_home">首页</string>
+    <string name="nav_discover">发现</string>
+    <string name="nav_mine">我的</string>
+
+    <string name="top_more">更多</string>
+    <string name="top_search">搜索</string>
+    <string name="top_data">暂无订阅</string>
+    <string name="top_scanner">扫一扫</string>
+    <string name="top_theme">主题模式</string>
+    <string name="top_settings">设置</string>
+
+    <string name="tvlive_title">电视直播</string>
+    <string name="tvlive_desc">全球电视台网络直播线路</string>
+
+    <string name="transcode_title">视频转码</string>
+    <string name="transcode_desc">m3u8视频流转换成mp4</string>
+
+    <string name="douban_rating_title">电影评分</string>
+    <string name="douban_rating_desc">豆瓣电影 Top 250</string>
+
+    <string name="cmdb_year_title">票房总榜</string>
+    <string name="cmdb_year_desc">CMDB中国电影票房总榜</string>
+
+    <string name="bilibili_timeline_title">每周新番</string>
+    <string name="bilibili_timeline_desc">bilibili新番时间表</string>
+
+    <string name="bilibili_filter_title">番剧热榜</string>
+    <string name="bilibili_filter_desc">bilibili番剧热播分类榜单</string>
+
+    <string name="cmdb_ticket_title">实时票房</string>
+    <string name="cmdb_ticket_desc">CMDB实时电影票房榜单</string>
+
+    <string name="huan_tv_title">电视收视</string>
+    <string name="huan_tv_desc">欢网大数据直播频道榜单</string>
+
+    <string name="today_news_title">头条热榜</string>
+    <string name="today_news_desc">热门平台实时热搜榜单</string>
+
+    <string name="fuck_watermark_title">素材解析</string>
+    <string name="fuck_watermark_desc">视频图文无水印解析下载</string>
+
+    <string name="mine_like">收藏夹</string>
+    <string name="mine_history">观看历史</string>
+    <string name="mine_downloads">下载缓存</string>
+    <string name="mine_subscribe">订阅管理</string>
+    <string name="mine_play_link">播放链接</string>
+    <string name="mine_local_videos">本地视频</string>
+    <string name="mine_backup">备份与恢复</string>
+    <string name="mine_update">版本更新</string>
+    <string name="mine_about">关于</string>
+
+    <string name="about_github">开源地址</string>
+    <string name="about_changelog">更新日志</string>
+    <string name="about_releases">历史版本</string>
+    <string name="about_debug">错误日志</string>
+    <string name="about_sponsor">赞赏支持</string>
+    <string name="about_thanks">特别鸣谢</string>
+    <string name="about_disclaimer">免责声明</string>
+    <string name="about_agreement">用户协议</string>
+    <string name="about_privacy">隐私政策</string>
+    <string name="about_permission">权限清单</string>
+
 </resources>

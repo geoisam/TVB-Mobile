@@ -3,34 +3,20 @@ package com.pjs.tvbox.ui.view
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -43,86 +29,98 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.pjs.tvbox.data.BiliAnimeFilterData
-import com.pjs.tvbox.data.BiliAnimeHotData
-import com.pjs.tvbox.data.AnimeInfo
 import com.pjs.tvbox.data.BILIBILI_HOME
+import com.pjs.tvbox.data.BiLiTimelineData
+import com.pjs.tvbox.data.TimelineDate
+import com.pjs.tvbox.data.TimelineInfo
 import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.launch
 
-private val tabOrders = listOf(-1, 0, 3, 4, 2, 5)
-private val tabSorts = listOf(-1, 0, 0, 0, 0, 1)
-private val tabTitles =
-    listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BiliAnimeHotView(
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
+fun BiLiTimelineView(modifier: Modifier = Modifier) {
+    var timelineData by remember { mutableStateOf<List<TimelineDate>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        isLoading = true
+        timelineData = BiLiTimelineData.getBiliTimeline()
+        isLoading = false
+    }
+
+    val tabs = timelineData
 
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = { tabTitles.size }
+        pageCount = { tabs.size }
     )
-    val scope = rememberCoroutineScope()
 
-    val pageData = remember { mutableStateOf<Map<Int, List<AnimeInfo>>>(emptyMap()) }
-    val pageLoading = remember { mutableStateOf<Set<Int>>(emptySet()) }
-
-    fun loadPage(page: Int) {
-        if (pageData.value.containsKey(page)) return
-        if (pageLoading.value.contains(page)) return
-
-        pageLoading.value += page
-
-        scope.launch {
-            val result = if (page == 0) {
-                BiliAnimeHotData.getAnimeHot()
-            } else {
-                val order = tabOrders[page]
-                val sort = tabSorts[page]
-                BiliAnimeFilterData.getAnimeHot(order = order, page = 1, sort = sort)
+    LaunchedEffect(timelineData) {
+        if (timelineData.isNotEmpty()) {
+            val todayIndex = timelineData.indexOfFirst { it.isToday == 1 }
+            if (todayIndex != -1) {
+                pagerState.scrollToPage(todayIndex)
             }
-
-            pageData.value += (page to result)
-            pageLoading.value -= page
         }
     }
 
-    LaunchedEffect(Unit) {
-        loadPage(0)
-    }
-
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            modifier = Modifier.fillMaxWidth(),
-            edgePadding = 0.dp,
-            divider = {},
-        ) {
-            tabTitles.forEachIndexed { index, title ->
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch { pagerState.animateScrollToPage(index) }
-                        loadPage(index)
-                    },
-                    text = {
-                        Text(
-                            text = title,
-                            color = if (pagerState.currentPage == index)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = if (pagerState.currentPage == index)
-                                FontWeight.Bold else FontWeight.Medium,
-                        )
-                    }
-                )
+        if (tabs.isNotEmpty()) {
+
+            PrimaryScrollableTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                modifier = Modifier.fillMaxWidth(),
+                edgePadding = 0.dp,
+                divider = {},
+            ) {
+                tabs.forEachIndexed { index, timeline ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch { pagerState.animateScrollToPage(index) }
+                        },
+                        text = {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                timeline.date?.let {
+                                    Text(
+                                        text = it,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontWeight = FontWeight.Medium,
+                                    )
+                                }
+                                if (pagerState.currentPage == index) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                                CircleShape
+                                            )
+                                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            text = timeline.weekdayText,
+                                            color = Color.White,
+                                            fontWeight = FontWeight.SemiBold,
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = timeline.weekdayText,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
             }
         }
 
@@ -131,12 +129,10 @@ fun BiliAnimeHotView(
             modifier = Modifier.fillMaxSize(),
             beyondViewportPageCount = 2,
         ) { page ->
-            LaunchedEffect(page) {
-                loadPage(page)
-            }
 
-            val isLoading = pageLoading.value.contains(page)
-            val data = pageData.value[page].orEmpty()
+            val safeTimeline = timelineData
+            val safePageData = safeTimeline.getOrNull(page)
+            val currentEpisodes = safePageData?.episodes.orEmpty()
 
             Box(
                 modifier = modifier
@@ -155,18 +151,30 @@ fun BiliAnimeHotView(
                         }
                     }
 
-                    data.isEmpty() -> {
+                    safeTimeline.isEmpty() -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ) {
-                            Text("暂无数据")
-                        }
+                        ) { Text("暂无数据") }
+                    }
+
+                    safePageData == null -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { Text("加载中…") }
+                    }
+
+                    currentEpisodes.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) { Text("当前日期暂无更新") }
                     }
 
                     else -> {
                         LazyVerticalGrid(
-                            columns = GridCells.Fixed(3),
+                            columns = GridCells.Fixed(2),
                             contentPadding = PaddingValues(
                                 start = 16.dp,
                                 top = 12.dp,
@@ -176,8 +184,11 @@ fun BiliAnimeHotView(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            items(data.size, key = { it }) { index ->
-                                AnimeHotCard(data[index])
+                            items(
+                                count = currentEpisodes.size,
+                                key = { it }
+                            ) { index ->
+                                AnimeCard(currentEpisodes[index])
                             }
                         }
                     }
@@ -188,14 +199,14 @@ fun BiliAnimeHotView(
 }
 
 @Composable
-fun AnimeHotCard(anime: AnimeInfo) {
+private fun AnimeCard(anime: TimelineInfo) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = anime.cover
+                val url = anime.coverV
                 val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                 context.startActivity(intent)
             },
@@ -203,7 +214,7 @@ fun AnimeHotCard(anime: AnimeInfo) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(2f / 3f)
+                .aspectRatio(3f / 2f)
                 .clip(MaterialTheme.shapes.small),
             shape = MaterialTheme.shapes.small,
         ) {
@@ -221,6 +232,11 @@ fun AnimeHotCard(anime: AnimeInfo) {
                                 .build()
                         )
                         .build(),
+                    contentDescription = anime.title,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(MaterialTheme.shapes.small),
+                    contentScale = ContentScale.Crop,
                     loading = {
                         Box(
                             modifier = Modifier
@@ -244,32 +260,23 @@ fun AnimeHotCard(anime: AnimeInfo) {
                                 style = MaterialTheme.typography.labelMedium,
                             )
                         }
-                    },
-                    contentDescription = anime.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(MaterialTheme.shapes.small),
+                    }
                 )
-                anime.rating?.let {
+                anime.time?.let {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
+                            .align(Alignment.TopStart)
                             .background(
-                                Color(0xFFFB7299).copy(alpha = 0.88f),
-                                RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.88f),
+                                RoundedCornerShape(topStart = 8.dp, bottomEnd = 8.dp)
                             )
                             .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (it.isNotBlank()) {
-                                "${it}分"
-                            } else {
-                                "暂无评分"
-                            },
+                            text = "$it 更新",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
@@ -279,7 +286,7 @@ fun AnimeHotCard(anime: AnimeInfo) {
                             .fillMaxWidth()
                             .align(Alignment.BottomEnd)
                             .background(
-                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
                                         Color.Black.copy(alpha = 0.88f)
@@ -305,20 +312,26 @@ fun AnimeHotCard(anime: AnimeInfo) {
                 text = it,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        }
-        anime.subtitle?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .align(Alignment.CenterHorizontally),
             )
         }
     }
 }
+
+private val TimelineDate.weekdayText: String
+    get() = when (weekday) {
+        1 -> "周一"
+        2 -> "周二"
+        3 -> "周三"
+        4 -> "周四"
+        5 -> "周五"
+        6 -> "周六"
+        7 -> "周日"
+        else -> "周〇"
+    }

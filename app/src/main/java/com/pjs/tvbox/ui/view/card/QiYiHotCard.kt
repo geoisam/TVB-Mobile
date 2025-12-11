@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -105,7 +106,7 @@ fun QiYiHotCard(movie: MovieInfo) {
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .background(
-                                Color(0xFF2BA245).copy(alpha = 0.88f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.88f),
                                 RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
                             )
                             .padding(horizontal = 7.dp, vertical = 3.dp),
@@ -115,7 +116,7 @@ fun QiYiHotCard(movie: MovieInfo) {
                         Text(
                             text = "热度${numInQian}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
@@ -125,7 +126,7 @@ fun QiYiHotCard(movie: MovieInfo) {
                             .fillMaxWidth()
                             .align(Alignment.BottomEnd)
                             .background(
-                                brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                                brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
                                         Color.Black.copy(alpha = 0.88f)
@@ -159,7 +160,7 @@ fun QiYiHotCard(movie: MovieInfo) {
         }
         movie.subtitle?.let {
             Text(
-                text = it.replace(Regex("\\s+"), "/").replace("//", "/"),
+                text = it.replace(Regex("\\s+"), "/").replace(Regex("/+"), "/"),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

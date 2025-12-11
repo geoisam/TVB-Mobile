@@ -31,22 +31,20 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.pjs.tvbox.data.DOUBAN_HOME
-import com.pjs.tvbox.data.GITHUB_ISSUE
-import com.pjs.tvbox.data.MovieInfo
-import com.pjs.tvbox.data.UA_MOBILE
-import com.pjs.tvbox.util.CalcUtil
+import com.pjs.tvbox.data.AnimeInfo
+import com.pjs.tvbox.data.BILIBILI_HOME
+import com.pjs.tvbox.data.UA_DESKTOP
 
 @Composable
-fun DouBanHotCard(movie: MovieInfo) {
+fun BiLiAnimeCard(anime: AnimeInfo, playNum: Boolean = false) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = movie.cover ?: GITHUB_ISSUE
-                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                val url = anime.cover
+                val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
                 context.startActivity(intent)
             },
     ) {
@@ -60,13 +58,13 @@ fun DouBanHotCard(movie: MovieInfo) {
             Box {
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(context)
-                        .data(movie.thumbnail)
+                        .data(anime.thumbnail)
                         .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", DOUBAN_HOME)
+                                .set("Referer", BILIBILI_HOME)
                                 .set(
-                                    "User-Agent", UA_MOBILE
+                                    "User-Agent", UA_DESKTOP
                                 )
                                 .build()
                         )
@@ -95,14 +93,13 @@ fun DouBanHotCard(movie: MovieInfo) {
                             )
                         }
                     },
-                    contentDescription = movie.title,
+                    contentDescription = anime.title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(MaterialTheme.shapes.small),
                 )
-
-                movie.rating?.let {
+                anime.rating?.let {
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -114,17 +111,17 @@ fun DouBanHotCard(movie: MovieInfo) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (it == "0") {
-                                "暂无评分"
-                            } else {
+                            text = if (it.isNotBlank()) {
                                 "${it}分"
+                            } else {
+                                "暂无评分"
                             },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
-                movie.view?.let {
+                anime.view?.let {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -140,9 +137,8 @@ fun DouBanHotCard(movie: MovieInfo) {
                             .padding(horizontal = 7.dp, vertical = 3.dp),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        val numInWan = CalcUtil.formatWan(it)
                         Text(
-                            text = "超${numInWan}讨论",
+                            text = it,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                             maxLines = 1,
@@ -152,20 +148,24 @@ fun DouBanHotCard(movie: MovieInfo) {
                 }
             }
         }
-        movie.title?.let {
+        anime.title?.let {
             Text(
                 text = it,
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
-        movie.subtitle?.let {
+        anime.subtitle?.let {
             Text(
-                text = it.replace(Regex("\\s+"), "/").replace(Regex("/+"), "/"),
+                text = if (playNum) {
+                    "播放量$it"
+                } else {
+                    it
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

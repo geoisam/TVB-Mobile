@@ -1,9 +1,7 @@
 package com.pjs.tvbox.ui.page
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,23 +17,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 import com.pjs.tvbox.util.AppUtil
 import androidx.core.net.toUri
+import com.pjs.tvbox.data.APP_AUTHOR
+import com.pjs.tvbox.data.APP_AUTHOR_SAY
+import com.pjs.tvbox.data.GITHUB_REPO
 import com.pjs.tvbox.ui.theme.LogoFont
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 sealed class AboutScreen {
     object Main : AboutScreen()
-    data class Markdown(val file: String, val title: String) : AboutScreen()
+    data class Markdown(val file: String, val title: Int) : AboutScreen()
 }
 
 @Composable
 fun AboutPage(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    title: Int,
 ) {
     var current by remember { mutableStateOf<AboutScreen>(AboutScreen.Main) }
 
@@ -49,6 +51,7 @@ fun AboutPage(
 
     when (current) {
         AboutScreen.Main -> AboutMain(
+            title = title,
             onBack = onBack,
             onOpenMarkdown = { file, title ->
                 current = AboutScreen.Markdown(file, title)
@@ -69,24 +72,22 @@ fun AboutPage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AboutMain(
+    title: Int,
     onBack: () -> Unit,
-    onOpenMarkdown: (file: String, title: String) -> Unit
+    onOpenMarkdown: (file: String, title: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val appVersionName = AppUtil.getVersionName(context)
     val appVersionCode = AppUtil.getVersionCode(context)
 
     val appName = stringResource(R.string.app_name)
-    val githubName = "geoisam"
-    val githubRepo = "TVB-Mobile"
-    val githubUrl = "https://github.com/${githubName}/${githubRepo}"
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "关于",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -94,7 +95,7 @@ private fun AboutMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -104,11 +105,16 @@ private fun AboutMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "错误日志", Toast.LENGTH_SHORT).show()
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    GITHUB_REPO.toUri()
+                                )
+                            )
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_bug),
+                            painter = painterResource(R.drawable.ic_github),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -134,15 +140,15 @@ private fun AboutMain(
                     Icon(
                         painter = painterResource(R.drawable.ic_logo_fill),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = Color(0xFFF5F5F5),
                         modifier = Modifier
-                            .size(88.dp)
+                            .size(78.dp)
                             .background(
-                                Color.Black,
+                                Color(0xFF1B1F23),
                                 MaterialTheme.shapes.medium
                             )
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = appName,
                         fontFamily = LogoFont,
@@ -155,68 +161,103 @@ private fun AboutMain(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
             item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable {
-                            context.startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    githubUrl.toUri()
-                                )
-                            )
-                        },
-                    shape = MaterialTheme.shapes.small,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_github),
-                            null,
-                            modifier = Modifier.size(52.dp)
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable { },
+                        shape = MaterialTheme.shapes.small,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
                         )
+                    ) {
                         Column(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(
-                                text = "${githubName}/${githubRepo}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
+                            Icon(
+                                painter = painterResource(R.drawable.ic_compare),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = "USE AT YOUR OWN RISK",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                                text = stringResource(R.string.about_changelog),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
                             )
                         }
-                        Box(
+                    }
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable { },
+                        shape = MaterialTheme.shapes.small,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
+                    ) {
+                        Column(
                             modifier = Modifier
-                                .background(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
-                                    MaterialTheme.shapes.medium
-                                )
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            contentAlignment = Alignment.Center
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_archive),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
                             Text(
-                                text = "AGPL v3",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                fontWeight = FontWeight.Bold,
+                                text = stringResource(R.string.about_releases),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.small)
+                            .clickable { },
+                        shape = MaterialTheme.shapes.small,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_debug),
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                                tint=MaterialTheme.colorScheme.onSurface,
+                            )
+                            Text(
+                                text = stringResource(R.string.about_debug),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
                             )
                         }
                     }
@@ -238,7 +279,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "更新日志",
+                                    text = stringResource(R.string.about_sponsor),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -252,7 +293,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/UpdateLogs.md", "更新日志")
+                                onOpenMarkdown("md/Sponsor.md", R.string.about_sponsor)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -261,7 +302,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "赞赏支持",
+                                    text = stringResource(R.string.about_thanks),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -275,7 +316,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Sponsor.md", "赞赏支持")
+                                onOpenMarkdown("md/ThanksList.md", R.string.about_thanks)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -284,7 +325,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "特别鸣谢",
+                                    text = stringResource(R.string.about_disclaimer),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -298,7 +339,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/ThanksList.md", "特别鸣谢")
+                                onOpenMarkdown("md/Disclaimer.md", R.string.about_disclaimer)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -307,7 +348,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "免责声明",
+                                    text = stringResource(R.string.about_agreement),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -321,7 +362,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Disclaimer.md", "免责声明")
+                                onOpenMarkdown("md/Agreement.md", R.string.about_agreement)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -330,7 +371,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "用户协议",
+                                    text = stringResource(R.string.about_privacy),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -344,7 +385,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Agreement.md", "用户协议")
+                                onOpenMarkdown("md/Privacy.md", R.string.about_privacy)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -353,7 +394,7 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "隐私政策",
+                                    text = stringResource(R.string.about_permission),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -367,30 +408,7 @@ private fun AboutMain(
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Privacy.md", "隐私政策")
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                        )
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = "权限清单",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                )
-                            },
-                            trailingContent = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            },
-                            modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Permission.md", "权限清单")
+                                onOpenMarkdown("md/Permission.md", R.string.about_permission)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -407,18 +425,18 @@ private fun AboutMain(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Text(
-                        text = "愿你一生欢喜，不为世俗所及",
+                        text = APP_AUTHOR_SAY,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "GeoiSam",
+                        text = APP_AUTHOR,
                         fontFamily = LogoFont,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "Copyright ©${getYearNumber()} ${appName}. All Rights Reserved",
+                        text = "Copyright ©${getYearNumber()} YOU. All Rights Reserved",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

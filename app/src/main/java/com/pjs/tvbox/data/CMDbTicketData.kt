@@ -59,7 +59,7 @@ object CMDbTicketData {
 
     private fun JsonObject.toMovie(): TicketInfo? = runCatching {
         TicketInfo(
-            code = this["code"]?.jsonPrimitive?.content.orEmpty(),
+            id = this["code"]?.jsonPrimitive?.content.orEmpty(),
             name = this["name"]?.jsonPrimitive?.content.orEmpty(),
             onlineSalesRateDesc = this["onlineSalesRateDesc"]?.jsonPrimitive?.content.orEmpty(),
             releaseDays = this["releaseDays"]?.jsonPrimitive?.intOrNull ?: 0,

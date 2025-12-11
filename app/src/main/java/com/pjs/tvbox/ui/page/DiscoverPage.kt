@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,19 +30,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
-import com.pjs.tvbox.OverlayPage
+import com.pjs.tvbox.activity.OverlayPage
 import com.pjs.tvbox.ui.dialog.TipsDialog
 
 data class ToolItem(
     val icon: Int,
-    val title: String,
-    val subtitle: String,
+    val title: Int,
+    val subtitle: Int,
     val onClick: () -> Unit,
 )
 
@@ -58,82 +57,82 @@ fun DiscoverPage(
     val toolsList = listOf(
         ToolItem(
             icon = R.drawable.ic_tv,
-            title = "电视直播",
-            subtitle = "全球电视台网络直播线路",
+            title = R.string.tvlive_title,
+            subtitle = R.string.tvlive_desc,
             onClick = {
-                onOpenPage(OverlayPage.TvLive)
+                onOpenPage(OverlayPage.TvLive(R.string.tvlive_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_change_circle,
-            title = "视频转码",
-            subtitle = "m3u8视频流转换成mp4",
+            title = R.string.transcode_title,
+            subtitle = R.string.transcode_desc,
             onClick = {
-                onOpenPage(OverlayPage.Transcode)
+                onOpenPage(OverlayPage.Transcode(R.string.transcode_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_movie,
-            title = "电影评分",
-            subtitle = "豆瓣电影 Top 250",
+            title = R.string.douban_rating_title,
+            subtitle = R.string.douban_rating_desc,
             onClick = {
-                onOpenPage(OverlayPage.DouBanTop)
+                onOpenPage(OverlayPage.DouBanTop(R.string.douban_rating_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_hive,
-            title = "票房年榜",
-            subtitle = "CMDB电影票房年度榜单",
+            title = R.string.cmdb_year_title,
+            subtitle = R.string.cmdb_year_desc,
             onClick = {
-                onOpenPage(OverlayPage.MaoYanHot)
+                onOpenPage(OverlayPage.CMDbYear(R.string.cmdb_year_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_event_note,
-            title = "每周新番",
-            subtitle = "bilibili新番时间表",
+            title = R.string.bilibili_timeline_title,
+            subtitle = R.string.bilibili_timeline_desc,
             onClick = {
-                onOpenPage(OverlayPage.BiliTimeline)
+                onOpenPage(OverlayPage.BiLiTimeline(R.string.bilibili_timeline_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_whatshot,
-            title = "番剧热榜",
-            subtitle = "bilibili番剧热播分类榜单",
+            title = R.string.bilibili_filter_title,
+            subtitle = R.string.bilibili_filter_desc,
             onClick = {
-                onOpenPage(OverlayPage.BiliAnimeHot)
+                onOpenPage(OverlayPage.BiLiAnimeFilter(R.string.bilibili_filter_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_local_atm,
-            title = "实时票房",
-            subtitle = "CMDB实时电影票房榜单",
+            title = R.string.cmdb_ticket_title,
+            subtitle = R.string.cmdb_ticket_desc,
             onClick = {
-                onOpenPage(OverlayPage.CMDatabase)
+                onOpenPage(OverlayPage.CMDbTicket(R.string.cmdb_ticket_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_kanban,
-            title = "电视收视",
-            subtitle = "欢网大数据直播频道榜单",
+            title = R.string.huan_tv_title,
+            subtitle = R.string.huan_tv_desc,
             onClick = {
-                onOpenPage(OverlayPage.HuanTvTop)
+                onOpenPage(OverlayPage.HuanTvTop(R.string.huan_tv_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_news,
-            title = "头条热榜",
-            subtitle = "热门平台实时热搜榜单",
+            title = R.string.today_news_title,
+            subtitle = R.string.today_news_desc,
             onClick = {
-                onOpenPage(OverlayPage.TodayNews)
+                onOpenPage(OverlayPage.TodayNews(R.string.today_news_title))
             }
         ),
         ToolItem(
             icon = R.drawable.ic_psychiatry,
-            title = "素材解析",
-            subtitle = "视频图文无水印解析下载",
+            title = R.string.fuck_watermark_title,
+            subtitle = R.string.fuck_watermark_desc,
             onClick = {
-                onOpenPage(OverlayPage.FuckWatermark)
+                onOpenPage(OverlayPage.FuckWatermark(R.string.fuck_watermark_title))
             }
         ),
     )
@@ -172,7 +171,7 @@ fun DiscoverPage(
                             )
                             Icon(
                                 painter = painterResource(R.drawable.ic_search),
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.top_search),
                                 modifier = Modifier.size(20.dp),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
@@ -201,7 +200,7 @@ fun DiscoverPage(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_add_circle),
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.top_more),
                             tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(24.dp),
                         )
@@ -253,8 +252,8 @@ fun DiscoverPage(
 @Composable
 fun ToolsCard(
     logo: Int,
-    title: String,
-    subtitle: String,
+    title: Int,
+    subtitle: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -272,23 +271,23 @@ fun ToolsCard(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
-            Image(
+            Icon(
                 painter = painterResource(logo),
                 contentDescription = null,
                 modifier = Modifier.size(41.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                tint = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = title,
+                text = stringResource(title),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = subtitle,
+                text = stringResource(subtitle),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

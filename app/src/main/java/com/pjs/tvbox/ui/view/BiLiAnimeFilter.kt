@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -16,47 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
-private val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+private val tabs = listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
 
-private val tabTitles: List<String>
-    get() {
-        return when {
-            currentYear < 2017 -> listOf("全部")
-            currentYear == 2017 -> listOf("全部", "2017")
-            currentYear > 2099 -> {
-                listOf("全部") + (2099 downTo 2017).map { it.toString() }
-            }
-            else -> {
-                listOf("全部") + (currentYear downTo 2017).map { it.toString() }
-            }
-        }
-    }
-
-private val tabOrders: List<Int>
-    get() {
-        return when {
-            currentYear < 2017 -> listOf(1)
-            currentYear == 2017 -> listOf(1, 2017)
-            currentYear > 2099 -> {
-                listOf(1) + (2099 downTo 2017).map { it }
-            }
-            else -> {
-                listOf(1) + (currentYear downTo 2017).map { it }
-            }
-        }
-    }
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CMDbYearView(
+fun BiLiAnimeFilterView(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = { tabTitles.size }
+        pageCount = { tabs.size }
     )
     val scope = rememberCoroutineScope()
 
@@ -69,7 +42,7 @@ fun CMDbYearView(
             edgePadding = 0.dp,
             divider = {},
         ) {
-            tabTitles.forEachIndexed { index, title ->
+            tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = {
@@ -94,6 +67,16 @@ fun CMDbYearView(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
         ) { page ->
+            when (page) {
+                0 -> BiLiAnimeHotView(modifier = Modifier.fillMaxSize())
+                1 -> BiLiAnimeNewView(modifier = Modifier.fillMaxSize())
+                2 -> BiLiAnimeMostView(modifier = Modifier.fillMaxSize())
+                3 -> BiLiAnimeTopView(modifier = Modifier.fillMaxSize())
+                4 -> BiLiAnimeMoreView(modifier = Modifier.fillMaxSize())
+                5 -> BiLiAnimeOldView(modifier = Modifier.fillMaxSize())
+            }
         }
     }
 }
+
+

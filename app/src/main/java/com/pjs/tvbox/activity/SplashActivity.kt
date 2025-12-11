@@ -1,9 +1,8 @@
-package com.pjs.tvbox
+package com.pjs.tvbox.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -26,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.pjs.tvbox.R
 import com.pjs.tvbox.data.UpdateData
 import com.pjs.tvbox.ui.theme.LogoFont
 import com.pjs.tvbox.util.AppUtil

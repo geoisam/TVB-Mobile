@@ -1,4 +1,4 @@
-package com.pjs.tvbox
+package com.pjs.tvbox.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,17 +27,8 @@ import com.pjs.tvbox.ui.page.BottomNav
 import com.pjs.tvbox.ui.page.HomePage
 import com.pjs.tvbox.ui.page.DiscoverPage
 import com.pjs.tvbox.ui.page.MinePage
-import com.pjs.tvbox.ui.page.tool.BiliAnimeHot
-import com.pjs.tvbox.ui.page.tool.BiliTimeline
-import com.pjs.tvbox.ui.page.tool.CMDatabase
-import com.pjs.tvbox.ui.page.tool.DouBanTop
-import com.pjs.tvbox.ui.page.tool.FuckWatermark
-import com.pjs.tvbox.ui.page.tool.HuanTvTop
-import com.pjs.tvbox.ui.page.tool.MaoYanHot
-import com.pjs.tvbox.ui.page.tool.TodayNews
-import com.pjs.tvbox.ui.page.tool.Transcode
-import com.pjs.tvbox.ui.page.tool.TvLivePage
-import com.pjs.tvbox.ui.screen.MainScreen
+import com.pjs.tvbox.ui.page.tool.*
+import com.pjs.tvbox.data.MainScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -92,36 +83,37 @@ fun MainScreen() {
                 }
             }
         }
+
         overlayPage?.let { page ->
             val onClose = { overlayPage = null }
             when (page) {
-                is OverlayPage.TvLive -> TvLivePage(onClose)
-                is OverlayPage.Transcode -> Transcode(onClose)
-                is OverlayPage.DouBanTop -> DouBanTop(onClose)
-                is OverlayPage.MaoYanHot -> MaoYanHot(onClose)
-                is OverlayPage.CMDatabase -> CMDatabase(onClose)
-                is OverlayPage.BiliTimeline -> BiliTimeline(onClose)
-                is OverlayPage.BiliAnimeHot -> BiliAnimeHot(onClose)
-                is OverlayPage.HuanTvTop -> HuanTvTop(onClose)
-                is OverlayPage.TodayNews -> TodayNews(onClose)
-                is OverlayPage.FuckWatermark -> FuckWatermark(onClose)
-
-                is OverlayPage.About -> AboutPage(onClose)
+                is OverlayPage.TvLive -> TvLivePage(onClose, page.title)
+                is OverlayPage.Transcode -> Transcode(onClose, page.title)
+                is OverlayPage.DouBanTop -> DouBanTop(onClose, page.title)
+                is OverlayPage.CMDbYear -> CMDbYear(onClose, page.title)
+                is OverlayPage.CMDbTicket -> CMDbTicket(onClose, page.title)
+                is OverlayPage.BiLiTimeline -> BiLiTimeline(onClose, page.title)
+                is OverlayPage.BiLiAnimeFilter -> BiLiAnimeFilter(onClose, page.title)
+                is OverlayPage.HuanTvTop -> HuanTvTop(onClose, page.title)
+                is OverlayPage.TodayNews -> TodayNews(onClose, page.title)
+                is OverlayPage.FuckWatermark -> FuckWatermark(onClose, page.title)
+                is OverlayPage.About -> AboutPage(onClose, page.title)
             }
         }
     }
 }
 
-sealed class OverlayPage {
-    object TvLive : OverlayPage()
-    object Transcode : OverlayPage()
-    object DouBanTop : OverlayPage()
-    object MaoYanHot : OverlayPage()
-    object BiliTimeline : OverlayPage()
-    object BiliAnimeHot : OverlayPage()
-    object CMDatabase : OverlayPage()
-    object HuanTvTop : OverlayPage()
-    object TodayNews : OverlayPage()
-    object FuckWatermark : OverlayPage()
-    object About : OverlayPage()
+
+sealed class OverlayPage(val title: Int) {
+    class TvLive(title: Int) : OverlayPage(title)
+    class Transcode(title: Int) : OverlayPage(title)
+    class DouBanTop(title: Int) : OverlayPage(title)
+    class CMDbYear(title: Int) : OverlayPage(title)
+    class BiLiTimeline(title: Int) : OverlayPage(title)
+    class BiLiAnimeFilter(title: Int) : OverlayPage(title)
+    class CMDbTicket(title: Int) : OverlayPage(title)
+    class HuanTvTop(title: Int) : OverlayPage(title)
+    class TodayNews(title: Int) : OverlayPage(title)
+    class FuckWatermark(title: Int) : OverlayPage(title)
+    class About(title: Int) : OverlayPage(title)
 }

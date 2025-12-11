@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
@@ -33,7 +34,8 @@ sealed class DouBanTopScreen {
 
 @Composable
 fun DouBanTop(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    title: Int,
 ) {
     var current by remember { mutableStateOf<DouBanTopScreen>(DouBanTopScreen.Main) }
 
@@ -48,6 +50,7 @@ fun DouBanTop(
     when (current) {
         DouBanTopScreen.Main -> DouBanTopMain(
             onBack = onBack,
+            title = title,
         )
     }
 }
@@ -56,6 +59,7 @@ fun DouBanTop(
 @Composable
 private fun DouBanTopMain(
     onBack: () -> Unit,
+    title: Int,
 ) {
     val context = LocalContext.current
 
@@ -64,7 +68,7 @@ private fun DouBanTopMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "电影评分",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -72,7 +76,7 @@ private fun DouBanTopMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,

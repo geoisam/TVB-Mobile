@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
@@ -44,7 +46,7 @@ import com.pjs.tvbox.util.LunarUtil.toDateString
 import kotlinx.coroutines.delay
 
 @Composable
-fun CMDatabaseView(
+fun CMDbTicketView(
     modifier: Modifier = Modifier,
     selectedDate: String,
     isToday: Boolean,
@@ -171,16 +173,32 @@ fun CMDatabaseView(
                                         .padding(vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text(
-                                        text = "影片名",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .width(160.dp)
-                                            .padding(horizontal = 16.dp),
-                                        textAlign = TextAlign.Start,
-                                    )
+                                    Box {
+                                        Text(
+                                            text = "影片名",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier
+                                                .width(160.dp)
+                                                .padding(horizontal = 16.dp),
+                                            textAlign = TextAlign.Start,
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .width(2.dp)
+                                                .fillMaxHeight()
+                                                .background(
+                                                    brush = Brush.horizontalGradient(
+                                                        colors = listOf(
+                                                            Color.Black.copy(alpha = 0.69f),
+                                                            Color.Transparent
+                                                        )
+                                                    )
+                                                )
+                                                .align(Alignment.CenterEnd)
+                                        )
+                                    }
                                     Row(
                                         modifier = Modifier.horizontalScroll(horizontalScrollState)
                                     ) {
@@ -203,34 +221,50 @@ fun CMDatabaseView(
                                 Modifier.clickable {},
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Column(
-                                    Modifier
-                                        .width(160.dp)
-                                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    ticket.name?.let {
+                                Box {
+                                    Column(
+                                        Modifier
+                                            .width(160.dp)
+                                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    ) {
+                                        ticket.name?.let {
+                                            Text(
+                                                text = it,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 2,
+                                                overflow = TextOverflow.Ellipsis,
+                                                textAlign = TextAlign.Start,
+                                            )
+                                        }
                                         Text(
-                                            text = it,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                            textAlign = TextAlign.Start,
+                                            text = when {
+                                                ticket.releaseDesc.isNullOrBlank() && ticket.releaseDesc?.contains(
+                                                    "点映"
+                                                ) != true -> "${ticket.releaseDesc}上映"
+
+                                                ticket.releaseDays!! < 0 -> "${-ticket.releaseDays} 天后上映"
+                                                ticket.releaseDays == 0 -> "今天上映"
+                                                else -> "已上映 ${ticket.releaseDays} 天"
+                                            },
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         )
                                     }
-                                    Text(
-                                        text = when {
-                                            ticket.releaseDesc.isNullOrBlank() && ticket.releaseDesc?.contains(
-                                                "点映"
-                                            ) != true -> "${ticket.releaseDesc}上映"
-
-                                            ticket.releaseDays!! < 0 -> "${-ticket.releaseDays} 天后上映"
-                                            ticket.releaseDays == 0 -> "今天上映"
-                                            else -> "已上映 ${ticket.releaseDays} 天"
-                                        },
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    Box(
+                                        modifier = Modifier
+                                            .width(2.dp)
+                                            .fillMaxHeight()
+                                            .background(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(
+                                                        Color.Black.copy(alpha = 0.69f),
+                                                        Color.Transparent
+                                                    )
+                                                )
+                                            )
+                                            .align(Alignment.CenterEnd)
                                     )
                                 }
                                 Row(

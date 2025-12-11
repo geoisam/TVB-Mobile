@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
@@ -18,7 +19,7 @@ import com.pjs.tvbox.ui.view.MarkdownView
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarkdownPage(
-    pageTitle: String,
+    pageTitle: Int,
     assetFile: String,
     onBack: () -> Unit = {}
 ) {
@@ -35,7 +36,7 @@ fun MarkdownPage(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = pageTitle,
+                        text = stringResource(pageTitle),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -43,7 +44,7 @@ fun MarkdownPage(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface

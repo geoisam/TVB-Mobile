@@ -1,9 +1,10 @@
 package com.pjs.tvbox.ui.page.tool
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -18,57 +19,56 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
-import com.pjs.tvbox.ui.dialog.DatePickerDialog
-import com.pjs.tvbox.ui.view.CMDatabaseView
-import com.pjs.tvbox.util.LunarUtil
-import java.time.LocalDate
+import com.pjs.tvbox.ui.view.CMDbYearView
 
-sealed class CMDatabaseScreen {
-    object Main : CMDatabaseScreen()
+sealed class CMDbYearScreen {
+    object Main : CMDbYearScreen()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CMDatabase(
-    onBack: () -> Unit
+fun CMDbYear(
+    onBack: () -> Unit,
+    title: Int,
 ) {
-    var current by remember { mutableStateOf<CMDatabaseScreen>(CMDatabaseScreen.Main) }
+    var current by remember { mutableStateOf<CMDbYearScreen>(CMDbYearScreen.Main) }
 
     BackHandler(enabled = true) {
-        if (current == CMDatabaseScreen.Main) {
+        if (current == CMDbYearScreen.Main) {
             onBack()
         } else {
-            current = CMDatabaseScreen.Main
+            current = CMDbYearScreen.Main
         }
     }
 
     when (current) {
-        CMDatabaseScreen.Main -> CMDatabaseMain(
+        CMDbYearScreen.Main -> CMDbYearMain(
             onBack = onBack,
+            title = title,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CMDatabaseMain(
+private fun CMDbYearMain(
     onBack: () -> Unit,
+    title: Int,
 ) {
-    var selectedDate by remember { mutableStateOf(LunarUtil.getYearMonthDay()) }
-    var showDatePicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "电影票房",
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -76,7 +76,7 @@ private fun CMDatabaseMain(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_left),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -85,10 +85,12 @@ private fun CMDatabaseMain(
                 },
                 actions = {
                     IconButton(
-                        onClick = { showDatePicker = true }
+                        onClick = {
+                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
+                        }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_calendar),
+                            painter = painterResource(R.drawable.ic_refresh),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
@@ -102,22 +104,9 @@ private fun CMDatabaseMain(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            CMDatabaseView(
-                modifier = Modifier.weight(1f),
-                selectedDate = selectedDate,
-                isToday = (selectedDate == LunarUtil.getYearMonthDay()),
-            )
-        }
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismiss = { showDatePicker = false },
-                onDateSelected = { year, month, day ->
-                    selectedDate = "%04d-%02d-%02d".format(year, month + 1, day)
-                    showDatePicker = false
-                },
-                minDate = LocalDate.of(2017, 1, 1),
-            )
+            CMDbYearView(modifier = Modifier.weight(1f))
         }
     }
 }
