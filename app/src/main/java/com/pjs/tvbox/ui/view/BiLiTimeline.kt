@@ -36,32 +36,57 @@ import com.pjs.tvbox.data.TimelineInfo
 import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
-fun BiLiTimelineView(modifier: Modifier = Modifier) {
-    var timelineData by remember { mutableStateOf<List<TimelineDate>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        isLoading = true
-        timelineData = BiLiTimelineData.getBiliTimeline()
-        isLoading = false
+fun BiLiTimelineView(
+    modifier: Modifier = Modifier
+) {
+    var timelineData by remember {
+        mutableStateOf<List<TimelineDate>>(
+            emptyList()
+        )
+    }
+    var isLoading by remember {
+        mutableStateOf(
+            true
+        )
     }
 
-    val tabs = timelineData
+    val scope =
+        rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { tabs.size }
-    )
+    LaunchedEffect(
+        Unit
+    ) {
+        isLoading =
+            true
+        timelineData =
+            BiLiTimelineData.getBiliTimeline()
+        isLoading =
+            false
+    }
 
-    LaunchedEffect(timelineData) {
+    val tabs =
+        timelineData
+
+    val pagerState =
+        rememberPagerState(
+            initialPage = 0,
+            pageCount = { tabs.size }
+        )
+
+    LaunchedEffect(
+        timelineData
+    ) {
         if (timelineData.isNotEmpty()) {
-            val todayIndex = timelineData.indexOfFirst { it.isToday == 1 }
+            val todayIndex =
+                timelineData.indexOfFirst { it.isToday == 1 }
             if (todayIndex != -1) {
-                pagerState.scrollToPage(todayIndex)
+                pagerState.scrollToPage(
+                    todayIndex
+                )
             }
         }
     }
@@ -81,12 +106,18 @@ fun BiLiTimelineView(modifier: Modifier = Modifier) {
                     Tab(
                         selected = pagerState.currentPage == index,
                         onClick = {
-                            scope.launch { pagerState.animateScrollToPage(index) }
+                            scope.launch {
+                                pagerState.animateScrollToPage(
+                                    index
+                                )
+                            }
                         },
                         text = {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    4.dp
+                                ),
                             ) {
                                 timeline.date?.let {
                                     Text(
@@ -99,10 +130,15 @@ fun BiLiTimelineView(modifier: Modifier = Modifier) {
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                                MaterialTheme.colorScheme.primary.copy(
+                                                    alpha = 0.78f
+                                                ),
                                                 CircleShape
                                             )
-                                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                                            .padding(
+                                                horizontal = 7.dp,
+                                                vertical = 3.dp
+                                            ),
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
@@ -130,9 +166,14 @@ fun BiLiTimelineView(modifier: Modifier = Modifier) {
             beyondViewportPageCount = 2,
         ) { page ->
 
-            val safeTimeline = timelineData
-            val safePageData = safeTimeline.getOrNull(page)
-            val currentEpisodes = safePageData?.episodes.orEmpty()
+            val safeTimeline =
+                timelineData
+            val safePageData =
+                safeTimeline.getOrNull(
+                    page
+                )
+            val currentEpisodes =
+                safePageData?.episodes.orEmpty()
 
             Box(
                 modifier = modifier
@@ -155,40 +196,60 @@ fun BiLiTimelineView(modifier: Modifier = Modifier) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ) { Text("暂无数据") }
+                        ) {
+                            Text(
+                                "暂无数据"
+                            )
+                        }
                     }
 
                     safePageData == null -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ) { Text("加载中…") }
+                        ) {
+                            Text(
+                                "加载中…"
+                            )
+                        }
                     }
 
                     currentEpisodes.isEmpty() -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ) { Text("当前日期暂无更新") }
+                        ) {
+                            Text(
+                                "当前日期暂无更新"
+                            )
+                        }
                     }
 
                     else -> {
                         LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
+                            columns = GridCells.Fixed(
+                                2
+                            ),
                             contentPadding = PaddingValues(
                                 start = 16.dp,
                                 top = 12.dp,
                                 end = 16.dp,
                                 bottom = 18.dp
                             ),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp
+                            ),
+                            horizontalArrangement = Arrangement.spacedBy(
+                                8.dp
+                            ),
                         ) {
                             items(
                                 count = currentEpisodes.size,
                                 key = { it }
                             ) { index ->
-                                AnimeCard(currentEpisodes[index])
+                                AnimeCard(
+                                    currentEpisodes[index]
+                                )
                             }
                         }
                     }
@@ -199,35 +260,59 @@ fun BiLiTimelineView(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun AnimeCard(anime: TimelineInfo) {
-    val context = LocalContext.current
+private fun AnimeCard(
+    anime: TimelineInfo
+) {
+    val context =
+        LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = anime.coverV
-                val intent = Intent(Intent.ACTION_VIEW, url?.toUri())
-                context.startActivity(intent)
+                val url =
+                    anime.coverV
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        url?.toUri()
+                    )
+                context.startActivity(
+                    intent
+                )
             },
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(3f / 2f)
-                .clip(MaterialTheme.shapes.small),
+                .aspectRatio(
+                    3f / 2f
+                )
+                .clip(
+                    MaterialTheme.shapes.small
+                ),
             shape = MaterialTheme.shapes.small,
         ) {
             Box {
                 SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(anime.thumbnail)
-                        .crossfade(true)
+                    model = ImageRequest.Builder(
+                        context
+                    )
+                        .data(
+                            anime.thumbnail
+                        )
+                        .crossfade(
+                            true
+                        )
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", BILIBILI_HOME)
                                 .set(
-                                    "User-Agent", UA_DESKTOP
+                                    "Referer",
+                                    BILIBILI_HOME
+                                )
+                                .set(
+                                    "User-Agent",
+                                    UA_DESKTOP
                                 )
                                 .build()
                         )
@@ -235,13 +320,17 @@ private fun AnimeCard(anime: TimelineInfo) {
                     contentDescription = anime.title,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(MaterialTheme.shapes.small),
+                        .clip(
+                            MaterialTheme.shapes.small
+                        ),
                     contentScale = ContentScale.Crop,
                     loading = {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(MaterialTheme.shapes.small),
+                                .clip(
+                                    MaterialTheme.shapes.small
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
@@ -251,7 +340,9 @@ private fun AnimeCard(anime: TimelineInfo) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(MaterialTheme.shapes.small),
+                                .clip(
+                                    MaterialTheme.shapes.small
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -265,12 +356,22 @@ private fun AnimeCard(anime: TimelineInfo) {
                 anime.time?.let {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .background(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.88f),
-                                RoundedCornerShape(topStart = 8.dp, bottomEnd = 8.dp)
+                            .align(
+                                Alignment.TopStart
                             )
-                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                            .background(
+                                MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.88f
+                                ),
+                                RoundedCornerShape(
+                                    topStart = 8.dp,
+                                    bottomEnd = 8.dp
+                                )
+                            )
+                            .padding(
+                                horizontal = 7.dp,
+                                vertical = 3.dp
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -284,16 +385,23 @@ private fun AnimeCard(anime: TimelineInfo) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.BottomEnd)
+                            .align(
+                                Alignment.BottomEnd
+                            )
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(alpha = 0.88f)
+                                        Color.Black.copy(
+                                            alpha = 0.88f
+                                        )
                                     )
                                 )
                             )
-                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                            .padding(
+                                horizontal = 7.dp,
+                                vertical = 3.dp
+                            ),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Text(
@@ -317,8 +425,12 @@ private fun AnimeCard(anime: TimelineInfo) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .padding(
+                        top = 4.dp
+                    )
+                    .align(
+                        Alignment.CenterHorizontally
+                    ),
             )
         }
     }

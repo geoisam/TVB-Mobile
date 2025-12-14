@@ -38,35 +38,60 @@ import com.pjs.tvbox.data.UA_MOBILE
 import com.pjs.tvbox.util.CalcUtil
 
 @Composable
-fun DouBanHotCard(movie: MovieInfo) {
-    val context = LocalContext.current
+fun DouBanHotCard(
+    movie: MovieInfo
+) {
+    val context =
+        LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url = movie.cover ?: GITHUB_ISSUE
-                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-                context.startActivity(intent)
+                val url =
+                    movie.cover
+                        ?: GITHUB_ISSUE
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        url.toUri()
+                    )
+                context.startActivity(
+                    intent
+                )
             },
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(2f / 3f)
-                .clip(MaterialTheme.shapes.small),
+                .aspectRatio(
+                    2f / 3f
+                )
+                .clip(
+                    MaterialTheme.shapes.small
+                ),
             shape = MaterialTheme.shapes.small,
         ) {
             Box {
                 SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(movie.thumbnail)
-                        .crossfade(true)
+                    model = ImageRequest.Builder(
+                        context
+                    )
+                        .data(
+                            movie.thumbnail
+                        )
+                        .crossfade(
+                            true
+                        )
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set("Referer", DOUBAN_HOME)
                                 .set(
-                                    "User-Agent", UA_MOBILE
+                                    "Referer",
+                                    DOUBAN_HOME
+                                )
+                                .set(
+                                    "User-Agent",
+                                    UA_MOBILE
                                 )
                                 .build()
                         )
@@ -75,7 +100,9 @@ fun DouBanHotCard(movie: MovieInfo) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(MaterialTheme.shapes.small),
+                                .clip(
+                                    MaterialTheme.shapes.small
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
@@ -85,7 +112,9 @@ fun DouBanHotCard(movie: MovieInfo) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(MaterialTheme.shapes.small),
+                                .clip(
+                                    MaterialTheme.shapes.small
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -99,18 +128,30 @@ fun DouBanHotCard(movie: MovieInfo) {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(MaterialTheme.shapes.small),
+                        .clip(
+                            MaterialTheme.shapes.small
+                        ),
                 )
 
                 movie.rating?.let {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .background(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.88f),
-                                RoundedCornerShape(bottomStart = 8.dp, topEnd = 8.dp)
+                            .align(
+                                Alignment.TopEnd
                             )
-                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                            .background(
+                                MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.88f
+                                ),
+                                RoundedCornerShape(
+                                    bottomStart = 8.dp,
+                                    topEnd = 8.dp
+                                )
+                            )
+                            .padding(
+                                horizontal = 7.dp,
+                                vertical = 3.dp
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -128,19 +169,29 @@ fun DouBanHotCard(movie: MovieInfo) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.BottomEnd)
+                            .align(
+                                Alignment.BottomEnd
+                            )
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(alpha = 0.88f)
+                                        Color.Black.copy(
+                                            alpha = 0.88f
+                                        )
                                     )
                                 )
                             )
-                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                            .padding(
+                                horizontal = 7.dp,
+                                vertical = 3.dp
+                            ),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        val numInWan = CalcUtil.formatWan(it)
+                        val numInWan =
+                            CalcUtil.formatWan(
+                                it
+                            )
                         Text(
                             text = "超${numInWan}讨论",
                             style = MaterialTheme.typography.labelSmall,
@@ -160,12 +211,25 @@ fun DouBanHotCard(movie: MovieInfo) {
                 fontWeight = FontWeight.Medium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(
+                    top = 4.dp
+                ),
             )
         }
         movie.subtitle?.let {
             Text(
-                text = it.replace(Regex("\\s+"), "/").replace(Regex("/+"), "/"),
+                text = it.replace(
+                    Regex(
+                        "\\s+"
+                    ),
+                    "/"
+                )
+                    .replace(
+                        Regex(
+                            "/+"
+                        ),
+                        "/"
+                    ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

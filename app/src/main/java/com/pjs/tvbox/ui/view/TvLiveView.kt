@@ -8,5 +8,6 @@ import androidx.compose.ui.platform.LocalContext
 fun TvLiveView(
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 }

@@ -18,20 +18,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
-private val tabs = listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
+private val tabs =
+    listOf(
+        "近期热播",
+        "最近更新",
+        "最多追番",
+        "最高评分",
+        "最多播放",
+        "最早开播"
+    )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun BiLiAnimeFilterView(
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { tabs.size }
-    )
-    val scope = rememberCoroutineScope()
+    val pagerState =
+        rememberPagerState(
+            initialPage = 0,
+            pageCount = { tabs.size }
+        )
+    val scope =
+        rememberCoroutineScope()
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -46,7 +59,11 @@ fun BiLiAnimeFilterView(
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = {
-                        scope.launch { pagerState.animateScrollToPage(index) }
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                index
+                            )
+                        }
                     },
                     text = {
                         Text(
@@ -68,12 +85,29 @@ fun BiLiAnimeFilterView(
             modifier = Modifier.fillMaxSize(),
         ) { page ->
             when (page) {
-                0 -> BiLiAnimeHotView(modifier = Modifier.fillMaxSize())
-                1 -> BiLiAnimeNewView(modifier = Modifier.fillMaxSize())
-                2 -> BiLiAnimeMostView(modifier = Modifier.fillMaxSize())
-                3 -> BiLiAnimeTopView(modifier = Modifier.fillMaxSize())
-                4 -> BiLiAnimeMoreView(modifier = Modifier.fillMaxSize())
-                5 -> BiLiAnimeOldView(modifier = Modifier.fillMaxSize())
+                0 -> BiLiAnimeHotView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                1 -> BiLiAnimeNewView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                2 -> BiLiAnimeMostView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                3 -> BiLiAnimeTopView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                4 -> BiLiAnimeMoreView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                5 -> BiLiAnimeOldView(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

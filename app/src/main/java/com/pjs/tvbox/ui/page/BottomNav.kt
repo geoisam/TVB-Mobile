@@ -16,7 +16,12 @@ fun BottomNav(
     onTabSelected: (MainScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs = listOf(MainScreen.Home, MainScreen.Discover, MainScreen.Mine)
+    val tabs =
+        listOf(
+            MainScreen.Home,
+            MainScreen.Discover,
+            MainScreen.Mine
+        )
 
     NavigationBar(
         modifier = modifier
@@ -26,17 +31,27 @@ fun BottomNav(
                 icon = {
                     Icon(
                         painter = if (currentRoute == screen.route) {
-                            painterResource(id = screen.chIconId)
+                            painterResource(
+                                id = screen.chIconId
+                            )
                         } else {
-                            painterResource(id = screen.unIconId)
+                            painterResource(
+                                id = screen.unIconId
+                            )
                         },
-                        contentDescription = stringResource(screen.title),
-                        modifier = Modifier.size(28.dp)
+                        contentDescription = stringResource(
+                            screen.title
+                        ),
+                        modifier = Modifier.size(
+                            28.dp
+                        )
                     )
                 },
                 label = {
                     Text(
-                        text = stringResource(screen.title),
+                        text = stringResource(
+                            screen.title
+                        ),
                         style = MaterialTheme.typography.labelMedium,
                         color = if (currentRoute == screen.route) {
                             MaterialTheme.colorScheme.onSurface
@@ -47,7 +62,11 @@ fun BottomNav(
                     )
                 },
                 selected = currentRoute == screen.route,
-                onClick = { onTabSelected(screen) }
+                onClick = {
+                    onTabSelected(
+                        screen
+                    )
+                }
             )
         }
     }

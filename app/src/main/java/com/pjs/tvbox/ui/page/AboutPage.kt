@@ -30,8 +30,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 sealed class AboutScreen {
-    object Main : AboutScreen()
-    data class Markdown(val file: String, val title: Int) : AboutScreen()
+    object Main :
+        AboutScreen()
+
+    data class Markdown(
+        val file: String,
+        val title: Int
+    ) : AboutScreen()
 }
 
 @Composable
@@ -39,13 +44,20 @@ fun AboutPage(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var current by remember { mutableStateOf<AboutScreen>(AboutScreen.Main) }
+    var current by remember {
+        mutableStateOf<AboutScreen>(
+            AboutScreen.Main
+        )
+    }
 
-    BackHandler(enabled = true) {
+    BackHandler(
+        enabled = true
+    ) {
         if (current == AboutScreen.Main) {
             onBack()
         } else {
-            current = AboutScreen.Main
+            current =
+                AboutScreen.Main
         }
     }
 
@@ -54,50 +66,78 @@ fun AboutPage(
             title = title,
             onBack = onBack,
             onOpenMarkdown = { file, title ->
-                current = AboutScreen.Markdown(file, title)
+                current =
+                    AboutScreen.Markdown(
+                        file,
+                        title
+                    )
             }
         )
 
         is AboutScreen.Markdown -> {
-            val m = current as AboutScreen.Markdown
+            val m =
+                current as AboutScreen.Markdown
             MarkdownPage(
                 pageTitle = m.title,
                 assetFile = m.file,
-                onBack = { current = AboutScreen.Main }
+                onBack = {
+                    current =
+                        AboutScreen.Main
+                }
             )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun AboutMain(
     title: Int,
     onBack: () -> Unit,
     onOpenMarkdown: (file: String, title: Int) -> Unit,
 ) {
-    val context = LocalContext.current
-    val appVersionName = AppUtil.getVersionName(context)
-    val appVersionCode = AppUtil.getVersionCode(context)
+    val context =
+        LocalContext.current
+    val appVersionName =
+        AppUtil.getVersionName(
+            context
+        )
+    val appVersionCode =
+        AppUtil.getVersionCode(
+            context
+        )
 
-    val appName = stringResource(R.string.app_name)
+    val appName =
+        stringResource(
+            R.string.app_name
+        )
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(title),
+                        text = stringResource(
+                            title
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -114,9 +154,13 @@ private fun AboutMain(
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_github),
+                            painter = painterResource(
+                                R.drawable.ic_github
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -127,28 +171,50 @@ private fun AboutMain(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(
+                    padding
+                )
+                .padding(
+                    horizontal = 16.dp
+                ),
+            verticalArrangement = Arrangement.spacedBy(
+                12.dp
+            )
         ) {
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(
+                        modifier = Modifier.height(
+                            12.dp
+                        )
+                    )
                     Icon(
-                        painter = painterResource(R.drawable.ic_logo_fill),
+                        painter = painterResource(
+                            R.drawable.ic_logo_fill
+                        ),
                         contentDescription = null,
-                        tint = Color(0xFFF5F5F5),
+                        tint = Color(
+                            0xFFF5F5F5
+                        ),
                         modifier = Modifier
-                            .size(78.dp)
+                            .size(
+                                78.dp
+                            )
                             .background(
-                                Color(0xFF1B1F23),
+                                Color(
+                                    0xFF1B1F23
+                                ),
                                 MaterialTheme.shapes.medium
                             )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(
+                        modifier = Modifier.height(
+                            12.dp
+                        )
+                    )
                     Text(
                         text = appName,
                         fontFamily = LogoFont,
@@ -161,17 +227,27 @@ private fun AboutMain(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(
+                    modifier = Modifier.height(
+                        12.dp
+                    )
+                )
             }
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp
+                    ),
                 ) {
                     Card(
                         modifier = Modifier
-                            .weight(1f)
-                            .clip(MaterialTheme.shapes.small)
+                            .weight(
+                                1f
+                            )
+                            .clip(
+                                MaterialTheme.shapes.small
+                            )
                             .clickable { },
                         shape = MaterialTheme.shapes.small,
                         colors = CardDefaults.cardColors(
@@ -181,18 +257,28 @@ private fun AboutMain(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
+                                .padding(
+                                    12.dp
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp
+                            ),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_compare),
+                                painter = painterResource(
+                                    R.drawable.ic_compare
+                                ),
                                 contentDescription = null,
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(
+                                    28.dp
+                                ),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.about_changelog),
+                                text = stringResource(
+                                    R.string.about_changelog
+                                ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 textAlign = TextAlign.Center,
@@ -201,8 +287,12 @@ private fun AboutMain(
                     }
                     Card(
                         modifier = Modifier
-                            .weight(1f)
-                            .clip(MaterialTheme.shapes.small)
+                            .weight(
+                                1f
+                            )
+                            .clip(
+                                MaterialTheme.shapes.small
+                            )
                             .clickable { },
                         shape = MaterialTheme.shapes.small,
                         colors = CardDefaults.cardColors(
@@ -212,18 +302,28 @@ private fun AboutMain(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
+                                .padding(
+                                    12.dp
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp
+                            ),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_archive),
+                                painter = painterResource(
+                                    R.drawable.ic_archive
+                                ),
                                 contentDescription = null,
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(
+                                    28.dp
+                                ),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.about_releases),
+                                text = stringResource(
+                                    R.string.about_releases
+                                ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 textAlign = TextAlign.Center,
@@ -232,8 +332,12 @@ private fun AboutMain(
                     }
                     Card(
                         modifier = Modifier
-                            .weight(1f)
-                            .clip(MaterialTheme.shapes.small)
+                            .weight(
+                                1f
+                            )
+                            .clip(
+                                MaterialTheme.shapes.small
+                            )
                             .clickable { },
                         shape = MaterialTheme.shapes.small,
                         colors = CardDefaults.cardColors(
@@ -243,18 +347,28 @@ private fun AboutMain(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(12.dp),
+                                .padding(
+                                    12.dp
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp
+                            ),
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_debug),
+                                painter = painterResource(
+                                    R.drawable.ic_debug
+                                ),
                                 contentDescription = null,
-                                modifier = Modifier.size(28.dp),
+                                modifier = Modifier.size(
+                                    28.dp
+                                ),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.about_debug),
+                                text = stringResource(
+                                    R.string.about_debug
+                                ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 textAlign = TextAlign.Center,
@@ -267,7 +381,9 @@ private fun AboutMain(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small),
+                        .clip(
+                            MaterialTheme.shapes.small
+                        ),
                     shape = MaterialTheme.shapes.small,
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -279,21 +395,30 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.about_sponsor),
+                                    text = stringResource(
+                                        R.string.about_sponsor
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
                             trailingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
+                                    painter = painterResource(
+                                        R.drawable.ic_arrow_right
+                                    ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(
+                                        24.dp
+                                    ),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Sponsor.md", R.string.about_sponsor)
+                                onOpenMarkdown(
+                                    "md/Sponsor.md",
+                                    R.string.about_sponsor
+                                )
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -302,21 +427,30 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.about_thanks),
+                                    text = stringResource(
+                                        R.string.about_thanks
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
                             trailingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
+                                    painter = painterResource(
+                                        R.drawable.ic_arrow_right
+                                    ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(
+                                        24.dp
+                                    ),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/ThanksList.md", R.string.about_thanks)
+                                onOpenMarkdown(
+                                    "md/ThanksList.md",
+                                    R.string.about_thanks
+                                )
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -325,21 +459,30 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.about_disclaimer),
+                                    text = stringResource(
+                                        R.string.about_disclaimer
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
                             trailingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
+                                    painter = painterResource(
+                                        R.drawable.ic_arrow_right
+                                    ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(
+                                        24.dp
+                                    ),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Disclaimer.md", R.string.about_disclaimer)
+                                onOpenMarkdown(
+                                    "md/Disclaimer.md",
+                                    R.string.about_disclaimer
+                                )
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -348,21 +491,30 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.about_agreement),
+                                    text = stringResource(
+                                        R.string.about_open_source
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
                             trailingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
+                                    painter = painterResource(
+                                        R.drawable.ic_arrow_right
+                                    ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(
+                                        24.dp
+                                    ),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Agreement.md", R.string.about_agreement)
+                                onOpenMarkdown(
+                                    "md/OpenSource.md",
+                                    R.string.about_open_source
+                                )
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -371,44 +523,30 @@ private fun AboutMain(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(R.string.about_privacy),
+                                    text = stringResource(
+                                        R.string.about_permission
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
                             trailingContent = {
                                 Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
+                                    painter = painterResource(
+                                        R.drawable.ic_arrow_right
+                                    ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(
+                                        24.dp
+                                    ),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             },
                             modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Privacy.md", R.string.about_privacy)
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ),
-                        )
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = stringResource(R.string.about_permission),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                onOpenMarkdown(
+                                    "md/Permission.md",
+                                    R.string.about_permission
                                 )
-                            },
-                            trailingContent = {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_arrow_right),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            },
-                            modifier = Modifier.clickable {
-                                onOpenMarkdown("md/Permission.md", R.string.about_permission)
                             },
                             colors = ListItemDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -416,13 +554,20 @@ private fun AboutMain(
                         )
                     }
                 }
+                Spacer(
+                    modifier = Modifier.height(
+                        18.dp
+                    )
+                )
             }
             item {
-                Spacer(modifier = Modifier.height(12.dp))
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(
+                        8.dp
+                    ),
                 ) {
                     Text(
                         text = APP_AUTHOR_SAY,
@@ -441,14 +586,25 @@ private fun AboutMain(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(
+                    modifier = Modifier.height(
+                        32.dp
+                    )
+                )
             }
         }
     }
 }
 
 fun getYearNumber(): Int {
-    val currentDate = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("yyyy")
-    return currentDate.format(formatter).toInt()
+    val currentDate =
+        LocalDate.now()
+    val formatter =
+        DateTimeFormatter.ofPattern(
+            "yyyy"
+        )
+    return currentDate.format(
+        formatter
+    )
+        .toInt()
 }

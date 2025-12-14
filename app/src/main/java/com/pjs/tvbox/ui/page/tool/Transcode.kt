@@ -29,7 +29,8 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.TranscodeView
 
 sealed class TranscodeScreen {
-    object Main : TranscodeScreen()
+    object Main :
+        TranscodeScreen()
 }
 
 @Composable
@@ -37,13 +38,20 @@ fun Transcode(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var current by remember { mutableStateOf<TranscodeScreen>(TranscodeScreen.Main) }
+    var current by remember {
+        mutableStateOf<TranscodeScreen>(
+            TranscodeScreen.Main
+        )
+    }
 
-    BackHandler(enabled = true) {
+    BackHandler(
+        enabled = true
+    ) {
         if (current == TranscodeScreen.Main) {
             onBack()
         } else {
-            current = TranscodeScreen.Main
+            current =
+                TranscodeScreen.Main
         }
     }
 
@@ -55,30 +63,41 @@ fun Transcode(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun TranscodeMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(title),
+                        text = stringResource(
+                            title
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -86,13 +105,22 @@ private fun TranscodeMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "更多",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_refresh),
+                            painter = painterResource(
+                                R.drawable.ic_refresh
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -103,10 +131,18 @@ private fun TranscodeMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(
+                    padding
+                ),
+            verticalArrangement = Arrangement.spacedBy(
+                12.dp
+            ),
         ) {
-            TranscodeView(modifier = Modifier.weight(1f))
+            TranscodeView(
+                modifier = Modifier.weight(
+                    1f
+                )
+            )
         }
     }
 }

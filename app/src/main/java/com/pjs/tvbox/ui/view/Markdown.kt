@@ -52,22 +52,34 @@ fun MarkdownView(
     markdown: String,
     modifier: Modifier = Modifier
 ) {
-    val extensions = listOf(
-        AutolinkExtension.create(),
-        FootnotesExtension.create(),
-        StrikethroughExtension.create(),
-        TablesExtension.create(),
-        ImageAttributesExtension.create(),
-        InsExtension.create(),
-        TaskListItemsExtension.create(),
+    val extensions =
+        listOf(
+            AutolinkExtension.create(),
+            FootnotesExtension.create(),
+            StrikethroughExtension.create(),
+            TablesExtension.create(),
+            ImageAttributesExtension.create(),
+            InsExtension.create(),
+            TaskListItemsExtension.create(),
+        )
+
+    val parser =
+        remember {
+            Parser.builder()
+                .extensions(
+                    extensions
+                )
+                .build()
+        }
+    val document =
+        parser.parse(
+            markdown
+        )
+
+    MarkdownRenderer(
+        document,
+        modifier
     )
-
-    val parser = remember {
-        Parser.builder().extensions(extensions).build()
-    }
-    val document = parser.parse(markdown)
-
-    MarkdownRenderer(document, modifier)
 }
 
 @Composable
@@ -75,75 +87,154 @@ private fun MarkdownRenderer(
     node: Node,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 
-    val blocks = remember(node) {
-        generateSequence(node.firstChild) { it.next }.toList()
-    }
+    val blocks =
+        remember(
+            node
+        ) {
+            generateSequence(
+                node.firstChild
+            ) { it.next }.toList()
+        }
 
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(top = 8.dp, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        contentPadding = PaddingValues(
+            top = 8.dp,
+            bottom = 32.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(
+            4.dp
+        ),
     ) {
-        items(blocks) { block ->
-            MarkdownNode(block)
+        items(
+            blocks
+        ) { block ->
+            MarkdownNode(
+                block
+            )
         }
     }
 }
 
 @Composable
-private fun MarkdownNode(node: Node) {
+private fun MarkdownNode(
+    node: Node
+) {
     when (node) {
-        is Heading -> renderHeading(node)
-        is Paragraph -> renderParagraph(node)
-        is BulletList -> renderBulletList(node)
-        is OrderedList -> renderOrderedList(node)
-        is Image -> renderImage(node)
-        is TableBlock -> renderTable(node)
-        is Text -> Text(text = node.literal)
+        is Heading -> renderHeading(
+            node
+        )
+
+        is Paragraph -> renderParagraph(
+            node
+        )
+
+        is BulletList -> renderBulletList(
+            node
+        )
+
+        is OrderedList -> renderOrderedList(
+            node
+        )
+
+        is Image -> renderImage(
+            node
+        )
+
+        is TableBlock -> renderTable(
+            node
+        )
+
+        is Text -> Text(
+            text = node.literal
+        )
+
         else -> {
-            var child = node.firstChild
+            var child =
+                node.firstChild
             while (child != null) {
-                MarkdownNode(child)
-                child = child.next
+                MarkdownNode(
+                    child
+                )
+                child =
+                    child.next
             }
         }
     }
 }
 
 @Composable
-private fun renderImage(node: Image) {
-    val context = LocalContext.current
-    val url = node.destination ?: return
+private fun renderImage(
+    node: Image
+) {
+    val context =
+        LocalContext.current
+    val url =
+        node.destination
+            ?: return
 
-    val imageRequest = when {
-        url.startsWith("../") -> {
-            val assetPath = url.removePrefix("../")
-            ImageRequest.Builder(context)
-                .data("file:///android_asset/$assetPath")
-                .crossfade(true)
-                .build()
-        }
+    val imageRequest =
+        when {
+            url.startsWith(
+                "../"
+            ) -> {
+                val assetPath =
+                    url.removePrefix(
+                        "../"
+                    )
+                ImageRequest.Builder(
+                    context
+                )
+                    .data(
+                        "file:///android_asset/$assetPath"
+                    )
+                    .crossfade(
+                        true
+                    )
+                    .build()
+            }
 
-        url.startsWith("http://") || url.startsWith("https://") -> {
-            ImageRequest.Builder(context)
-                .data(url)
-                .crossfade(true)
-                .build()
-        }
+            url.startsWith(
+                "http://"
+            ) || url.startsWith(
+                "https://"
+            ) -> {
+                ImageRequest.Builder(
+                    context
+                )
+                    .data(
+                        url
+                    )
+                    .crossfade(
+                        true
+                    )
+                    .build()
+            }
 
-        else -> {
-            ImageRequest.Builder(context)
-                .data(File(url))
-                .crossfade(true)
-                .build()
+            else -> {
+                ImageRequest.Builder(
+                    context
+                )
+                    .data(
+                        File(
+                            url
+                        )
+                    )
+                    .crossfade(
+                        true
+                    )
+                    .build()
+            }
         }
-    }
     Box(
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 10.dp)
+            .heightIn(
+                min = 10.dp
+            )
     ) {
         SubcomposeAsyncImage(
             model = imageRequest,
@@ -175,16 +266,19 @@ private fun renderImage(node: Image) {
 }
 
 @Composable
-private fun renderHeading(node: Heading) {
-    val size = when (node.level) {
-        1 -> 28.sp; 2 -> 24.sp; 3 -> 20.sp; 4 -> 18.sp; else -> 16.sp
-    }
+private fun renderHeading(
+    node: Heading
+) {
+    val size =
+        when (node.level) {
+            1 -> 28.sp; 2 -> 24.sp; 3 -> 20.sp; 4 -> 18.sp; else -> 16.sp
+        }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+            .padding(
+                vertical = 4.dp
+            ),
     ) {
         Text(
             text = node.getText(),
@@ -195,106 +289,184 @@ private fun renderHeading(node: Heading) {
 }
 
 @Composable
-private fun renderParagraph(node: Paragraph) {
+private fun renderParagraph(
+    node: Paragraph
+) {
     Column(
-        modifier = Modifier.padding(vertical = 4.dp),
+        modifier = Modifier.padding(
+            vertical = 4.dp
+        ),
     ) {
-        var child = node.firstChild
+        var child =
+            node.firstChild
         while (child != null) {
-            MarkdownNode(child)
-            child = child.next
+            MarkdownNode(
+                child
+            )
+            child =
+                child.next
         }
     }
 }
 
 @Composable
-private fun renderBulletList(node: BulletList) {
+private fun renderBulletList(
+    node: BulletList
+) {
     Column(
-        modifier = Modifier.padding(start = 16.dp),
+        modifier = Modifier.padding(
+            start = 16.dp
+        ),
     ) {
-        var child = node.firstChild
+        var child =
+            node.firstChild
         while (child != null) {
-            if (child is ListItem) renderListItem(child, "•")
-            child = child.next
+            if (child is ListItem) renderListItem(
+                child,
+                "•"
+            )
+            child =
+                child.next
         }
     }
 }
 
 @Composable
-private fun renderOrderedList(node: OrderedList) {
-    var index = node.markerStartNumber ?: 1
+private fun renderOrderedList(
+    node: OrderedList
+) {
+    var index =
+        node.markerStartNumber
+            ?: 1
     Column(
-        modifier = Modifier.padding(start = 16.dp),
+        modifier = Modifier.padding(
+            start = 16.dp
+        ),
     ) {
-        var child = node.firstChild
+        var child =
+            node.firstChild
         while (child != null) {
-            if (child is ListItem) renderListItem(child, "${index++}.")
-            child = child.next
+            if (child is ListItem) renderListItem(
+                child,
+                "${index++}."
+            )
+            child =
+                child.next
         }
     }
 }
 
 @Composable
-private fun renderListItem(node: ListItem, prefix: String) {
+private fun renderListItem(
+    node: ListItem,
+    prefix: String
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = "$prefix ", fontWeight = FontWeight.Bold)
+        Text(
+            text = "$prefix ",
+            fontWeight = FontWeight.Bold
+        )
         Column {
-            var child = node.firstChild
+            var child =
+                node.firstChild
             while (child != null) {
-                MarkdownNode(child)
-                child = child.next
+                MarkdownNode(
+                    child
+                )
+                child =
+                    child.next
             }
         }
     }
 }
 
 @Composable
-private fun renderTable(table: TableBlock) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        var child = table.firstChild
+private fun renderTable(
+    table: TableBlock
+) {
+    Column(
+        modifier = Modifier.padding(
+            vertical = 8.dp
+        )
+    ) {
+        var child =
+            table.firstChild
         while (child != null) {
             when (child) {
-                is TableHead -> renderTableHead(child)
+                is TableHead -> renderTableHead(
+                    child
+                )
+
                 is TableBody -> {
-                    var row = child.firstChild
+                    var row =
+                        child.firstChild
                     while (row != null) {
-                        if (row is TableRow) renderTableRow(row, isHeader = false)
-                        row = row.next
+                        if (row is TableRow) renderTableRow(
+                            row,
+                            isHeader = false
+                        )
+                        row =
+                            row.next
                     }
                 }
             }
-            child = child.next
+            child =
+                child.next
         }
     }
 }
 
 @Composable
-private fun renderTableHead(head: TableHead) {
-    var row = head.firstChild
+private fun renderTableHead(
+    head: TableHead
+) {
+    var row =
+        head.firstChild
     while (row != null) {
-        if (row is TableRow) renderTableRow(row, isHeader = true)
-        row = row.next
+        if (row is TableRow) renderTableRow(
+            row,
+            isHeader = true
+        )
+        row =
+            row.next
     }
 }
 
 @Composable
-private fun renderTableRow(row: TableRow, isHeader: Boolean) {
-    val cells = remember(row) {
-        generateSequence(row.firstChild as? TableCell) { it.next as? TableCell }.toList()
-    }
+private fun renderTableRow(
+    row: TableRow,
+    isHeader: Boolean
+) {
+    val cells =
+        remember(
+            row
+        ) {
+            generateSequence(
+                row.firstChild as? TableCell
+            ) { it.next as? TableCell }.toList()
+        }
 
     Row(
         modifier = Modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(vertical = 4.dp)
+            .horizontalScroll(
+                rememberScrollState()
+            )
+            .padding(
+                vertical = 4.dp
+            )
     ) {
         cells.forEach { cell ->
             Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp, vertical = 6.dp)
+                    .weight(
+                        1f
+                    )
+                    .padding(
+                        horizontal = 8.dp,
+                        vertical = 6.dp
+                    )
             ) {
                 Text(
                     text = cell.getText(),
@@ -308,27 +480,46 @@ private fun renderTableRow(row: TableRow, isHeader: Boolean) {
                                 else -> Alignment.Start
                             }
                         )
-                        .padding(vertical = 6.dp)
+                        .padding(
+                            vertical = 6.dp
+                        )
                 )
             }
         }
     }
 
-    if (isHeader) HorizontalDivider(thickness = 1.5.dp)
+    if (isHeader) HorizontalDivider(
+        thickness = 1.5.dp
+    )
 }
 
-private fun Node.getText(): String = buildString {
-    accept(object : AbstractVisitor() {
-        override fun visit(text: Text) {
-            append(text.literal)
-        }
+private fun Node.getText(): String =
+    buildString {
+        accept(
+            object :
+                AbstractVisitor() {
+                override fun visit(
+                    text: Text
+                ) {
+                    append(
+                        text.literal
+                    )
+                }
 
-        override fun visit(softLineBreak: SoftLineBreak) {
-            append(" ")
-        }
+                override fun visit(
+                    softLineBreak: SoftLineBreak
+                ) {
+                    append(
+                        " "
+                    )
+                }
 
-        override fun visit(hardLineBreak: HardLineBreak) {
-            append("\n")
-        }
-    })
-}
+                override fun visit(
+                    hardLineBreak: HardLineBreak
+                ) {
+                    append(
+                        "\n"
+                    )
+                }
+            })
+    }

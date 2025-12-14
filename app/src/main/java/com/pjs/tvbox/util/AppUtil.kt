@@ -5,17 +5,29 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 
 object AppUtil {
-    fun getVersionName(context: Context): String {
-        val appVersionName = getPackageInfo(context)?.versionName
+    fun getVersionName(
+        context: Context
+    ): String {
+        val appVersionName =
+            getPackageInfo(
+                context
+            )?.versionName
         return appVersionName.toString()
     }
 
-    fun getVersionCode(context: Context): Long? {
-        val appVersionCode = getPackageInfo(context)?.longVersionCode
+    fun getVersionCode(
+        context: Context
+    ): Long? {
+        val appVersionCode =
+            getPackageInfo(
+                context
+            )?.longVersionCode
         return appVersionCode
     }
 
-    private fun getPackageInfo(context: Context): PackageInfo? {
+    private fun getPackageInfo(
+        context: Context
+    ): PackageInfo? {
         return try {
             context.packageManager.getPackageInfo(
                 context.packageName,

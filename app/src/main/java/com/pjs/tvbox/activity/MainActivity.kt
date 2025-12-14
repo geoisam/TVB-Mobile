@@ -31,10 +31,17 @@ import com.pjs.tvbox.ui.page.tool.*
 import com.pjs.tvbox.data.MainScreen
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalFoundationApi::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class MainActivity :
+    ComponentActivity() {
+    @OptIn(
+        ExperimentalFoundationApi::class
+    )
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+        super.onCreate(
+            savedInstanceState
+        )
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
@@ -44,26 +51,47 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun MainScreen() {
-    val context = LocalContext.current
-    var overlayPage by remember { mutableStateOf<OverlayPage?>(null) }
-    val pagerState = rememberPagerState(pageCount = { 3 })
-    val scope = rememberCoroutineScope()
-    val tabs = listOf(MainScreen.Home, MainScreen.Discover, MainScreen.Mine)
+    val context =
+        LocalContext.current
+    var overlayPage by remember {
+        mutableStateOf<OverlayPage?>(
+            null
+        )
+    }
+    val pagerState =
+        rememberPagerState(
+            pageCount = { 3 })
+    val scope =
+        rememberCoroutineScope()
+    val tabs =
+        listOf(
+            MainScreen.Home,
+            MainScreen.Discover,
+            MainScreen.Mine
+        )
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
-            contentWindowInsets = WindowInsets(0.dp),
+            contentWindowInsets = WindowInsets(
+                0.dp
+            ),
             bottomBar = {
                 BottomNav(
                     currentRoute = tabs[pagerState.currentPage].route,
                     onTabSelected = { screen ->
                         scope.launch {
-                            pagerState.animateScrollToPage(tabs.indexOf(screen))
+                            pagerState.animateScrollToPage(
+                                tabs.indexOf(
+                                    screen
+                                )
+                            )
                         }
                     }
                 )
@@ -73,47 +101,161 @@ fun MainScreen() {
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding),
+                    .padding(
+                        padding
+                    ),
                 beyondViewportPageCount = 2,
             ) { page ->
                 when (tabs[page]) {
                     MainScreen.Home -> HomePage()
-                    MainScreen.Discover -> DiscoverPage(onOpenPage = { overlayPage = it })
-                    MainScreen.Mine -> MinePage(onOpenPage = { overlayPage = it })
+                    MainScreen.Discover -> DiscoverPage(
+                        onOpenPage = {
+                            overlayPage =
+                                it
+                        })
+
+                    MainScreen.Mine -> MinePage(
+                        onOpenPage = {
+                            overlayPage =
+                                it
+                        })
                 }
             }
         }
 
         overlayPage?.let { page ->
-            val onClose = { overlayPage = null }
+            val onClose =
+                {
+                    overlayPage =
+                        null
+                }
             when (page) {
-                is OverlayPage.TvLive -> TvLivePage(onClose, page.title)
-                is OverlayPage.Transcode -> Transcode(onClose, page.title)
-                is OverlayPage.DouBanTop -> DouBanTop(onClose, page.title)
-                is OverlayPage.CMDbYear -> CMDbYear(onClose, page.title)
-                is OverlayPage.CMDbTicket -> CMDbTicket(onClose, page.title)
-                is OverlayPage.BiLiTimeline -> BiLiTimeline(onClose, page.title)
-                is OverlayPage.BiLiAnimeFilter -> BiLiAnimeFilter(onClose, page.title)
-                is OverlayPage.HuanTvTop -> HuanTvTop(onClose, page.title)
-                is OverlayPage.TodayNews -> TodayNews(onClose, page.title)
-                is OverlayPage.FuckWatermark -> FuckWatermark(onClose, page.title)
-                is OverlayPage.About -> AboutPage(onClose, page.title)
+                is OverlayPage.TvLive -> TvLivePage(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.Transcode -> Transcode(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.DouBanTop -> DouBanTop(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.CMDbYear -> CMDbYear(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.CMDbTicket -> CMDbTicket(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.BiLiTimeline -> BiLiTimeline(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.BiLiAnimeFilter -> BiLiAnimeFilter(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.HuanTvTop -> HuanTvTop(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.TodayNews -> TodayNews(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.FuckWatermark -> FuckWatermark(
+                    onClose,
+                    page.title
+                )
+
+                is OverlayPage.About -> AboutPage(
+                    onClose,
+                    page.title
+                )
             }
         }
     }
 }
 
 
-sealed class OverlayPage(val title: Int) {
-    class TvLive(title: Int) : OverlayPage(title)
-    class Transcode(title: Int) : OverlayPage(title)
-    class DouBanTop(title: Int) : OverlayPage(title)
-    class CMDbYear(title: Int) : OverlayPage(title)
-    class BiLiTimeline(title: Int) : OverlayPage(title)
-    class BiLiAnimeFilter(title: Int) : OverlayPage(title)
-    class CMDbTicket(title: Int) : OverlayPage(title)
-    class HuanTvTop(title: Int) : OverlayPage(title)
-    class TodayNews(title: Int) : OverlayPage(title)
-    class FuckWatermark(title: Int) : OverlayPage(title)
-    class About(title: Int) : OverlayPage(title)
+sealed class OverlayPage(
+    val title: Int
+) {
+    class TvLive(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class Transcode(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class DouBanTop(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class CMDbYear(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class BiLiTimeline(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class BiLiAnimeFilter(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class CMDbTicket(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class HuanTvTop(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class TodayNews(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class FuckWatermark(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+
+    class About(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
 }

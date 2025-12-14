@@ -29,7 +29,8 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.TodayNewsView
 
 sealed class TodayNewsScreen {
-    object Main : TodayNewsScreen()
+    object Main :
+        TodayNewsScreen()
 }
 
 @Composable
@@ -37,13 +38,20 @@ fun TodayNews(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var current by remember { mutableStateOf<TodayNewsScreen>(TodayNewsScreen.Main) }
+    var current by remember {
+        mutableStateOf<TodayNewsScreen>(
+            TodayNewsScreen.Main
+        )
+    }
 
-    BackHandler(enabled = true) {
+    BackHandler(
+        enabled = true
+    ) {
         if (current == TodayNewsScreen.Main) {
             onBack()
         } else {
-            current = TodayNewsScreen.Main
+            current =
+                TodayNewsScreen.Main
         }
     }
 
@@ -55,30 +63,41 @@ fun TodayNews(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun TodayNewsMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(title),
+                        text = stringResource(
+                            title
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -86,13 +105,22 @@ private fun TodayNewsMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "刷新", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "刷新",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_refresh),
+                            painter = painterResource(
+                                R.drawable.ic_refresh
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -103,10 +131,18 @@ private fun TodayNewsMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(
+                    padding
+                ),
+            verticalArrangement = Arrangement.spacedBy(
+                12.dp
+            ),
         ) {
-            TodayNewsView(modifier = Modifier.weight(1f))
+            TodayNewsView(
+                modifier = Modifier.weight(
+                    1f
+                )
+            )
         }
     }
 }

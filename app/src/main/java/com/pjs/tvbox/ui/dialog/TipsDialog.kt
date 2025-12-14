@@ -47,13 +47,22 @@ fun TipsDialog(
                         fontWeight = FontWeight.Bold,
                     )
                     if (closeIcon) {
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(
+                            modifier = Modifier.weight(
+                                1f
+                            )
+                        )
                         IconButton(
-                            onClick = onCloseIconClick ?: onClose,
-                            modifier = Modifier.size(24.dp)
+                            onClick = onCloseIconClick
+                                ?: onClose,
+                            modifier = Modifier.size(
+                                24.dp
+                            )
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_close),
+                                painter = painterResource(
+                                    R.drawable.ic_close
+                                ),
                                 contentDescription = "关闭",
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -98,8 +107,12 @@ fun TipsDialog(
                 }
             },
             modifier = Modifier
-                .widthIn(max = 666.dp)
-                .padding(horizontal = 16.dp)
+                .widthIn(
+                    max = 666.dp
+                )
+                .padding(
+                    horizontal = 16.dp
+                )
         )
     }
 }

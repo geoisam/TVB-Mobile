@@ -16,37 +16,61 @@ import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.MarkdownView
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun MarkdownPage(
     pageTitle: Int,
     assetFile: String,
     onBack: () -> Unit = {}
 ) {
-    BackHandler(onBack = onBack)
-    val context = LocalContext.current
+    BackHandler(
+        onBack = onBack
+    )
+    val context =
+        LocalContext.current
 
-    val markdownText = remember(assetFile) {
-        runCatching { context.assets.open(assetFile).bufferedReader().use { it.readText() } }
-            .getOrDefault("加载失败")
-    }
+    val markdownText =
+        remember(
+            assetFile
+        ) {
+            runCatching {
+                context.assets.open(
+                    assetFile
+                )
+                    .bufferedReader()
+                    .use { it.readText() }
+            }
+                .getOrDefault(
+                    "加载失败"
+                )
+        }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(pageTitle),
+                        text = stringResource(
+                            pageTitle
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -58,8 +82,12 @@ fun MarkdownPage(
             markdown = markdownText.trimIndent(),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp),
+                .padding(
+                    padding
+                )
+                .padding(
+                    horizontal = 16.dp
+                ),
         )
     }
 }

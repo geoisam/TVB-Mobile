@@ -29,7 +29,8 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.FuckWatermarkView
 
 sealed class FuckWatermarkScreen {
-    object Main : FuckWatermarkScreen()
+    object Main :
+        FuckWatermarkScreen()
 }
 
 @Composable
@@ -37,13 +38,20 @@ fun FuckWatermark(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var current by remember { mutableStateOf<FuckWatermarkScreen>(FuckWatermarkScreen.Main) }
+    var current by remember {
+        mutableStateOf<FuckWatermarkScreen>(
+            FuckWatermarkScreen.Main
+        )
+    }
 
-    BackHandler(enabled = true) {
+    BackHandler(
+        enabled = true
+    ) {
         if (current == FuckWatermarkScreen.Main) {
             onBack()
         } else {
-            current = FuckWatermarkScreen.Main
+            current =
+                FuckWatermarkScreen.Main
         }
     }
 
@@ -55,30 +63,41 @@ fun FuckWatermark(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun FuckWatermarkMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context = LocalContext.current
+    val context =
+        LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(title),
+                        text = stringResource(
+                            title
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -86,13 +105,22 @@ private fun FuckWatermarkMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "更多",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_refresh),
+                            painter = painterResource(
+                                R.drawable.ic_refresh
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -103,10 +131,18 @@ private fun FuckWatermarkMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(
+                    padding
+                ),
+            verticalArrangement = Arrangement.spacedBy(
+                12.dp
+            ),
         ) {
-            FuckWatermarkView(modifier = Modifier.weight(1f))
+            FuckWatermarkView(
+                modifier = Modifier.weight(
+                    1f
+                )
+            )
         }
     }
 }

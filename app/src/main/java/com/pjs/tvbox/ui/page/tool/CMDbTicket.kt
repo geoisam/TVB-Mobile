@@ -29,22 +29,32 @@ import com.pjs.tvbox.util.LunarUtil
 import java.time.LocalDate
 
 sealed class CMDbTicketScreen {
-    object Main : CMDbTicketScreen()
+    object Main :
+        CMDbTicketScreen()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun CMDbTicket(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var current by remember { mutableStateOf<CMDbTicketScreen>(CMDbTicketScreen.Main) }
+    var current by remember {
+        mutableStateOf<CMDbTicketScreen>(
+            CMDbTicketScreen.Main
+        )
+    }
 
-    BackHandler(enabled = true) {
+    BackHandler(
+        enabled = true
+    ) {
         if (current == CMDbTicketScreen.Main) {
             onBack()
         } else {
-            current = CMDbTicketScreen.Main
+            current =
+                CMDbTicketScreen.Main
         }
     }
 
@@ -56,43 +66,68 @@ fun CMDbTicket(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class
+)
 @Composable
 private fun CMDbTicketMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    var selectedDate by remember { mutableStateOf(LunarUtil.getYearMonthDay()) }
-    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDate by remember {
+        mutableStateOf(
+            LunarUtil.getYearMonthDay()
+        )
+    }
+    var showDatePicker by remember {
+        mutableStateOf(
+            false
+        )
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(title),
+                        text = stringResource(
+                            title
+                        ),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(
+                        onClick = onBack
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_back),
+                            painter = painterResource(
+                                R.drawable.ic_back
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
                 actions = {
                     IconButton(
-                        onClick = { showDatePicker = true }
+                        onClick = {
+                            showDatePicker =
+                                true
+                        }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_calendar),
+                            painter = painterResource(
+                                R.drawable.ic_calendar
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(
+                                24.dp
+                            ),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -103,22 +138,39 @@ private fun CMDbTicketMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(
+                    padding
+                ),
         ) {
             CMDbTicketView(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(
+                    1f
+                ),
                 selectedDate = selectedDate,
                 isToday = (selectedDate == LunarUtil.getYearMonthDay()),
             )
         }
         if (showDatePicker) {
             DatePickerDialog(
-                onDismiss = { showDatePicker = false },
-                onDateSelected = { year, month, day ->
-                    selectedDate = "%04d-%02d-%02d".format(year, month + 1, day)
-                    showDatePicker = false
+                onDismiss = {
+                    showDatePicker =
+                        false
                 },
-                minDate = LocalDate.of(2017, 1, 1),
+                onDateSelected = { year, month, day ->
+                    selectedDate =
+                        "%04d-%02d-%02d".format(
+                            year,
+                            month + 1,
+                            day
+                        )
+                    showDatePicker =
+                        false
+                },
+                minDate = LocalDate.of(
+                    2017,
+                    1,
+                    1
+                ),
             )
         }
     }

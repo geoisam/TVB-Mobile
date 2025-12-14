@@ -32,12 +32,18 @@ fun CMDbYearView(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    LaunchedEffect(selectedYear) {
-        viewModel.loadByYear(selectedYear)
+    LaunchedEffect(
+        selectedYear
+    ) {
+        viewModel.loadByYear(
+            selectedYear
+        )
     }
 
-    val horizontalScroll = rememberScrollState()
-    val pullState = rememberPullToRefreshState()
+    val horizontalScroll =
+        rememberScrollState()
+    val pullState =
+        rememberPullToRefreshState()
 
     PullToRefreshBox(
         isRefreshing = isLoading,
@@ -48,28 +54,42 @@ fun CMDbYearView(
         Box(Modifier.fillMaxSize()) {
             when {
                 isLoading && tickets.isEmpty() -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(
+                            Alignment.Center
+                        )
+                    )
                 }
+
                 error != null && tickets.isEmpty() -> {
                     Text(
                         text = "加载失败\n\n$error",
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier.align(
+                            Alignment.Center
+                        ),
                         color = Color.Gray,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
+
                 tickets.isEmpty() -> {
                     Text(
                         text = "暂无数据",
-                        modifier = Modifier.align(Alignment.Center),
+                        modifier = Modifier.align(
+                            Alignment.Center
+                        ),
                         color = Color.Gray,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
+
                 else -> {
-                    CMDbYearList(tickets, horizontalScroll)
+                    CMDbYearList(
+                        tickets,
+                        horizontalScroll
+                    )
                 }
             }
         }
@@ -88,38 +108,74 @@ private fun CMDbYearList(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 8.dp),
+                    .background(
+                        MaterialTheme.colorScheme.background
+                    )
+                    .padding(
+                        vertical = 8.dp
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(modifier = Modifier.width(160.dp)) {
+                Box(
+                    modifier = Modifier.width(
+                        160.dp
+                    )
+                ) {
                     Text(
                         text = "影片",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(
+                            horizontal = 16.dp
+                        ),
                         textAlign = TextAlign.Start
                     )
                 }
-                Row(modifier = Modifier.horizontalScroll(horizontalScrollState)) {
-                    TableHeader("总票房", 140)
-                    TableHeader("平均票价")
-                    TableHeader("场均人次")
+                Row(
+                    modifier = Modifier.horizontalScroll(
+                        horizontalScrollState
+                    )
+                ) {
+                    TableHeader(
+                        "总票房",
+                        140
+                    )
+                    TableHeader(
+                        "平均票价"
+                    )
+                    TableHeader(
+                        "场均人次"
+                    )
                 }
             }
         }
 
-        itemsIndexed(tickets) { index, ticket ->
+        itemsIndexed(
+            tickets
+        ) { index, ticket ->
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(
+                    alpha = 0.5f
+                ),
+                thickness = 0.5.dp,
+            )
             Row(
                 Modifier.clickable { },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.width(160.dp)) {
+                Box(
+                    modifier = Modifier.width(
+                        160.dp
+                    )
+                ) {
                     Column(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .padding(
+                                horizontal = 16.dp,
+                                vertical = 8.dp
+                            )
                     ) {
                         ticket.name?.let {
                             Text(
@@ -139,14 +195,31 @@ private fun CMDbYearList(
                         )
                     }
                 }
-                Row(modifier = Modifier.horizontalScroll(horizontalScrollState)) {
-                    TableCell("${ticket.salesInWan}万", 140)
-                    TableCell(ticket.avgPrice)
-                    TableCell(ticket.avgSalesCount)
+                Row(
+                    modifier = Modifier.horizontalScroll(
+                        horizontalScrollState
+                    )
+                ) {
+                    TableCell(
+                        "${ticket.salesInWan}万",
+                        140
+                    )
+                    TableCell(
+                        ticket.avgPrice
+                    )
+                    TableCell(
+                        ticket.avgSalesCount
+                    )
                 }
             }
         }
-        item { Spacer(modifier = Modifier.height(18.dp)) }
+        item {
+            Spacer(
+                modifier = Modifier.height(
+                    18.dp
+                )
+            )
+        }
     }
 }
 

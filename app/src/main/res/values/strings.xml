@@ -59,9 +59,8 @@
     <string name="about_debug">错误日志</string>
     <string name="about_sponsor">赞赏支持</string>
     <string name="about_thanks">特别鸣谢</string>
-    <string name="about_disclaimer">免责声明</string>
-    <string name="about_agreement">用户协议</string>
-    <string name="about_privacy">隐私政策</string>
-    <string name="about_permission">权限清单</string>
+    <string name="about_disclaimer">使用条款</string>
+    <string name="about_open_source">开源软件声明</string>
+    <string name="about_permission">应用权限清单</string>
 
 </resources>

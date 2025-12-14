@@ -26,35 +26,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.pjs.tvbox.R
-import com.pjs.tvbox.data.UpdateData
 import com.pjs.tvbox.ui.theme.LogoFont
 import com.pjs.tvbox.util.AppUtil
 import com.pjs.tvbox.util.UpdateUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@SuppressLint("CustomSplashScreen")
-class SplashActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+@SuppressLint(
+    "CustomSplashScreen"
+)
+class SplashActivity :
+    ComponentActivity() {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+        super.onCreate(
+            savedInstanceState
+        )
         setContent {
             MaterialTheme {
                 SplashScreen {
                     lifecycleScope.launch {
-                        val update = UpdateData.getUpdate(this@SplashActivity)
-                        if (update != null) {
-                            val remoteVersionName =
-                                update.versionName?.replace(".", "")?.toLongOrNull() ?: 0L
-                            val localVersionName =
-                                AppUtil.getVersionName(this@SplashActivity).replace(".", "")
-                                    .toLongOrNull() ?: 0L
-                            if (remoteVersionName > localVersionName) {
-                                UpdateUtil.setUpdate(update)
-                            } else {
-                                UpdateUtil.clearUpdate()
-                            }
-                        }
-                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                        UpdateUtil.checkUpdate(this@SplashActivity)
+                        startActivity(
+                            Intent(
+                                this@SplashActivity,
+                                MainActivity::class.java
+                            )
+                        )
                         finish()
                     }
                 }
@@ -64,16 +63,24 @@ class SplashActivity : ComponentActivity() {
 }
 
 @Composable
-fun SplashScreen(onTimeout: () -> Unit) {
-    LaunchedEffect(Unit) {
-        delay(666)
+fun SplashScreen(
+    onTimeout: () -> Unit
+) {
+    LaunchedEffect(
+        Unit
+    ) {
+        delay(
+            666
+        )
         onTimeout()
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(
+                Color.Black
+            ),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -82,14 +89,24 @@ fun SplashScreen(onTimeout: () -> Unit) {
             verticalArrangement = Arrangement.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_logo_fill),
+                painter = painterResource(
+                    R.drawable.ic_logo_fill
+                ),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(180.dp)
+                modifier = Modifier.size(
+                    180.dp
+                )
             )
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(
+                modifier = Modifier.height(
+                    18.dp
+                )
+            )
             Text(
-                text = stringResource(R.string.app_name),
+                text = stringResource(
+                    R.string.app_name
+                ),
                 fontFamily = LogoFont,
                 style = MaterialTheme.typography.displayMedium,
                 color = Color.White,
