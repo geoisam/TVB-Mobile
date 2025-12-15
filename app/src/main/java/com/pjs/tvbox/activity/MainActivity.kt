@@ -29,6 +29,7 @@ import com.pjs.tvbox.ui.page.DiscoverPage
 import com.pjs.tvbox.ui.page.MinePage
 import com.pjs.tvbox.ui.page.tool.*
 import com.pjs.tvbox.data.MainScreen
+import com.pjs.tvbox.ui.page.SettingsPage
 import kotlinx.coroutines.launch
 
 class MainActivity :
@@ -180,6 +181,11 @@ fun MainScreen() {
                     page.title
                 )
 
+                is OverlayPage.Settings -> SettingsPage(
+                    onClose,
+                    page.title
+                )
+
                 is OverlayPage.About -> AboutPage(
                     onClose,
                     page.title
@@ -248,6 +254,11 @@ sealed class OverlayPage(
     )
 
     class FuckWatermark(
+        title: Int
+    ) : OverlayPage(
+        title
+    )
+    class Settings(
         title: Int
     ) : OverlayPage(
         title

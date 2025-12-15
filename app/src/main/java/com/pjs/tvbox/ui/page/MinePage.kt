@@ -117,9 +117,7 @@ fun MinePage(
                 title = {},
                 navigationIcon = {
                     IconButton(
-                        onClick = {
-                            showTipsDialog.value = true
-                        }
+                        onClick = { showTipsDialog.value = true }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_help),
@@ -144,7 +142,11 @@ fun MinePage(
                     }
                     IconButton(
                         onClick = {
-                            Toast.makeText(context, "设置", Toast.LENGTH_SHORT).show()
+                                    onOpenPage(
+                                        OverlayPage.Settings(
+                                            R.string.top_settings
+                                        )
+                                    )
                         }
                     ) {
                         Icon(
@@ -202,9 +204,7 @@ fun MinePage(
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(
-                                    8.dp
-                                ),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 Text(
                                     text = dateState["YearMonth"] ?: "阳历年 阳历月",
@@ -236,9 +236,8 @@ fun MinePage(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                MaterialTheme.colorScheme.primary.copy(
-                                                    alpha = 0.69f
-                                                ),
+                                                MaterialTheme.colorScheme.primary
+                                                    .copy(alpha = 0.69f),
                                                 MaterialTheme.shapes.medium
                                             )
                                             .padding(
@@ -264,9 +263,7 @@ fun MinePage(
                             )
                         }
                         Spacer(
-                            modifier = Modifier.height(
-                                18.dp
-                            )
+                            modifier = Modifier.height(18.dp)
                         )
                         Text(
                             text = dateState["Day"] ?: "阳历日",
@@ -275,9 +272,7 @@ fun MinePage(
                             fontWeight = FontWeight.Bold,
                         )
                         Spacer(
-                            modifier = Modifier.height(
-                                8.dp
-                            )
+                            modifier = Modifier.height(8.dp)
                         )
                         Text(
                             text = dateState["MonthDay"] ?: "阴历月日",
@@ -296,20 +291,19 @@ fun MinePage(
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        8.dp
-                    ),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     MineCard(
                         iconRes = R.drawable.ic_star,
-                        text = "收藏夹",
+                        text = stringResource(
+                            R.string.mine_like
+                        ),
                         onClick = {
                             Toast.makeText(
                                 context,
                                 "收藏夹",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                         },
                         modifier = Modifier.weight(
                             1f
@@ -317,29 +311,29 @@ fun MinePage(
                     )
                     MineCard(
                         iconRes = R.drawable.ic_history,
-                        text = "观看历史",
+                        text = stringResource(
+                            R.string.mine_history
+                        ),
                         onClick = {
                             Toast.makeText(
                                 context,
                                 "观看历史",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                         },
-                        modifier = Modifier.weight(
-                            1f
-                        ),
+                        modifier = Modifier.weight(1f),
                     )
                     MineCard(
                         iconRes = R.drawable.ic_cloud_download,
-                        text = "下载缓存",
+                        text = stringResource(
+                            R.string.mine_downloads
+                        ),
                         onClick = {
                             Toast.makeText(
                                 context,
                                 "下载缓存",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                         },
                         modifier = Modifier.weight(
                             1f
@@ -364,63 +358,59 @@ fun MinePage(
                     ) {
                         MineItem(
                             iconRes = R.drawable.ic_database,
-                            text = "订阅管理",
+                            text = stringResource(
+                                R.string.mine_subscribe
+                            ),
                             onClick = {
                                 Toast.makeText(
                                     context,
                                     "订阅管理",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                             },
-                            modifier = Modifier.weight(
-                                1f
-                            ),
+                            modifier = Modifier.weight(1f),
                         )
                         MineItem(
                             iconRes = R.drawable.ic_media_link,
-                            text = "播放链接",
+                            text = stringResource(
+                                R.string.mine_play_link
+                            ),
                             onClick = {
                                 Toast.makeText(
                                     context,
                                     "播放链接",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                             },
-                            modifier = Modifier.weight(
-                                1f
-                            ),
+                            modifier = Modifier.weight(1f),
                         )
                         MineItem(
                             iconRes = R.drawable.ic_videos,
-                            text = "本地视频",
+                            text = stringResource(
+                                R.string.mine_local_videos
+                            ),
                             onClick = {
                                 Toast.makeText(
                                     context,
                                     "本地视频",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                             },
-                            modifier = Modifier.weight(
-                                1f
-                            ),
+                            modifier = Modifier.weight(1f),
                         )
                         MineItem(
                             iconRes = R.drawable.ic_storage,
-                            text = "备份与恢复",
+                            text = stringResource(
+                                R.string.mine_backup
+                            ),
                             onClick = {
                                 Toast.makeText(
                                     context,
                                     "备份恢复",
                                     Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                ).show()
                             },
-                            modifier = Modifier.weight(
-                                1f
-                            ),
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }
@@ -443,7 +433,9 @@ fun MinePage(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = "版本更新",
+                                    text = stringResource(
+                                        R.string.mine_update
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface,
                                 )
@@ -465,7 +457,8 @@ fun MinePage(
                                         Box(
                                             modifier = Modifier
                                                 .background(
-                                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.78f),
+                                                    MaterialTheme.colorScheme.primary
+                                                        .copy(alpha = 0.78f),
                                                     MaterialTheme.shapes.large
                                                 )
                                                 .padding(horizontal = 9.dp, vertical = 6.dp),
@@ -513,7 +506,10 @@ fun MinePage(
                                         }
                                     }
                                 }
-                            }
+                            },
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            )
                         )
                         ListItem(
                             headlineContent = {
@@ -529,9 +525,7 @@ fun MinePage(
                                         R.drawable.ic_info
                                     ),
                                     contentDescription = null,
-                                    modifier = Modifier.size(
-                                        24.dp
-                                    ),
+                                    modifier = Modifier.size(24.dp),
                                     tint = MaterialTheme.colorScheme.onSurface,
                                 )
                             },
@@ -567,14 +561,10 @@ fun MinePage(
             }
         }
         if (showSheet) {
-            val scrollState =
-                rememberScrollState()
+            val scrollState = rememberScrollState()
             ModalBottomSheet(
-                onDismissRequest = {
-                    showSheet =
-                        false
-                },
-                sheetState = rememberModalBottomSheetState()
+                onDismissRequest = { showSheet = false },
+                dragHandle = null,
             ) {
                 Column(
                     modifier = Modifier
@@ -1176,9 +1166,7 @@ fun MineItem(
                     iconRes
                 ),
                 contentDescription = null,
-                modifier = Modifier.size(
-                    28.dp
-                ),
+                modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
             )
             Text(

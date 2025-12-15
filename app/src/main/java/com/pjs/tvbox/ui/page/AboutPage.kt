@@ -98,8 +98,7 @@ private fun AboutMain(
     onBack: () -> Unit,
     onOpenMarkdown: (file: String, title: Int) -> Unit,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
     val appVersionName =
         AppUtil.getVersionName(
             context
@@ -188,7 +187,7 @@ private fun AboutMain(
                 ) {
                     Spacer(
                         modifier = Modifier.height(
-                            12.dp
+                            18.dp
                         )
                     )
                     Icon(
@@ -229,7 +228,7 @@ private fun AboutMain(
                 }
                 Spacer(
                     modifier = Modifier.height(
-                        12.dp
+                        18.dp
                     )
                 )
             }
