@@ -44,6 +44,7 @@ import coil3.network.NetworkHeaders
 import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.pjs.tvbox.data.HUANTV_HOME
 import com.pjs.tvbox.data.HuanTvInfo
 import com.pjs.tvbox.data.HuanTvTopData
 import com.pjs.tvbox.data.UA_DESKTOP
@@ -53,18 +54,20 @@ import kotlinx.coroutines.delay
 fun HuanTvTopView(
     modifier: Modifier = Modifier,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
+
     var tvRate by remember {
         mutableStateOf<List<HuanTvInfo>>(
             emptyList()
         )
     }
+
     var isLoading by remember {
         mutableStateOf(
             true
         )
     }
+
     var error by remember {
         mutableStateOf<String?>(
             null
@@ -74,30 +77,21 @@ fun HuanTvTopView(
     LaunchedEffect(
         Unit
     ) {
-        isLoading =
-            true
-        error =
-            null
+        isLoading = true
+        error = null
 
         try {
-            tvRate =
-                HuanTvTopData.getHuanTvHot()
+            tvRate = HuanTvTopData.getDataInfo()
         } catch (e: Exception) {
-            error =
-                e.message
-                    ?: "加载失败"
+            error = e.message ?: "加载失败"
         } finally {
-            isLoading =
-                false
+            isLoading = false
         }
 
         while (true) {
-            delay(
-                32_123
-            )
+            delay(32_123)
             try {
-                tvRate =
-                    HuanTvTopData.getHuanTvHot()
+                tvRate = HuanTvTopData.getDataInfo()
             } catch (e: Exception) {
             }
         }
@@ -135,9 +129,7 @@ fun HuanTvTopView(
                     Modifier.fillMaxSize()
                 ) {
                     LazyColumn(
-                        modifier = Modifier.weight(
-                            1f
-                        ),
+                        modifier = Modifier.weight(1f),
                     ) {
                         stickyHeader {
                             Box(
@@ -161,12 +153,8 @@ fun HuanTvTopView(
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
-                                            .width(
-                                                180.dp
-                                            )
-                                            .padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            .width(180.dp)
+                                            .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.Start,
                                     )
                                     Text(
@@ -175,12 +163,8 @@ fun HuanTvTopView(
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
-                                            .weight(
-                                                1f
-                                            )
-                                            .padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
                                     Text(
@@ -189,12 +173,8 @@ fun HuanTvTopView(
                                         color = MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
-                                            .weight(
-                                                1f
-                                            )
-                                            .padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
                                 }
@@ -204,9 +184,8 @@ fun HuanTvTopView(
                             tvRate
                         ) { index, huan ->
                             HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(
-                                    alpha = 0.5f
-                                ),
+                                color = MaterialTheme.colorScheme.outlineVariant
+                                    .copy(alpha = 0.5f),
                                 thickness = 0.5.dp,
                             )
                             Row(
@@ -215,60 +194,34 @@ fun HuanTvTopView(
                             ) {
                                 Column(
                                     Modifier
-                                        .width(
-                                            180.dp
-                                        )
-                                        .padding(
-                                            horizontal = 16.dp,
-                                            vertical = 8.dp
-                                        )
+                                        .width(180.dp)
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         Card(
                                             modifier = Modifier
-                                                .width(
-                                                    18.dp
-                                                )
-                                                .height(
-                                                    18.dp
-                                                )
-                                                .clip(
-                                                    CircleShape
-                                                ),
+                                                .width(18.dp)
+                                                .height(18.dp)
+                                                .clip(CircleShape),
                                             shape = CircleShape,
                                         ) {
                                             SubcomposeAsyncImage(
-                                                model = ImageRequest.Builder(
-                                                    context
-                                                )
-                                                    .data(
-                                                        huan.channelLogo
-                                                    )
-                                                    .crossfade(
-                                                        true
-                                                    )
+                                                model = ImageRequest.Builder(context)
+                                                    .data(huan.channelLogo)
+                                                    .crossfade(true)
                                                     .httpHeaders(
                                                         NetworkHeaders.Builder()
-                                                            .set(
-                                                                "Referer",
-                                                                "https://bigdata.huan.tv/"
-                                                            )
-                                                            .set(
-                                                                "User-Agent",
-                                                                UA_DESKTOP
-                                                            )
+                                                            .set("Referer", HUANTV_HOME)
+                                                            .set("User-Agent", UA_DESKTOP)
                                                             .build()
-                                                    )
-                                                    .build(),
+                                                    ).build(),
                                                 loading = {
                                                     Box(
                                                         modifier = Modifier
                                                             .fillMaxSize()
-                                                            .clip(
-                                                                CircleShape
-                                                            ),
+                                                            .clip(CircleShape),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         CircularProgressIndicator()
@@ -278,9 +231,7 @@ fun HuanTvTopView(
                                                     Box(
                                                         modifier = Modifier
                                                             .fillMaxSize()
-                                                            .clip(
-                                                                CircleShape
-                                                            ),
+                                                            .clip(CircleShape),
                                                         contentAlignment = Alignment.Center
                                                     ) {
                                                         Text(
@@ -294,15 +245,11 @@ fun HuanTvTopView(
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(
-                                                        CircleShape
-                                                    ),
+                                                    .clip(CircleShape),
                                             )
                                         }
                                         Spacer(
-                                            modifier = Modifier.width(
-                                                4.dp
-                                            )
+                                            modifier = Modifier.width(4.dp)
                                         )
                                         huan.channelName?.let {
                                             Text(
@@ -322,25 +269,18 @@ fun HuanTvTopView(
                                                     color = MaterialTheme.colorScheme.onSurface,
                                                 )
                                             ) {
-                                                append(
-                                                    "直播:"
-                                                )
+                                                append("直播:")
                                             }
-                                            append(
-                                                " "
-                                            )
+                                            append(" ")
                                             withStyle(
                                                 SpanStyle(
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 )
                                             ) {
-                                                append(
-                                                    huan.programName
-                                                )
+                                                append(huan.programName)
                                             }
                                         },
                                         style = MaterialTheme.typography.bodySmall,
-
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
                                     )
@@ -351,12 +291,8 @@ fun HuanTvTopView(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier
-                                            .weight(
-                                                1f
-                                            )
-                                            .padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
                                 }
@@ -366,12 +302,8 @@ fun HuanTvTopView(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier
-                                            .weight(
-                                                1f
-                                            )
-                                            .padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            .weight(1f)
+                                            .padding(horizontal = 16.dp),
                                         textAlign = TextAlign.End,
                                     )
                                 }
@@ -379,9 +311,7 @@ fun HuanTvTopView(
                         }
                         item {
                             Spacer(
-                                modifier = Modifier.height(
-                                    12.dp
-                                )
+                                modifier = Modifier.height(12.dp)
                             )
                         }
                     }

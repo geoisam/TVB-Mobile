@@ -28,14 +28,9 @@ fun DatePickerDialog(
             TextButton(
                 onClick = {
                     datePickerState.selectedDateMillis?.let {
-                        val date =
-                            Instant.ofEpochMilli(
-                                it
-                            )
-                                .atZone(
-                                    ZoneId.systemDefault()
-                                )
-                                .toLocalDate()
+                        val date = Instant.ofEpochMilli(it)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
                         if (date >= minDate) {
                             onDateSelected(
                                 date.year,
@@ -45,18 +40,14 @@ fun DatePickerDialog(
                         }
                     }
                 }) {
-                Text(
-                    "确定"
-                )
+                Text("确定")
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text(
-                    "取消"
-                )
+                Text("取消")
             }
         }
     ) {

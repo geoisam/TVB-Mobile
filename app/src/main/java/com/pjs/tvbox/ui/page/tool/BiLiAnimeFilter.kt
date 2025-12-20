@@ -32,9 +32,7 @@ sealed class BiLiAnimeFilterScreen {
         BiLiAnimeFilterScreen()
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiLiAnimeFilter(
     onBack: () -> Unit,
@@ -46,14 +44,11 @@ fun BiLiAnimeFilter(
         )
     }
 
-    BackHandler(
-        enabled = true
-    ) {
+    BackHandler(enabled = true) {
         if (current == BiLiAnimeFilterScreen.Main) {
             onBack()
         } else {
-            current =
-                BiLiAnimeFilterScreen.Main
+            current = BiLiAnimeFilterScreen.Main
         }
     }
 
@@ -65,25 +60,20 @@ fun BiLiAnimeFilter(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BiLiAnimeFilterMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            title
-                        ),
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -93,13 +83,9 @@ private fun BiLiAnimeFilterMain(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -107,22 +93,13 @@ private fun BiLiAnimeFilterMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "刷新",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "刷新", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_refresh
-                            ),
+                            painter = painterResource(R.drawable.ic_refresh),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -133,14 +110,10 @@ private fun BiLiAnimeFilterMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                ),
+                .padding(padding),
         ) {
             BiLiAnimeFilterView(
-                modifier = Modifier.weight(
-                    1f
-                )
+                modifier = Modifier.weight(1f)
             )
         }
     }

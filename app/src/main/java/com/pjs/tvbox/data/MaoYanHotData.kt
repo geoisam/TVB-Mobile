@@ -6,13 +6,13 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-object DouBanTopData {
-    suspend fun getDataInfo(start: Int = 0): List<AnimeInfo> =
+object MaoYanHotData {
+    suspend fun getDataInfo(): List<SearchInfo> =
         runCatching {
             val response =
                 PJS.request(
                     PJSRequest(
-                        url = "$DOUBAN_API/rexxar/api/v2/subject_collection/movie_top250/items?start=${start}&count=50&items_only=1&type_tag=&for_mobile=1",
+                        url = "https://piaofang.maoyan.com/dashboard/webHeatData?showDate=",
                         headers = mapOf("Referer" to DOUBAN_HOME)
                     )
                 )
@@ -26,7 +26,10 @@ object DouBanTopData {
                     else -> return@runCatching emptyList()
                 }
 
-            val items = root.jsonObject["subject_collection_items"]?.jsonArray
+            val list = root.jsonObject["dataList"]?.jsonObject
+                ?: return@runCatching emptyList()
+
+            val items = list["list"]?.jsonArray
                 ?: return@runCatching emptyList()
 
             items.mapNotNull {
@@ -35,16 +38,15 @@ object DouBanTopData {
 
         }.getOrElse { emptyList() }
 
-    private fun JsonObject.toMovie(): AnimeInfo? =
+    private fun JsonObject.toMovie(): SearchInfo? =
         runCatching {
-            AnimeInfo(
-                id = this["id"]?.jsonPrimitive?.content.orEmpty(),
-                title = this["title"]?.jsonPrimitive?.content.orEmpty(),
-                subtitle = this["card_subtitle"]?.jsonPrimitive?.content.orEmpty(),
-                thumbnail = this["pic"]?.jsonObject?.get("normal")?.jsonPrimitive?.content.orEmpty(),
-                cover = this["pic"]?.jsonObject?.get("large")?.jsonPrimitive?.content.orEmpty(),
-                rating = this["rating"]?.jsonObject?.get("value")?.jsonPrimitive?.content.orEmpty(),
-                view = this["description"]?.jsonPrimitive?.content.orEmpty(),
+            val info = this["seriesInfo"]?.jsonObject ?: return@runCatching null
+            SearchInfo(
+                id = info["seriesId"]?.jsonPrimitive?.content.orEmpty(),
+                title = info["name"]?.jsonPrimitive?.content.orEmpty(),
+                subtitle = info["platformDesc"]?.jsonPrimitive?.content.orEmpty(),
+                daysDesc = info["releaseInfo"]?.jsonPrimitive?.content.orEmpty(),
+                currHeat = this["currHeatDesc"]?.jsonPrimitive?.content.orEmpty(),
             )
         }.getOrNull()
 }

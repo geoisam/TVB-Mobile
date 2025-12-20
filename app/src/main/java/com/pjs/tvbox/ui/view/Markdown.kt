@@ -65,21 +65,11 @@ fun MarkdownView(
 
     val parser =
         remember {
-            Parser.builder()
-                .extensions(
-                    extensions
-                )
-                .build()
+            Parser.builder().extensions(extensions).build()
         }
-    val document =
-        parser.parse(
-            markdown
-        )
+    val document = parser.parse(markdown)
 
-    MarkdownRenderer(
-        document,
-        modifier
-    )
+    MarkdownRenderer(document, modifier)
 }
 
 @Composable
@@ -87,16 +77,11 @@ private fun MarkdownRenderer(
     node: Node,
     modifier: Modifier = Modifier
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     val blocks =
-        remember(
-            node
-        ) {
-            generateSequence(
-                node.firstChild
-            ) { it.next }.toList()
+        remember(node) {
+            generateSequence(node.firstChild) { it.next }.toList()
         }
 
     LazyColumn(
@@ -105,16 +90,10 @@ private fun MarkdownRenderer(
             top = 8.dp,
             bottom = 32.dp
         ),
-        verticalArrangement = Arrangement.spacedBy(
-            4.dp
-        ),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        items(
-            blocks
-        ) { block ->
-            MarkdownNode(
-                block
-            )
+        items(blocks) { block ->
+            MarkdownNode(block)
         }
     }
 }
@@ -124,43 +103,25 @@ private fun MarkdownNode(
     node: Node
 ) {
     when (node) {
-        is Heading -> renderHeading(
-            node
-        )
+        is Heading -> renderHeading(node)
 
-        is Paragraph -> renderParagraph(
-            node
-        )
+        is Paragraph -> renderParagraph(node)
 
-        is BulletList -> renderBulletList(
-            node
-        )
+        is BulletList -> renderBulletList(node)
 
-        is OrderedList -> renderOrderedList(
-            node
-        )
+        is OrderedList -> renderOrderedList(node)
 
-        is Image -> renderImage(
-            node
-        )
+        is Image -> renderImage(node)
 
-        is TableBlock -> renderTable(
-            node
-        )
+        is TableBlock -> renderTable(node)
 
-        is Text -> Text(
-            text = node.literal
-        )
+        is Text -> Text(text = node.literal)
 
         else -> {
-            var child =
-                node.firstChild
+            var child = node.firstChild
             while (child != null) {
-                MarkdownNode(
-                    child
-                )
-                child =
-                    child.next
+                MarkdownNode(child)
+                child = child.next
             }
         }
     }
@@ -170,71 +131,37 @@ private fun MarkdownNode(
 private fun renderImage(
     node: Image
 ) {
-    val context =
-        LocalContext.current
-    val url =
-        node.destination
-            ?: return
+    val context = LocalContext.current
+    val url = node.destination ?: return
 
     val imageRequest =
         when {
-            url.startsWith(
-                "../"
-            ) -> {
-                val assetPath =
-                    url.removePrefix(
-                        "../"
-                    )
-                ImageRequest.Builder(
-                    context
-                )
-                    .data(
-                        "file:///android_asset/$assetPath"
-                    )
-                    .crossfade(
-                        true
-                    )
+            url.startsWith("../") -> {
+                val assetPath = url.removePrefix("../")
+                ImageRequest.Builder(context)
+                    .data("file:///android_asset/$assetPath")
+                    .crossfade(true)
                     .build()
             }
 
-            url.startsWith(
-                "http://"
-            ) || url.startsWith(
-                "https://"
-            ) -> {
-                ImageRequest.Builder(
-                    context
-                )
-                    .data(
-                        url
-                    )
-                    .crossfade(
-                        true
-                    )
+            url.startsWith("http://") || url.startsWith("https://") -> {
+                ImageRequest.Builder(context)
+                    .data(url)
+                    .crossfade(true)
                     .build()
             }
 
             else -> {
-                ImageRequest.Builder(
-                    context
-                )
-                    .data(
-                        File(
-                            url
-                        )
-                    )
-                    .crossfade(
-                        true
-                    )
+                ImageRequest.Builder(context)
+                    .data(File(url))
+                    .crossfade(true)
                     .build()
             }
         }
     Box(
         Modifier
             .fillMaxWidth()
-            .heightIn(
-                min = 10.dp
-            )
+            .heightIn(min = 10.dp)
     ) {
         SubcomposeAsyncImage(
             model = imageRequest,
@@ -276,9 +203,7 @@ private fun renderHeading(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                vertical = 4.dp
-            ),
+            .padding(vertical = 4.dp),
     ) {
         Text(
             text = node.getText(),
@@ -293,18 +218,12 @@ private fun renderParagraph(
     node: Paragraph
 ) {
     Column(
-        modifier = Modifier.padding(
-            vertical = 4.dp
-        ),
+        modifier = Modifier.padding(vertical = 4.dp),
     ) {
-        var child =
-            node.firstChild
+        var child = node.firstChild
         while (child != null) {
-            MarkdownNode(
-                child
-            )
-            child =
-                child.next
+            MarkdownNode(child)
+            child = child.next
         }
     }
 }
@@ -314,19 +233,15 @@ private fun renderBulletList(
     node: BulletList
 ) {
     Column(
-        modifier = Modifier.padding(
-            start = 16.dp
-        ),
+        modifier = Modifier
+            .padding(start = 16.dp),
     ) {
-        var child =
-            node.firstChild
+        var child = node.firstChild
         while (child != null) {
-            if (child is ListItem) renderListItem(
-                child,
-                "•"
-            )
-            child =
-                child.next
+            if (child is ListItem) {
+                renderListItem(child, "•")
+            }
+            child = child.next
         }
     }
 }
@@ -335,23 +250,17 @@ private fun renderBulletList(
 private fun renderOrderedList(
     node: OrderedList
 ) {
-    var index =
-        node.markerStartNumber
-            ?: 1
+    var index = node.markerStartNumber ?: 1
     Column(
-        modifier = Modifier.padding(
-            start = 16.dp
-        ),
+        modifier = Modifier
+            .padding(start = 16.dp),
     ) {
-        var child =
-            node.firstChild
+        var child = node.firstChild
         while (child != null) {
-            if (child is ListItem) renderListItem(
-                child,
-                "${index++}."
-            )
-            child =
-                child.next
+            if (child is ListItem) {
+                renderListItem(child, "${index++}.")
+            }
+            child = child.next
         }
     }
 }
@@ -369,14 +278,10 @@ private fun renderListItem(
             fontWeight = FontWeight.Bold
         )
         Column {
-            var child =
-                node.firstChild
+            var child = node.firstChild
             while (child != null) {
-                MarkdownNode(
-                    child
-                )
-                child =
-                    child.next
+                MarkdownNode(child)
+                child = child.next
             }
         }
     }
@@ -387,33 +292,24 @@ private fun renderTable(
     table: TableBlock
 ) {
     Column(
-        modifier = Modifier.padding(
-            vertical = 8.dp
-        )
+        modifier = Modifier
+            .padding(vertical = 8.dp)
     ) {
-        var child =
-            table.firstChild
+        var child = table.firstChild
         while (child != null) {
             when (child) {
-                is TableHead -> renderTableHead(
-                    child
-                )
-
+                is TableHead -> renderTableHead(child)
                 is TableBody -> {
-                    var row =
-                        child.firstChild
+                    var row = child.firstChild
                     while (row != null) {
-                        if (row is TableRow) renderTableRow(
-                            row,
-                            isHeader = false
-                        )
-                        row =
-                            row.next
+                        if (row is TableRow) {
+                            renderTableRow(row, isHeader = false)
+                        }
+                        row = row.next
                     }
                 }
             }
-            child =
-                child.next
+            child = child.next
         }
     }
 }
@@ -422,15 +318,12 @@ private fun renderTable(
 private fun renderTableHead(
     head: TableHead
 ) {
-    var row =
-        head.firstChild
+    var row = head.firstChild
     while (row != null) {
-        if (row is TableRow) renderTableRow(
-            row,
-            isHeader = true
-        )
-        row =
-            row.next
+        if (row is TableRow) {
+            renderTableRow(row, isHeader = true)
+        }
+        row = row.next
     }
 }
 
@@ -440,33 +333,24 @@ private fun renderTableRow(
     isHeader: Boolean
 ) {
     val cells =
-        remember(
-            row
-        ) {
+        remember(row) {
             generateSequence(
                 row.firstChild as? TableCell
-            ) { it.next as? TableCell }.toList()
+            ) {
+                it.next as? TableCell
+            }.toList()
         }
 
     Row(
         modifier = Modifier
-            .horizontalScroll(
-                rememberScrollState()
-            )
-            .padding(
-                vertical = 4.dp
-            )
+            .horizontalScroll(rememberScrollState())
+            .padding(vertical = 4.dp)
     ) {
         cells.forEach { cell ->
             Box(
                 modifier = Modifier
-                    .weight(
-                        1f
-                    )
-                    .padding(
-                        horizontal = 8.dp,
-                        vertical = 6.dp
-                    )
+                    .weight(1f)
+                    .padding(horizontal = 8.dp, vertical = 6.dp)
             ) {
                 Text(
                     text = cell.getText(),
@@ -480,46 +364,35 @@ private fun renderTableRow(
                                 else -> Alignment.Start
                             }
                         )
-                        .padding(
-                            vertical = 6.dp
-                        )
+                        .padding(vertical = 6.dp)
                 )
             }
         }
     }
 
-    if (isHeader) HorizontalDivider(
-        thickness = 1.5.dp
-    )
+    if (isHeader) HorizontalDivider(thickness = 1.5.dp)
 }
 
 private fun Node.getText(): String =
     buildString {
         accept(
-            object :
-                AbstractVisitor() {
+            object : AbstractVisitor() {
                 override fun visit(
                     text: Text
                 ) {
-                    append(
-                        text.literal
-                    )
+                    append(text.literal)
                 }
 
                 override fun visit(
                     softLineBreak: SoftLineBreak
                 ) {
-                    append(
-                        " "
-                    )
+                    append(" ")
                 }
 
                 override fun visit(
                     hardLineBreak: HardLineBreak
                 ) {
-                    append(
-                        "\n"
-                    )
+                    append("\n")
                 }
             })
     }

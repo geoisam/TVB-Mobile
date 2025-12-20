@@ -13,8 +13,6 @@ class HomeListVMFactory<T>(
     override fun <VM : ViewModel> create(
         modelClass: Class<VM>
     ): VM {
-        return HomeListViewModel(
-            loader
-        ) as VM
+        return HomeListViewModel(loader) as VM
     }
 }

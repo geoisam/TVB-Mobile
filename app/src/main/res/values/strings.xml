@@ -19,8 +19,8 @@
     <string name="transcode_title">视频转码</string>
     <string name="transcode_desc">m3u8视频流转换成mp4</string>
 
-    <string name="douban_rating_title">电影评分</string>
-    <string name="douban_rating_desc">豆瓣电影 Top 250</string>
+    <string name="today_news_title">今日热榜</string>
+    <string name="today_news_desc">热门平台实时热搜榜单</string>
 
     <string name="cmdb_year_title">票房总榜</string>
     <string name="cmdb_year_desc">CMDB中国电影票房总榜</string>
@@ -28,17 +28,17 @@
     <string name="bilibili_timeline_title">每周新番</string>
     <string name="bilibili_timeline_desc">bilibili新番时间表</string>
 
-    <string name="bilibili_filter_title">番剧热榜</string>
-    <string name="bilibili_filter_desc">bilibili番剧热播分类榜单</string>
+    <string name="bilibili_filter_title">番剧排行</string>
+    <string name="bilibili_filter_desc">bilibili番剧分类排行</string>
 
     <string name="cmdb_ticket_title">实时票房</string>
-    <string name="cmdb_ticket_desc">CMDB实时电影票房榜单</string>
+    <string name="cmdb_ticket_desc">CMDB中国实时电影票房</string>
 
     <string name="huan_tv_title">电视收视</string>
-    <string name="huan_tv_desc">欢网大数据直播频道榜单</string>
+    <string name="huan_tv_desc">欢网大数据直播频道排名</string>
 
-    <string name="today_news_title">头条热榜</string>
-    <string name="today_news_desc">热门平台实时热搜榜单</string>
+    <string name="bing_wallpaper_title">必应壁纸</string>
+    <string name="bing_wallpaper_desc">来自世界各地的精选图像</string>
 
     <string name="fuck_watermark_title">素材解析</string>
     <string name="fuck_watermark_desc">视频图文无水印解析下载</string>
@@ -61,6 +61,6 @@
     <string name="about_thanks">特别鸣谢</string>
     <string name="about_disclaimer">使用条款</string>
     <string name="about_open_source">开源软件声明</string>
-    <string name="about_permission">应用权限清单</string>
+    <string name="about_permission">应用权限管理</string>
 
 </resources>

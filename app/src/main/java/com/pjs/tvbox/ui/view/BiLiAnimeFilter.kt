@@ -3,6 +3,8 @@ package com.pjs.tvbox.ui.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,24 +21,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 private val tabs =
-    listOf(
-        "近期热播",
-        "最近更新",
-        "最多追番",
-        "最高评分",
-        "最多播放",
-        "最早开播"
-    )
+    listOf("近期热播", "最近更新", "最多追番", "最高评分", "最多播放", "最早开播")
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiLiAnimeFilterView(
     modifier: Modifier = Modifier
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     val pagerState =
         rememberPagerState(
@@ -56,24 +48,32 @@ fun BiLiAnimeFilterView(
             divider = {},
         ) {
             tabs.forEachIndexed { index, title ->
+                val startPadding =
+                    if (index == 0) 16.dp else 8.dp
+                val endPadding =
+                    if (index == tabs.lastIndex) 16.dp else 8.dp
                 Tab(
+                    modifier = Modifier.widthIn(min = 0.dp),
                     selected = pagerState.currentPage == index,
                     onClick = {
                         scope.launch {
-                            pagerState.animateScrollToPage(
-                                index
-                            )
+                            pagerState.animateScrollToPage(index)
                         }
                     },
                     text = {
                         Text(
                             text = title,
-                            color = if (pagerState.currentPage == index)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = if (pagerState.currentPage == index)
-                                FontWeight.Bold else FontWeight.Medium,
+                            color =
+                                if (pagerState.currentPage == index)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight =
+                                if (pagerState.currentPage == index)
+                                    FontWeight.Bold
+                                else
+                                    FontWeight.Medium,
+                            modifier = Modifier.padding(start = startPadding, end = endPadding),
                         )
                     }
                 )

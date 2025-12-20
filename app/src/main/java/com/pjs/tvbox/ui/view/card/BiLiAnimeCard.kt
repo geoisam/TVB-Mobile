@@ -40,60 +40,39 @@ fun BiLiAnimeCard(
     anime: AnimeInfo,
     playNum: Boolean = false
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url =
-                    anime.cover
+                val url = anime.cover
                 val intent =
                     Intent(
                         Intent.ACTION_VIEW,
                         url?.toUri()
                     )
-                context.startActivity(
-                    intent
-                )
+                context.startActivity(intent)
             },
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(
-                    2f / 3f
-                )
-                .clip(
-                    MaterialTheme.shapes.small
-                ),
+                .aspectRatio(2f / 3f)
+                .clip(MaterialTheme.shapes.small),
             shape = MaterialTheme.shapes.small,
         ) {
             Box {
                 SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(
-                        context
-                    )
-                        .data(
-                            anime.thumbnail
-                        )
-                        .crossfade(
-                            true
-                        )
+                    model = ImageRequest.Builder(context)
+                        .data(anime.thumbnail)
+                        .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set(
-                                    "Referer",
-                                    BILIBILI_HOME
-                                )
-                                .set(
-                                    "User-Agent",
-                                    UA_DESKTOP
-                                )
+                                .set("Referer", BILIBILI_HOME)
+                                .set("User-Agent", UA_DESKTOP)
                                 .build()
-                        )
-                        .build(),
+                        ).build(),
                     loading = {
                         Box(
                             modifier = Modifier
@@ -133,13 +112,10 @@ fun BiLiAnimeCard(
                 anime.rating?.let {
                     Box(
                         modifier = Modifier
-                            .align(
-                                Alignment.TopEnd
-                            )
+                            .align(Alignment.TopEnd)
                             .background(
-                                MaterialTheme.colorScheme.primary.copy(
-                                    alpha = 0.88f
-                                ),
+                                MaterialTheme.colorScheme.primary
+                                    .copy(alpha = 0.88f),
                                 RoundedCornerShape(
                                     bottomStart = 8.dp,
                                     topEnd = 8.dp
@@ -152,11 +128,7 @@ fun BiLiAnimeCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (it.isNotBlank()) {
-                                "${it}分"
-                            } else {
-                                "暂无评分"
-                            },
+                            text = if (it.isNotBlank()) "${it}分" else "暂无评分",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -166,16 +138,13 @@ fun BiLiAnimeCard(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(
-                                Alignment.BottomEnd
-                            )
+                            .align(Alignment.BottomEnd)
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(
-                                            alpha = 0.88f
-                                        )
+                                        Color.Black
+                                            .copy(alpha = 0.88f)
                                     )
                                 )
                             )
@@ -204,18 +173,12 @@ fun BiLiAnimeCard(
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(
-                    top = 4.dp
-                ),
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
         anime.subtitle?.let {
             Text(
-                text = if (playNum) {
-                    "播放量$it"
-                } else {
-                    it
-                },
+                text = if (playNum) "播放量$it" else it,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

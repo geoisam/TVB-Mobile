@@ -41,7 +41,9 @@ fun CMDbYear(
     title: Int,
 ) {
     var current by remember {
-        mutableStateOf<CMDbYearScreen>(CMDbYearScreen.Main)
+        mutableStateOf<CMDbYearScreen>(
+            CMDbYearScreen.Main
+        )
     }
 
     var selectedYear by remember {
@@ -160,8 +162,11 @@ private fun YearSelectDialog(
                         text = {
                             Text(
                                 text = if (year == 1) "全部" else year.toString(),
-                                fontWeight = if (year == selectedYear)
-                                    FontWeight.Bold else FontWeight.Normal
+                                fontWeight =
+                                    if (year == selectedYear)
+                                        FontWeight.Bold
+                                    else
+                                        FontWeight.Normal
                             )
                         },
                         onClick = {

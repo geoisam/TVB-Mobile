@@ -28,35 +28,31 @@ import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.DouBanTopView
 
-sealed class DouBanTopScreen {
-    object Main :
-        DouBanTopScreen()
+sealed class BingWallpaperScreen {
+    object Main : BingWallpaperScreen()
 }
 
 @Composable
-fun DouBanTop(
+fun BingWallpaper(
     onBack: () -> Unit,
     title: Int,
 ) {
     var current by remember {
-        mutableStateOf<DouBanTopScreen>(
-            DouBanTopScreen.Main
+        mutableStateOf<BingWallpaperScreen>(
+            BingWallpaperScreen.Main
         )
     }
 
-    BackHandler(
-        enabled = true
-    ) {
-        if (current == DouBanTopScreen.Main) {
+    BackHandler(enabled = true) {
+        if (current == BingWallpaperScreen.Main) {
             onBack()
         } else {
-            current =
-                DouBanTopScreen.Main
+            current = BingWallpaperScreen.Main
         }
     }
 
     when (current) {
-        DouBanTopScreen.Main -> DouBanTopMain(
+        BingWallpaperScreen.Main -> BingWallpaperMain(
             onBack = onBack,
             title = title,
         )
@@ -67,7 +63,7 @@ fun DouBanTop(
     ExperimentalMaterial3Api::class
 )
 @Composable
-private fun DouBanTopMain(
+private fun BingWallpaperMain(
     onBack: () -> Unit,
     title: Int,
 ) {
@@ -79,9 +75,7 @@ private fun DouBanTopMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            title
-                        ),
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -91,13 +85,9 @@ private fun DouBanTopMain(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -105,22 +95,13 @@ private fun DouBanTopMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "刷新",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "刷新", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_refresh
-                            ),
+                            painter = painterResource(R.drawable.ic_refresh),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -131,18 +112,8 @@ private fun DouBanTopMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                ),
-            verticalArrangement = Arrangement.spacedBy(
-                12.dp
-            ),
-        ) {
-            DouBanTopView(
-                modifier = Modifier.weight(
-                    1f
-                )
-            )
-        }
+                .padding(padding),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) { }
     }
 }

@@ -35,8 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.pjs.tvbox.R
 
 sealed class SettingsScreen {
-    object Main :
-        SettingsScreen()
+    object Main : SettingsScreen()
 }
 
 @Composable
@@ -50,14 +49,11 @@ fun SettingsPage(
         )
     }
 
-    BackHandler(
-        enabled = true
-    ) {
+    BackHandler(enabled = true) {
         if (current == SettingsScreen.Main) {
             onBack()
         } else {
-            current =
-                SettingsScreen.Main
+            current = SettingsScreen.Main
         }
     }
 
@@ -83,7 +79,7 @@ fun SettingsMain(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource( title ),
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -93,13 +89,9 @@ fun SettingsMain(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -113,9 +105,9 @@ fun SettingsMain(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy( 12.dp )
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item{
+            item {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

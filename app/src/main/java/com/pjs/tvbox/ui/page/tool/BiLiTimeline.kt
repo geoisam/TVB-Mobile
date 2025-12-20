@@ -28,13 +28,10 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.BiLiTimelineView
 
 sealed class BiLiTimelineScreen {
-    object Main :
-        BiLiTimelineScreen()
+    object Main : BiLiTimelineScreen()
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiLiTimeline(
     onBack: () -> Unit,
@@ -46,14 +43,11 @@ fun BiLiTimeline(
         )
     }
 
-    BackHandler(
-        enabled = true
-    ) {
+    BackHandler(enabled = true) {
         if (current == BiLiTimelineScreen.Main) {
             onBack()
         } else {
-            current =
-                BiLiTimelineScreen.Main
+            current = BiLiTimelineScreen.Main
         }
     }
 
@@ -65,25 +59,20 @@ fun BiLiTimeline(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BiLiTimelineMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            title
-                        ),
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -93,13 +82,9 @@ private fun BiLiTimelineMain(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -107,22 +92,13 @@ private fun BiLiTimelineMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "刷新",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "刷新", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_refresh
-                            ),
+                            painter = painterResource(R.drawable.ic_refresh),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -133,14 +109,10 @@ private fun BiLiTimelineMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                ),
+                .padding(padding),
         ) {
             BiLiTimelineView(
-                modifier = Modifier.weight(
-                    1f
-                )
+                modifier = Modifier.weight(1f)
             )
         }
     }

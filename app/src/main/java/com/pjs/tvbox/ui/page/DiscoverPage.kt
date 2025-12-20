@@ -46,20 +46,15 @@ data class ToolItem(
     val onClick: () -> Unit,
 )
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverPage(
     onOpenPage: (OverlayPage) -> Unit
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
     val showTipsDialog =
         remember {
-            mutableStateOf(
-                false
-            )
+            mutableStateOf(false)
         }
 
     val toolsList =
@@ -70,9 +65,7 @@ fun DiscoverPage(
                 subtitle = R.string.tvlive_desc,
                 onClick = {
                     onOpenPage(
-                        OverlayPage.TvLive(
-                            R.string.tvlive_title
-                        )
+                        OverlayPage.TvLive(R.string.tvlive_title)
                     )
                 }
             ),
@@ -82,81 +75,7 @@ fun DiscoverPage(
                 subtitle = R.string.transcode_desc,
                 onClick = {
                     onOpenPage(
-                        OverlayPage.Transcode(
-                            R.string.transcode_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_movie,
-                title = R.string.douban_rating_title,
-                subtitle = R.string.douban_rating_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.DouBanTop(
-                            R.string.douban_rating_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_hive,
-                title = R.string.cmdb_year_title,
-                subtitle = R.string.cmdb_year_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.CMDbYear(
-                            R.string.cmdb_year_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_event_note,
-                title = R.string.bilibili_timeline_title,
-                subtitle = R.string.bilibili_timeline_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.BiLiTimeline(
-                            R.string.bilibili_timeline_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_whatshot,
-                title = R.string.bilibili_filter_title,
-                subtitle = R.string.bilibili_filter_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.BiLiAnimeFilter(
-                            R.string.bilibili_filter_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_local_atm,
-                title = R.string.cmdb_ticket_title,
-                subtitle = R.string.cmdb_ticket_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.CMDbTicket(
-                            R.string.cmdb_ticket_title
-                        )
-                    )
-                }
-            ),
-            ToolItem(
-                icon = R.drawable.ic_kanban,
-                title = R.string.huan_tv_title,
-                subtitle = R.string.huan_tv_desc,
-                onClick = {
-                    onOpenPage(
-                        OverlayPage.HuanTvTop(
-                            R.string.huan_tv_title
-                        )
+                        OverlayPage.Transcode(R.string.transcode_title)
                     )
                 }
             ),
@@ -166,9 +85,67 @@ fun DiscoverPage(
                 subtitle = R.string.today_news_desc,
                 onClick = {
                     onOpenPage(
-                        OverlayPage.TodayNews(
-                            R.string.today_news_title
-                        )
+                        OverlayPage.TodayNews(R.string.today_news_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_movie,
+                title = R.string.cmdb_year_title,
+                subtitle = R.string.cmdb_year_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.CMDbYear(R.string.cmdb_year_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_event_note,
+                title = R.string.bilibili_timeline_title,
+                subtitle = R.string.bilibili_timeline_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.BiLiTimeline(R.string.bilibili_timeline_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_whatshot,
+                title = R.string.bilibili_filter_title,
+                subtitle = R.string.bilibili_filter_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.BiLiAnimeFilter(R.string.bilibili_filter_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_local_atm,
+                title = R.string.cmdb_ticket_title,
+                subtitle = R.string.cmdb_ticket_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.CMDbTicket(R.string.cmdb_ticket_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_kanban,
+                title = R.string.huan_tv_title,
+                subtitle = R.string.huan_tv_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.HuanTvTop(R.string.huan_tv_title)
+                    )
+                }
+            ),
+            ToolItem(
+                icon = R.drawable.ic_wallpaper,
+                title = R.string.bing_wallpaper_title,
+                subtitle = R.string.bing_wallpaper_desc,
+                onClick = {
+                    onOpenPage(
+                        OverlayPage.BingWallpaper(R.string.bing_wallpaper_title)
                     )
                 }
             ),
@@ -178,9 +155,7 @@ fun DiscoverPage(
                 subtitle = R.string.fuck_watermark_desc,
                 onClick = {
                     onOpenPage(
-                        OverlayPage.FuckWatermark(
-                            R.string.fuck_watermark_title
-                        )
+                        OverlayPage.FuckWatermark(R.string.fuck_watermark_title)
                     )
                 }
             ),
@@ -193,19 +168,10 @@ fun DiscoverPage(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                horizontal = 4.dp
-                            )
-                            .clip(
-                                MaterialTheme.shapes.extraLarge
-                            )
+                            .padding(horizontal = 4.dp)
+                            .clip(MaterialTheme.shapes.extraLarge)
                             .clickable {
-                                Toast.makeText(
-                                    context,
-                                    "搜索",
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                Toast.makeText(context, "搜索", Toast.LENGTH_SHORT).show()
                             },
                         shape = MaterialTheme.shapes.extraLarge,
                         colors = CardDefaults.cardColors(
@@ -215,13 +181,8 @@ fun DiscoverPage(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    vertical = 8.dp
-                                )
-                                .padding(
-                                    start = 18.dp,
-                                    end = 16.dp
-                                ),
+                                .padding(vertical = 8.dp)
+                                .padding(start = 18.dp, end = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
@@ -233,15 +194,9 @@ fun DiscoverPage(
                                 overflow = TextOverflow.Ellipsis,
                             )
                             Icon(
-                                painter = painterResource(
-                                    R.drawable.ic_search
-                                ),
-                                contentDescription = stringResource(
-                                    R.string.top_search
-                                ),
-                                modifier = Modifier.size(
-                                    20.dp
-                                ),
+                                painter = painterResource(R.drawable.ic_search),
+                                contentDescription = stringResource(R.string.top_search),
+                                modifier = Modifier.size(20.dp),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                         }
@@ -250,18 +205,13 @@ fun DiscoverPage(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            showTipsDialog.value =
-                                true
+                            showTipsDialog.value = true
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_help
-                            ),
+                            painter = painterResource(R.drawable.ic_help),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -269,25 +219,14 @@ fun DiscoverPage(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "更多",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_add_circle
-                            ),
-                            contentDescription = stringResource(
-                                R.string.top_more
-                            ),
+                            painter = painterResource(R.drawable.ic_add_circle),
+                            contentDescription = stringResource(R.string.top_more),
                             tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -295,8 +234,7 @@ fun DiscoverPage(
             TipsDialog(
                 isOpen = showTipsDialog.value,
                 onClose = {
-                    showTipsDialog.value =
-                        false
+                    showTipsDialog.value = false
                 },
                 title = "友情提示",
                 message = "本软件仅供个人学习交流和研究参考，严禁用于商业用途，安装后请于 24 小时内删除！",
@@ -312,43 +250,24 @@ fun DiscoverPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                )
-                .padding(
-                    horizontal = 16.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(
-                12.dp
-            ),
+                .padding(padding)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(
-                    2
-                ),
-                contentPadding = PaddingValues(
-                    bottom = 18.dp
-                ),
-                horizontalArrangement = Arrangement.spacedBy(
-                    12.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(
-                    12.dp
-                ),
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(bottom = 18.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(
-                    toolsList.size
-                ) { index ->
-                    val tool =
-                        toolsList[index]
+                items(toolsList.size) { index ->
+                    val tool = toolsList[index]
                     ToolsCard(
                         logo = tool.icon,
                         title = tool.title,
                         subtitle = tool.subtitle,
                         onClick = tool.onClick,
-                        modifier = Modifier.weight(
-                            1f
-                        )
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
@@ -366,12 +285,8 @@ fun ToolsCard(
 ) {
     Card(
         modifier = modifier
-            .clip(
-                MaterialTheme.shapes.medium
-            )
-            .clickable(
-                onClick = onClick
-            ),
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -380,38 +295,25 @@ fun ToolsCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 12.dp
-                ),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Icon(
-                painter = painterResource(
-                    logo
-                ),
+                painter = painterResource(logo),
                 contentDescription = null,
-                modifier = Modifier.size(
-                    41.dp
-                ),
+                modifier = Modifier.size(41.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(
-                modifier = Modifier.height(
-                    8.dp
-                )
+                modifier = Modifier.height(8.dp)
             )
             Text(
-                text = stringResource(
-                    title
-                ),
+                text = stringResource(title),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = stringResource(
-                    subtitle
-                ),
+                text = stringResource(subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

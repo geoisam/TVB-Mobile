@@ -1,7 +1,5 @@
-package com.pjs.tvbox.network
+package com.pjs.tvbox.data
 
-import com.pjs.tvbox.data.UA_MOBILE
-import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
@@ -21,74 +19,36 @@ import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 object PJS {
-    private val json =
-        Json {
-            ignoreUnknownKeys =
-                true
-            coerceInputValues =
-                true
-            encodeDefaults =
-                true
-        }
-
     private val client =
         OkHttpClient.Builder()
-            .connectTimeout(
-                15,
-                TimeUnit.SECONDS
-            )
-            .readTimeout(
-                30,
-                TimeUnit.SECONDS
-            )
-            .writeTimeout(
-                30,
-                TimeUnit.SECONDS
-            )
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
     suspend fun request(
         details: PJSRequest
     ): PJSResponse =
         suspendCancellableCoroutine { cont ->
-            val requestBody =
-                details.data.toRequestBody(
-                    details.headers
-                )
+            val requestBody = details.data.toRequestBody(details.headers)
 
             val headers =
                 buildMap {
-                    putAll(
-                        details.headers.orEmpty()
-                    )
-                    put(
-                        "User-Agent",
-                        details.userAgent
-                            ?: UA_MOBILE
-                    )
+                    putAll(details.headers.orEmpty())
+                    put("User-Agent", details.userAgent ?: UA_MOBILE)
                     details.cookie?.let {
-                        put(
-                            "Cookie",
-                            it
-                        )
+                        put("Cookie", it)
                     }
                 }
 
             val request =
                 Request.Builder()
-                    .url(
-                        details.url
-                    )
-                    .headers(
-                        headers.toHeaders()
-                    )
+                    .url(details.url)
+                    .headers(headers.toHeaders())
                     .method(
                         details.method.uppercase(),
                         requestBody?.takeIf {
-                            details.method.uppercase() !in setOf(
-                                "GET",
-                                "HEAD"
-                            )
+                            details.method.uppercase() !in setOf("GET", "HEAD")
                         })
                     .build()
 
@@ -100,13 +60,9 @@ object PJS {
                             TimeUnit.MILLISECONDS
                         )
                         .build()
-                        .newCall(
-                            request
-                        )
+                        .newCall(request)
                 }
-                    ?: client.newCall(
-                        request
-                    )
+                    ?: client.newCall(request)
 
             cont.invokeOnCancellation { call.cancel() }
 
@@ -119,9 +75,7 @@ object PJS {
                     ) {
                         cont.resume(
                             PJSResponse(
-                                0,
-                                e.message
-                                    ?: "Network error",
+                                0, e.message ?: "Network error",
                                 responseText = "",
                                 response = null
                             )
@@ -133,19 +87,14 @@ object PJS {
                         response: Response
                     ) {
                         response.use { resp ->
-                            val bodyBytes =
-                                resp.body.byteString()
-                            val bodyString =
-                                bodyBytes.utf8()
+                            val bodyBytes = resp.body.byteString()
+                            val bodyString = bodyBytes.utf8()
 
                             val parsed =
                                 try {
                                     when (details.responseType?.lowercase()) {
                                         "", "text", null -> bodyString
-                                        "json" -> if (bodyString.isBlank()) null else json.decodeFromString<Any>(
-                                            bodyString
-                                        )
-
+                                        "json" -> if (bodyString.isBlank()) null else JSON.decodeFromString<Any>(bodyString)
                                         "arraybuffer", "blob" -> bodyBytes.toByteArray()
                                         else -> bodyString
                                     }
@@ -191,18 +140,13 @@ object PJS {
             is Map<*, *> -> FormBody.Builder()
                 .apply {
                     this@toRequestBody.forEach { (k, v) ->
-                        add(
-                            k.toString(),
-                            v.toString()
-                        )
+                        add(k.toString(), v.toString())
                     }
                 }
                 .build()
 
             is Collection<*> -> MultipartBody.Builder()
-                .setType(
-                    MultipartBody.FORM
-                )
+                .setType(MultipartBody.FORM)
                 .apply {
                     this@toRequestBody.forEachIndexed { i, item ->
                         when (item) {
@@ -215,31 +159,17 @@ object PJS {
                             is ByteArray -> addFormDataPart(
                                 "file$i",
                                 "file$i.bin",
-                                item.toRequestBody(
-                                    "application/octet-stream".toMediaType()
-                                )
+                                item.toRequestBody("application/octet-stream".toMediaType())
                             )
 
-                            else -> addFormDataPart(
-                                "field$i",
-                                item.toString()
-                            )
+                            else -> addFormDataPart("field$i", item.toString())
                         }
                     }
                 }
                 .build()
 
-            is Array<*> -> this.toList()
-                .toRequestBody(
-                    extraHeaders
-                )
-
-            else -> json.encodeToString(
-                this
-            )
-                .toRequestBody(
-                    "application/json".toMediaType()
-                )
+            is Array<*> -> this.toList().toRequestBody(extraHeaders)
+            else -> JSON.encodeToString(this).toRequestBody("application/json".toMediaType())
         }
 }
 

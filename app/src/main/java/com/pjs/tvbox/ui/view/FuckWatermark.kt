@@ -8,6 +8,5 @@ import androidx.compose.ui.platform.LocalContext
 fun FuckWatermarkView(
     modifier: Modifier = Modifier
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 }

@@ -36,9 +36,7 @@ import com.pjs.tvbox.data.TimelineInfo
 import com.pjs.tvbox.data.UA_DESKTOP
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BiLiTimelineView(
     modifier: Modifier = Modifier
@@ -54,22 +52,15 @@ fun BiLiTimelineView(
         )
     }
 
-    val scope =
-        rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(
-        Unit
-    ) {
-        isLoading =
-            true
-        timelineData =
-            BiLiTimelineData.getBiliTimeline()
-        isLoading =
-            false
+    LaunchedEffect(Unit) {
+        isLoading = true
+        timelineData = BiLiTimelineData.getDataInfo()
+        isLoading = false
     }
 
-    val tabs =
-        timelineData
+    val tabs = timelineData
 
     val pagerState =
         rememberPagerState(
@@ -77,16 +68,12 @@ fun BiLiTimelineView(
             pageCount = { tabs.size }
         )
 
-    LaunchedEffect(
-        timelineData
-    ) {
+    LaunchedEffect(timelineData) {
         if (timelineData.isNotEmpty()) {
-            val todayIndex =
-                timelineData.indexOfFirst { it.isToday == 1 }
+            val todayIndex = timelineData
+                .indexOfFirst { it.isToday == 1 }
             if (todayIndex != -1) {
-                pagerState.scrollToPage(
-                    todayIndex
-                )
+                pagerState.scrollToPage(todayIndex)
             }
         }
     }
@@ -95,7 +82,6 @@ fun BiLiTimelineView(
         modifier = modifier.fillMaxSize()
     ) {
         if (tabs.isNotEmpty()) {
-
             PrimaryScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
                 modifier = Modifier.fillMaxWidth(),
@@ -103,21 +89,23 @@ fun BiLiTimelineView(
                 divider = {},
             ) {
                 tabs.forEachIndexed { index, timeline ->
+                    val startPadding =
+                        if (index == 0) 16.dp else 8.dp
+                    val endPadding =
+                        if (index == tabs.lastIndex) 16.dp else 8.dp
                     Tab(
+                        modifier = Modifier.widthIn(min = 0.dp),
                         selected = pagerState.currentPage == index,
                         onClick = {
                             scope.launch {
-                                pagerState.animateScrollToPage(
-                                    index
-                                )
+                                pagerState.animateScrollToPage(index)
                             }
                         },
                         text = {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(
-                                    4.dp
-                                ),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier.padding(start = startPadding, end = endPadding),
                             ) {
                                 timeline.date?.let {
                                     Text(
@@ -130,9 +118,8 @@ fun BiLiTimelineView(
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                MaterialTheme.colorScheme.primary.copy(
-                                                    alpha = 0.78f
-                                                ),
+                                                MaterialTheme.colorScheme.primary
+                                                    .copy(alpha = 0.78f),
                                                 CircleShape
                                             )
                                             .padding(
@@ -165,15 +152,9 @@ fun BiLiTimelineView(
             modifier = Modifier.fillMaxSize(),
             beyondViewportPageCount = 2,
         ) { page ->
-
-            val safeTimeline =
-                timelineData
-            val safePageData =
-                safeTimeline.getOrNull(
-                    page
-                )
-            val currentEpisodes =
-                safePageData?.episodes.orEmpty()
+            val safeTimeline = timelineData
+            val safePageData = safeTimeline.getOrNull(page)
+            val currentEpisodes = safePageData?.episodes.orEmpty()
 
             Box(
                 modifier = modifier
@@ -197,9 +178,7 @@ fun BiLiTimelineView(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                "暂无数据"
-                            )
+                            Text("暂无数据")
                         }
                     }
 
@@ -208,9 +187,7 @@ fun BiLiTimelineView(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                "加载中…"
-                            )
+                            Text("加载中…")
                         }
                     }
 
@@ -219,29 +196,21 @@ fun BiLiTimelineView(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                "当前日期暂无更新"
-                            )
+                            Text("当前日期暂无更新")
                         }
                     }
 
                     else -> {
                         LazyVerticalGrid(
-                            columns = GridCells.Fixed(
-                                2
-                            ),
+                            columns = GridCells.Fixed(2),
                             contentPadding = PaddingValues(
                                 start = 16.dp,
                                 top = 12.dp,
                                 end = 16.dp,
                                 bottom = 18.dp
                             ),
-                            verticalArrangement = Arrangement.spacedBy(
-                                8.dp
-                            ),
-                            horizontalArrangement = Arrangement.spacedBy(
-                                8.dp
-                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             items(
                                 count = currentEpisodes.size,

@@ -19,17 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pjs.tvbox.data.BiLiAnimeHotData
-import com.pjs.tvbox.data.BiLiAnimeMoreData
-import com.pjs.tvbox.data.BiLiAnimeMostData
-import com.pjs.tvbox.data.BiLiAnimeNewData
-import com.pjs.tvbox.data.BiLiAnimeOldData
-import com.pjs.tvbox.data.BiLiAnimeTopData
+import com.pjs.tvbox.data.BiLiAnimeFilterData
 import com.pjs.tvbox.data.DouBanHotData
 import com.pjs.tvbox.data.DouBanRecData
 import com.pjs.tvbox.data.DouBanTopData
 import com.pjs.tvbox.data.DouBanTvData
-import com.pjs.tvbox.data.QiYiAnimeData
-import com.pjs.tvbox.data.QiYiStoryData
+import com.pjs.tvbox.data.QiYiFilterData
 import com.pjs.tvbox.ui.view.card.BiLiAnimeCard
 import com.pjs.tvbox.ui.view.card.DouBanHotCard
 import com.pjs.tvbox.ui.view.card.DouBanTvCard
@@ -48,9 +43,7 @@ fun <T> HomeListView(
     val viewModel: HomeListViewModel<T> =
         viewModel(
             key = viewModelKey,
-            factory = HomeListVMFactory(
-                loader
-            )
+            factory = HomeListVMFactory(loader)
         )
 
     val items by viewModel.items.collectAsState()
@@ -80,29 +73,21 @@ fun <T> HomeListView(
 
             else -> {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(
-                        3
-                    ),
+                    columns = GridCells.Fixed(3),
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         top = 12.dp,
                         end = 16.dp,
                         bottom = 18.dp
                     ),
-                    verticalArrangement = Arrangement.spacedBy(
-                        8.dp
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        8.dp
-                    )
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(
                         items = items,
                         key = itemKey
                     ) { item ->
-                        itemContent(
-                            item
-                        )
+                        itemContent(item)
                     }
                 }
             }
@@ -117,16 +102,10 @@ fun DouBanTopView(
 ) {
     HomeListView(
         viewModelKey = "DouBanTopView",
-        loader = { DouBanTopData.getDouBanTop() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { DouBanTopData.getDataInfo() },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            DouBanTvCard(
-                data,
-                2
-            )
+            DouBanTvCard(data, 2)
         },
         modifier = modifier,
     )
@@ -138,15 +117,10 @@ fun DouBanRecView(
 ) {
     HomeListView(
         viewModelKey = "DouBanRecView",
-        loader = { DouBanRecData.getDouBanRec() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { DouBanRecData.getDataInfo() },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            DouBanHotCard(
-                data
-            )
+            DouBanHotCard(data)
         },
         modifier = modifier,
     )
@@ -158,15 +132,10 @@ fun DouBanHotView(
 ) {
     HomeListView(
         viewModelKey = "DouBanHotView",
-        loader = { DouBanHotData.getDouBanHot() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { DouBanHotData.getDataInfo() },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            DouBanHotCard(
-                data
-            )
+            DouBanHotCard(data)
         },
         modifier = modifier,
     )
@@ -178,15 +147,10 @@ fun DouBanTvView(
 ) {
     HomeListView(
         viewModelKey = "DouBanTvView",
-        loader = { DouBanTvData.getDouBanTv() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { DouBanTvData.getDataInfo() },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            DouBanTvCard(
-                data
-            )
+            DouBanTvCard(data)
         },
         modifier = modifier,
     )
@@ -198,15 +162,10 @@ fun QiYiAnimeView(
 ) {
     HomeListView(
         viewModelKey = "QiYiAnimeView",
-        loader = { QiYiAnimeData.getQiYiAnime() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { QiYiFilterData.getDataInfo(4, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            QiYiHotCard(
-                data
-            )
+            QiYiHotCard(data)
         },
         modifier = modifier,
     )
@@ -218,15 +177,10 @@ fun QiYiStoryView(
 ) {
     HomeListView(
         viewModelKey = "QiYiStoryView",
-        loader = { QiYiStoryData.getQiYiStory() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { QiYiFilterData.getDataInfo(3, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            QiYiHotCard(
-                data
-            )
+            QiYiHotCard(data)
         },
         modifier = modifier,
     )
@@ -238,16 +192,10 @@ fun BiLiAnimeHotView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeHotView",
-        loader = { BiLiAnimeHotData.getBiLiAnimeHot() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeHotData.getDataInfo() },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data,
-                true
-            )
+            BiLiAnimeCard(data, true)
         },
         modifier = modifier,
     )
@@ -259,15 +207,10 @@ fun BiLiAnimeNewView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeNewView",
-        loader = { BiLiAnimeNewData.getBiLiAnimeNew() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeFilterData.getDataInfo(0, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data
-            )
+            BiLiAnimeCard(data)
         },
         modifier = modifier,
     )
@@ -279,15 +222,10 @@ fun BiLiAnimeMostView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeMostView",
-        loader = { BiLiAnimeMostData.getBiLiAnimeMost() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeFilterData.getDataInfo(3, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data
-            )
+            BiLiAnimeCard(data)
         },
         modifier = modifier,
     )
@@ -299,15 +237,10 @@ fun BiLiAnimeTopView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeTopView",
-        loader = { BiLiAnimeTopData.getBiLiAnimeTop() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeFilterData.getDataInfo(4, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data
-            )
+            BiLiAnimeCard(data)
         },
         modifier = modifier,
     )
@@ -319,15 +252,10 @@ fun BiLiAnimeMoreView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeMoreView",
-        loader = { BiLiAnimeMoreData.getBiLiAnimeMore() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeFilterData.getDataInfo(2, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data
-            )
+            BiLiAnimeCard(data)
         },
         modifier = modifier,
     )
@@ -339,15 +267,10 @@ fun BiLiAnimeOldView(
 ) {
     HomeListView(
         viewModelKey = "BiLiAnimeOldView",
-        loader = { BiLiAnimeOldData.getBiLiAnimeOld() },
-        itemKey = {
-            it.id
-                ?: it.hashCode()
-        },
+        loader = { BiLiAnimeFilterData.getDataInfo(5, 1, 1) },
+        itemKey = { it.id ?: it.hashCode() },
         itemContent = { data ->
-            BiLiAnimeCard(
-                data
-            )
+            BiLiAnimeCard(data)
         },
         modifier = modifier,
     )

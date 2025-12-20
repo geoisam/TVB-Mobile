@@ -41,32 +41,25 @@ import com.pjs.tvbox.util.CalcUtil
 fun DouBanHotCard(
     movie: MovieInfo
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val url =
-                    movie.cover
-                        ?: GITHUB_ISSUE
+                val url = movie.cover ?: GITHUB_ISSUE
                 val intent =
                     Intent(
                         Intent.ACTION_VIEW,
                         url.toUri()
                     )
-                context.startActivity(
-                    intent
-                )
+                context.startActivity(intent)
             },
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(
-                    2f / 3f
-                )
+                .aspectRatio(2f / 3f)
                 .clip(
                     MaterialTheme.shapes.small
                 ),
@@ -74,28 +67,15 @@ fun DouBanHotCard(
         ) {
             Box {
                 SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(
-                        context
-                    )
-                        .data(
-                            movie.thumbnail
-                        )
-                        .crossfade(
-                            true
-                        )
+                    model = ImageRequest.Builder(context)
+                        .data(movie.thumbnail)
+                        .crossfade(true)
                         .httpHeaders(
                             NetworkHeaders.Builder()
-                                .set(
-                                    "Referer",
-                                    DOUBAN_HOME
-                                )
-                                .set(
-                                    "User-Agent",
-                                    UA_MOBILE
-                                )
+                                .set("Referer", DOUBAN_HOME)
+                                .set("User-Agent", UA_MOBILE)
                                 .build()
-                        )
-                        .build(),
+                        ).build(),
                     loading = {
                         Box(
                             modifier = Modifier
@@ -136,13 +116,10 @@ fun DouBanHotCard(
                 movie.rating?.let {
                     Box(
                         modifier = Modifier
-                            .align(
-                                Alignment.TopEnd
-                            )
+                            .align(Alignment.TopEnd)
                             .background(
-                                MaterialTheme.colorScheme.primary.copy(
-                                    alpha = 0.88f
-                                ),
+                                MaterialTheme.colorScheme.primary
+                                    .copy(alpha = 0.88f),
                                 RoundedCornerShape(
                                     bottomStart = 8.dp,
                                     topEnd = 8.dp
@@ -155,11 +132,7 @@ fun DouBanHotCard(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (it == "0") {
-                                "暂无评分"
-                            } else {
-                                "${it}分"
-                            },
+                            text = if (it == "0") "暂无评分" else "${it}分",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -169,16 +142,13 @@ fun DouBanHotCard(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(
-                                Alignment.BottomEnd
-                            )
+                            .align(Alignment.BottomEnd)
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(
-                                            alpha = 0.88f
-                                        )
+                                        Color.Black
+                                            .copy(alpha = 0.88f)
                                     )
                                 )
                             )
@@ -189,9 +159,7 @@ fun DouBanHotCard(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         val numInWan =
-                            CalcUtil.formatWan(
-                                it
-                            )
+                            CalcUtil.formatWan(it)
                         Text(
                             text = "超${numInWan}讨论",
                             style = MaterialTheme.typography.labelSmall,
@@ -211,25 +179,14 @@ fun DouBanHotCard(
                 fontWeight = FontWeight.Medium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(
-                    top = 4.dp
-                ),
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
         movie.subtitle?.let {
             Text(
-                text = it.replace(
-                    Regex(
-                        "\\s+"
-                    ),
-                    "/"
-                )
-                    .replace(
-                        Regex(
-                            "/+"
-                        ),
-                        "/"
-                    ),
+                text = it
+                    .replace(Regex("\\s+"), "/")
+                    .replace(Regex("/+"), "/"),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

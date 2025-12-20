@@ -16,12 +16,11 @@ fun BottomNav(
     onTabSelected: (MainScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs =
-        listOf(
-            MainScreen.Home,
-            MainScreen.Discover,
-            MainScreen.Mine
-        )
+    val tabs = listOf(
+        MainScreen.Home,
+        MainScreen.Discover,
+        MainScreen.Mine
+    )
 
     NavigationBar(
         modifier = modifier
@@ -30,42 +29,32 @@ fun BottomNav(
             NavigationBarItem(
                 icon = {
                     Icon(
-                        painter = if (currentRoute == screen.route) {
-                            painterResource(
-                                id = screen.chIconId
-                            )
-                        } else {
-                            painterResource(
-                                id = screen.unIconId
-                            )
-                        },
-                        contentDescription = stringResource(
-                            screen.title
-                        ),
-                        modifier = Modifier.size(
-                            28.dp
-                        )
+                        painter =
+                            if (currentRoute == screen.route) {
+                                painterResource(id = screen.chIconId)
+                            } else {
+                                painterResource(id = screen.unIconId)
+                            },
+                        contentDescription = stringResource(screen.title),
+                        modifier = Modifier.size(28.dp)
                     )
                 },
                 label = {
                     Text(
-                        text = stringResource(
-                            screen.title
-                        ),
+                        text = stringResource(screen.title),
                         style = MaterialTheme.typography.labelMedium,
-                        color = if (currentRoute == screen.route) {
-                            MaterialTheme.colorScheme.onSurface
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
+                        color =
+                            if (currentRoute == screen.route) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 selected = currentRoute == screen.route,
                 onClick = {
-                    onTabSelected(
-                        screen
-                    )
+                    onTabSelected(screen)
                 }
             )
         }

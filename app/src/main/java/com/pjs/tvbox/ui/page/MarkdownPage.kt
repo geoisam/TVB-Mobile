@@ -25,26 +25,16 @@ fun MarkdownPage(
     assetFile: String,
     onBack: () -> Unit = {}
 ) {
-    BackHandler(
-        onBack = onBack
-    )
-    val context =
-        LocalContext.current
+    BackHandler(onBack = onBack)
+    val context = LocalContext.current
 
     val markdownText =
-        remember(
-            assetFile
-        ) {
+        remember(assetFile) {
             runCatching {
-                context.assets.open(
-                    assetFile
-                )
+                context.assets.open(assetFile)
                     .bufferedReader()
                     .use { it.readText() }
-            }
-                .getOrDefault(
-                    "加载失败"
-                )
+            }.getOrDefault("加载失败")
         }
 
     Scaffold(
@@ -52,9 +42,7 @@ fun MarkdownPage(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            pageTitle
-                        ),
+                        text = stringResource(pageTitle),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -64,13 +52,9 @@ fun MarkdownPage(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -82,12 +66,8 @@ fun MarkdownPage(
             markdown = markdownText.trimIndent(),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                )
-                .padding(
-                    horizontal = 16.dp
-                ),
+                .padding(padding)
+                .padding(horizontal = 16.dp),
         )
     }
 }

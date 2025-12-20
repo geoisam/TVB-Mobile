@@ -19,9 +19,7 @@ object UpdateUtil {
 
     fun init(context: Context) {
         val cached = readCache(context)
-        cachedUpdate =
-            if (cached != null && isRemoteNewer(context, cached)) cached
-            else null
+        cachedUpdate = if (cached != null && isRemoteNewer(context, cached)) cached else null
     }
 
     suspend fun checkUpdate(context: Context): Boolean {
@@ -45,8 +43,7 @@ object UpdateUtil {
 
     fun clear(context: Context) {
         cachedUpdate = null
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-            .edit { clear() }
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit { clear() }
     }
 
     private fun isRemoteNewer(

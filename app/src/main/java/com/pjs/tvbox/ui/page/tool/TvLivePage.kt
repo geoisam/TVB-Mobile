@@ -29,8 +29,7 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.TvLiveView
 
 sealed class TvLiveScreen {
-    object Main :
-        TvLiveScreen()
+    object Main : TvLiveScreen()
 }
 
 @Composable
@@ -44,14 +43,11 @@ fun TvLivePage(
         )
     }
 
-    BackHandler(
-        enabled = true
-    ) {
+    BackHandler(enabled = true) {
         if (current == TvLiveScreen.Main) {
             onBack()
         } else {
-            current =
-                TvLiveScreen.Main
+            current = TvLiveScreen.Main
         }
     }
 
@@ -63,25 +59,20 @@ fun TvLivePage(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TvLiveMain(
     onBack: () -> Unit,
     title: Int,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(
-                            title
-                        ),
+                        text = stringResource(title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -91,13 +82,9 @@ private fun TvLiveMain(
                         onClick = onBack
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_back
-                            ),
+                            painter = painterResource(R.drawable.ic_back),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -105,22 +92,13 @@ private fun TvLiveMain(
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "更多",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_refresh
-                            ),
+                            painter = painterResource(R.drawable.ic_refresh),
                             contentDescription = null,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
@@ -131,17 +109,11 @@ private fun TvLiveMain(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                ),
-            verticalArrangement = Arrangement.spacedBy(
-                12.dp
-            ),
+                .padding(padding),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             TvLiveView(
-                modifier = Modifier.weight(
-                    1f
-                )
+                modifier = Modifier.weight(1f)
             )
         }
     }

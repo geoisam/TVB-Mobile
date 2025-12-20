@@ -19,36 +19,27 @@ import com.pjs.tvbox.R
 import com.pjs.tvbox.ui.view.DouBanHotView
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import com.pjs.tvbox.activity.OverlayPage
 import com.pjs.tvbox.ui.view.DouBanRecView
+import com.pjs.tvbox.ui.view.DouBanTopView
 import com.pjs.tvbox.ui.view.DouBanTvView
 import com.pjs.tvbox.ui.view.QiYiAnimeView
 import com.pjs.tvbox.ui.view.QiYiStoryView
 
-@OptIn(
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage() {
-    val context =
-        LocalContext.current
-    val tabs =
-        listOf(
-            "推荐",
-            "电影",
-            "剧集",
-            "动漫",
-            "纪实"
-        )
-    val dataName =
-        "暂无订阅"
-
+fun HomePage(
+    onOpenPage: (OverlayPage) -> Unit
+) {
+    val context = LocalContext.current
+    val tabs = listOf("高分", "推荐", "电影", "剧集", "动漫", "纪实")
+    val dataName = "暂无订阅"
     val pagerState =
         rememberPagerState(
-            initialPage = 0,
+            initialPage = 1,
             pageCount = { tabs.size }
         )
-    val scope =
-        rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -57,19 +48,12 @@ fun HomePage() {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                horizontal = 4.dp
-                            )
-                            .clip(
-                                MaterialTheme.shapes.extraLarge
-                            )
+                            .padding(horizontal = 4.dp)
+                            .clip(MaterialTheme.shapes.extraLarge)
                             .clickable {
-                                Toast.makeText(
-                                    context,
-                                    "搜索",
-                                    Toast.LENGTH_SHORT
+                                onOpenPage(
+                                    OverlayPage.Search(R.string.top_search)
                                 )
-                                    .show()
                             },
                         shape = MaterialTheme.shapes.extraLarge,
                         colors = CardDefaults.cardColors(
@@ -79,13 +63,8 @@ fun HomePage() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    vertical = 8.dp
-                                )
-                                .padding(
-                                    start = 18.dp,
-                                    end = 16.dp
-                                ),
+                                .padding(vertical = 8.dp)
+                                .padding(start = 18.dp, end = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
@@ -97,13 +76,9 @@ fun HomePage() {
                                 overflow = TextOverflow.Ellipsis,
                             )
                             Icon(
-                                painter = painterResource(
-                                    R.drawable.ic_search
-                                ),
+                                painter = painterResource(R.drawable.ic_search),
                                 contentDescription = null,
-                                modifier = Modifier.size(
-                                    20.dp
-                                ),
+                                modifier = Modifier.size(20.dp),
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                         }
@@ -112,19 +87,10 @@ fun HomePage() {
                 navigationIcon = {
                     Card(
                         modifier = Modifier
-                            .padding(
-                                horizontal = 8.dp
-                            )
-                            .clip(
-                                MaterialTheme.shapes.extraLarge
-                            )
+                            .padding(horizontal = 8.dp)
+                            .clip(MaterialTheme.shapes.extraLarge)
                             .clickable {
-                                Toast.makeText(
-                                    context,
-                                    dataName,
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
+                                Toast.makeText(context, dataName, Toast.LENGTH_SHORT).show()
                             },
                         shape = MaterialTheme.shapes.extraLarge,
                         colors = CardDefaults.cardColors(
@@ -133,36 +99,24 @@ fun HomePage() {
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(
-                                    vertical = 8.dp
-                                )
-                                .padding(
-                                    start = 18.dp,
-                                    end = 16.dp
-                                ),
+                                .padding(vertical = 8.dp)
+                                .padding(start = 18.dp, end = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = dataName.let {
-                                    if (it.length > 4) "${
-                                        it.take(
-                                            4
-                                        )
-                                    }…" else it
-                                },
+                                text =
+                                    dataName.let {
+                                        if (it.length > 4) "${it.take(4)}…" else it
+                                    },
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Icon(
-                                painter = painterResource(
-                                    R.drawable.ic_arrow_down
-                                ),
+                                painter = painterResource(R.drawable.ic_arrow_down),
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.size(
-                                    20.dp
-                                ),
+                                modifier = Modifier.size(20.dp),
                             )
                         }
                     }
@@ -170,23 +124,14 @@ fun HomePage() {
                 actions = {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "更多",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            Toast.makeText(context, "更多", Toast.LENGTH_SHORT).show()
                         }
                     ) {
                         Icon(
-                            painter = painterResource(
-                                R.drawable.ic_add_circle
-                            ),
+                            painter = painterResource(R.drawable.ic_add_circle),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(
-                                24.dp
-                            ),
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -196,9 +141,7 @@ fun HomePage() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    padding
-                ),
+                .padding(padding),
         ) {
             PrimaryScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
@@ -207,21 +150,32 @@ fun HomePage() {
                 divider = {},
             ) {
                 tabs.forEachIndexed { index, title ->
+                    val startPadding =
+                        if (index == 0) 16.dp else 8.dp
+                    val endPadding =
+                        if (index == tabs.lastIndex) 16.dp else 8.dp
                     Tab(
+                        modifier = Modifier.widthIn(min = 0.dp),
                         selected = pagerState.currentPage == index,
                         onClick = {
                             scope.launch {
-                                pagerState.animateScrollToPage(
-                                    index
-                                )
+                                pagerState.animateScrollToPage(index)
                             }
                         },
                         text = {
                             Text(
                                 text = title,
-                                color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (pagerState.currentPage == index) FontWeight.Bold else FontWeight.Medium,
+                                color =
+                                    if (pagerState.currentPage == index)
+                                        MaterialTheme.colorScheme.primary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight =
+                                    if (pagerState.currentPage == index)
+                                        FontWeight.Bold
+                                    else
+                                        FontWeight.Medium,
+                                modifier = Modifier.padding(start = startPadding, end = endPadding),
                             )
                         }
                     )
@@ -233,23 +187,27 @@ fun HomePage() {
                 modifier = Modifier.fillMaxSize(),
             ) { page ->
                 when (page) {
-                    0 -> DouBanRecView(
+                    0 -> DouBanTopView(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    1 -> DouBanHotView(
+                    1 -> DouBanRecView(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    2 -> DouBanTvView(
+                    2 -> DouBanHotView(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    3 -> QiYiAnimeView(
+                    3 -> DouBanTvView(
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    4 -> QiYiStoryView(
+                    4 -> QiYiAnimeView(
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    5 -> QiYiStoryView(
                         modifier = Modifier.fillMaxSize()
                     )
                 }

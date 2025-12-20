@@ -53,8 +53,8 @@ fun CMDbTicketView(
     isToday: Boolean,
     key: Int? = null,
 ) {
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
+
     var tickets by remember {
         mutableStateOf<List<TicketInfo>>(
             emptyList()
@@ -76,45 +76,27 @@ fun CMDbTicketView(
         )
     }
 
-    LaunchedEffect(
-        key,
-        selectedDate
-    ) {
-        isLoading =
-            true
-        error =
-            null
+    LaunchedEffect(key, selectedDate) {
+        isLoading = true
+        error = null
 
         try {
-            val (list, nat) = CMDbTicketData.getCMDbTicket(
-                selectedDate
-            )
-            tickets =
-                list
-            national =
-                nat
+            val (list, nat) = CMDbTicketData.getDataInfo(selectedDate)
+            tickets = list
+            national = nat
         } catch (e: Exception) {
-            error =
-                e.message
-                    ?: "加载失败"
+            error = e.message ?: "加载失败"
         } finally {
-            isLoading =
-                false
+            isLoading = false
         }
 
         if (isToday) {
             while (true) {
-                delay(
-                    12_345
-                )
+                delay(12_345)
                 try {
-                    val (list, nat) = CMDbTicketData.getCMDbTicket(
-                        selectedDate
-                    )
-                    tickets =
-                        list
-                    national =
-                        nat
+                    val (list, nat) = CMDbTicketData.getDataInfo(selectedDate)
+                    tickets = list
+                    national = nat
                 } catch (e: Exception) {
                 }
             }
@@ -155,12 +137,10 @@ fun CMDbTicketView(
                 Column(
                     Modifier.fillMaxSize()
                 ) {
-                    val horizontalScrollState =
-                        rememberScrollState()
+                    val horizontalScrollState = rememberScrollState()
                     LazyColumn(
-                        modifier = Modifier.weight(
-                            1f
-                        ),
+                        modifier = Modifier
+                            .weight(1f),
                     ) {
                         item {
                             Column(
@@ -171,9 +151,8 @@ fun CMDbTicketView(
                                     text = "今日大盘",
                                     style = MaterialTheme.typography.headlineMedium,
                                     color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(
-                                        vertical = 8.dp
-                                    ),
+                                    modifier = Modifier
+                                        .padding(vertical = 8.dp),
                                 )
                                 Text(
                                     text = buildAnnotatedString {
@@ -182,44 +161,35 @@ fun CMDbTicketView(
                                                 fontSize = MaterialTheme.typography.displayMedium.fontSize,
                                             )
                                         ) {
-                                            append(
-                                                national?.salesDesc
-                                                    ?: "null"
-                                            )
+                                            append(national?.salesDesc ?: "null")
                                         }
-                                        append(
-                                            " "
-                                        )
+                                        append(" ")
                                         withStyle(
                                             SpanStyle(
                                                 fontSize = MaterialTheme.typography.bodyMedium.fontSize,
                                             )
                                         ) {
-                                            append(
-                                                national?.salesUnit
-                                                    ?: "万"
-                                            )
+                                            append(national?.salesUnit ?: "万")
                                         }
                                     },
                                     color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold,
                                 )
                                 Text(
-                                    text = if (isToday)
-                                        "截止 ${national?.updateTimestamp?.toDateString()} (北京时间)"
-                                    else
-                                        "历史数据 $selectedDate (北京时间)",
+                                    text =
+                                        if (isToday)
+                                            "截止 ${national?.updateTimestamp?.toDateString()} (北京时间)"
+                                        else
+                                            "历史数据 $selectedDate (北京时间)",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(
-                                        vertical = 12.dp
-                                    ),
+                                    modifier = Modifier
+                                        .padding(vertical = 12.dp),
                                 )
                             }
                             Spacer(
-                                modifier = Modifier.height(
-                                    8.dp
-                                )
+                                modifier = Modifier
+                                    .height(8.dp)
                             )
                         }
                         stickyHeader {
@@ -233,52 +203,33 @@ fun CMDbTicketView(
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(
-                                            vertical = 8.dp
-                                        ),
+                                        .padding(vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Box(
-                                        modifier = Modifier.width(
-                                            160.dp
-                                        )
+                                        modifier = Modifier
+                                            .width(160.dp)
                                     ) {
                                         Text(
                                             text = "影片",
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(
-                                                horizontal = 16.dp
-                                            ),
+                                            modifier = Modifier
+                                                .padding(horizontal = 16.dp),
                                             textAlign = TextAlign.Start,
                                         )
                                     }
                                     Row(
-                                        modifier = Modifier.horizontalScroll(
-                                            horizontalScrollState
-                                        )
+                                        modifier = Modifier
+                                            .horizontalScroll(horizontalScrollState)
                                     ) {
-                                        TableHeader(
-                                            "总票房",
-                                            140
-                                        )
-                                        TableHeader(
-                                            "综合票房",
-                                            120
-                                        )
-                                        TableHeader(
-                                            "票房占比"
-                                        )
-                                        TableHeader(
-                                            "排片占比"
-                                        )
-                                        TableHeader(
-                                            "网售占比"
-                                        )
-                                        TableHeader(
-                                            "上座率"
-                                        )
+                                        TableHeader("总票房", 125)
+                                        TableHeader("综合票房", 125)
+                                        TableHeader("票房占比")
+                                        TableHeader("排片占比")
+                                        TableHeader("网售占比")
+                                        TableHeader("上座率")
                                     }
                                 }
                             }
@@ -287,9 +238,8 @@ fun CMDbTicketView(
                             tickets
                         ) { index, ticket ->
                             HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(
-                                    alpha = 0.5f
-                                ),
+                                color = MaterialTheme.colorScheme.outlineVariant
+                                    .copy(alpha = 0.5f),
                                 thickness = 0.5.dp,
                             )
                             Row(
@@ -297,9 +247,8 @@ fun CMDbTicketView(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Box(
-                                    modifier = Modifier.width(
-                                        160.dp
-                                    )
+                                    modifier = Modifier
+                                        .width(160.dp)
                                 ) {
                                     Column(
                                         Modifier
@@ -338,38 +287,21 @@ fun CMDbTicketView(
                                     }
                                 }
                                 Row(
-                                    modifier = Modifier.horizontalScroll(
-                                        horizontalScrollState
-                                    )
+                                    modifier = Modifier
+                                        .horizontalScroll(horizontalScrollState)
                                 ) {
-                                    TableCell(
-                                        ticket.sumSalesDesc,
-                                        140
-                                    )
-                                    TableCell(
-                                        "${ticket.salesInWanDesc}万",
-                                        120
-                                    )
-                                    TableCell(
-                                        ticket.salesRateDesc
-                                    )
-                                    TableCell(
-                                        ticket.sessionRateDesc
-                                    )
-                                    TableCell(
-                                        ticket.onlineSalesRateDesc
-                                    )
-                                    TableCell(
-                                        ticket.seatRateDesc
-                                    )
+                                    TableCell(ticket.sumSalesDesc, 125)
+                                    TableCell("${ticket.salesInWanDesc}万", 125)
+                                    TableCell(ticket.salesRateDesc)
+                                    TableCell(ticket.sessionRateDesc)
+                                    TableCell(ticket.onlineSalesRateDesc)
+                                    TableCell(ticket.seatRateDesc)
                                 }
                             }
                         }
                         item {
                             Spacer(
-                                modifier = Modifier.height(
-                                    18.dp
-                                )
+                                modifier = Modifier.height(18.dp)
                             )
                         }
                     }
@@ -383,21 +315,16 @@ fun CMDbTicketView(
 @Composable
 fun TableHeader(
     text: String?,
-    minWidth: Int = 100,
+    minWidth: Int = 110,
 ) {
     Text(
-        text = text
-            ?: "-",
+        text = text ?: "-",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
         fontWeight = FontWeight.Bold,
         modifier = Modifier
-            .widthIn(
-                min = minWidth.dp
-            )
-            .padding(
-                horizontal = 16.dp
-            ),
+            .widthIn(min = minWidth.dp)
+            .padding(horizontal = 16.dp),
         textAlign = TextAlign.End,
     )
 }
@@ -405,20 +332,15 @@ fun TableHeader(
 @Composable
 fun TableCell(
     text: String?,
-    minWidth: Int = 100,
+    minWidth: Int = 110,
 ) {
     Text(
-        text = text
-            ?: "-",
+        text = text ?: "-",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
-            .widthIn(
-                min = minWidth.dp
-            )
-            .padding(
-                horizontal = 16.dp
-            ),
+            .widthIn(min = minWidth.dp)
+            .padding(horizontal = 16.dp),
         textAlign = TextAlign.End,
     )
 }
